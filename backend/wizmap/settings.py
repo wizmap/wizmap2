@@ -72,11 +72,24 @@ WSGI_APPLICATION = 'wizmap.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_PORT=os.getenv('DB_PORT')
+DB_NAME=os.getenv('DB_NAME')
+DB_HOST=os.getenv('DB_HOST')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DB_NAME,
+        'USER': 'postgres',
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,  # 또는 PostgreSQL 서버의 IP 주소
+        'PORT': DB_PORT,       # PostgreSQL의 기본 포트 번호
     }
 }
 
