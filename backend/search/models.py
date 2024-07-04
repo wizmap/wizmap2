@@ -18,8 +18,8 @@ class Place(models.Model):
 class BusinessHour(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE)
     day = models.CharField(max_length=50, null=True)
-    open = models.DateTimeField(null=True)
-    close = models.DateTimeField(null=True)
-    b_start = models.DateTimeField(null=True)
-    b_end = models.DateTimeField(null=True)
+    open = models.TimeField(null=True)
+    close = models.TimeField(null=True)
+    b_start = models.TimeField(null=True)
+    b_end = models.TimeField(null=True)
     dayoff = models.BooleanField(default=False) # 휴무여부
