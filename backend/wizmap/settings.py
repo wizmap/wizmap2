@@ -37,11 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #cors 
-    'corsheaders',
-    #rest framework
     'rest_framework',
-    #app
     'user',
     'search',
     'history',
