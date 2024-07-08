@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'search',
     'history',
     'favorites',
-    
 ]
 
 MIDDLEWARE = [

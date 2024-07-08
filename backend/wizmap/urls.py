@@ -22,4 +22,5 @@ urlpatterns = [
     path('favorites/', include('favorites.urls')),
     path('user/', include('user.urls')),
     path('history/', include('history.urls')),
+    path('search/',include('search.urls'))
 ]
