@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'search',
     'history',
     'favorites',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
