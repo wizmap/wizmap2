@@ -1,27 +1,28 @@
-from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
 from .models import SearchHistory
 from .serializers import SearchHistorySerializer
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import action
 
-@csrf_exempt
-@login_required
-def history_list(request):
-    if request.method == 'GET':
-        user=request.user
+class HistoryListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
         histories = SearchHistory.objects.filter(user=user)
-        serialized_histories = [SearchHistorySerializer(h).data for h in histories]
-        return JsonResponse({'histories': serialized_histories}, safe=False)
-
-# class SearchHistoryViewSet(viewsets.ModelViewSet):
-#     queryset = SearchHistory.objects.all()
-#     serializer_class = SearchHistorySerializer
-
-#     @action(detail=True, methods=['get'])
-#     def histories(self, request, pk=None):
-#         histories = SearchHistory.objects.filter(pk=pk)
-#         serializer = SearchHistorySerializer(histories, many=True)
-#         return Response({'histories': serializer.data})
+        serializer = SearchHistorySerializer(histories, many=True)
+        return Response({'histories': serializer.data}, status=status.HTTP_200_OK)
+    
+class DeleteHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def delete(self, request, pk):
+        try:
+            history = SearchHistory.objects.get(pk=pk, user=request.user)
+        except SearchHistory.DoesNotExist:
+            raise NotFound({'error': '검색기록을 찾을 수 없습니다.'})
+        
+        history.delete()
+        return Response({'message': '검색기록 삭제'}, status=status.HTTP_200_OK)

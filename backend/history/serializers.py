@@ -4,4 +4,4 @@ from .models import SearchHistory
 class SearchHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SearchHistory
-        fields = ['id', 'user', 'address', 'search']
+        fields = '__all__'
