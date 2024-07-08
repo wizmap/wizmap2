@@ -4,10 +4,15 @@ from .models import Address, Place, BusinessHour
 from .serializers import AddressSerializer, PlaceSerializer, BusinessHourSerializer
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from history.views import save_history
 # Create your views here.
 class SearchAPIView(APIView):
     def post(self, request, *args, **kwargs):
         search_term = request.data.get('search_term')
+        
+        # 검색어 저장
+        if request.user.is_authenticated:
+            save_history(user=request.user, search=search_term)
 
         
         places = Place.objects.filter(name__icontains=search_term)
