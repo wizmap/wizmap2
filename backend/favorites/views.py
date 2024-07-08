@@ -4,6 +4,33 @@ from rest_framework.views import APIView
 from .models import List, MyPin
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ListSerializer, MyPinSerializer
+from search.models import BusinessHour
+from datetime import datetime
+
+def CheckBusinessHour(place):
+    # 현재 요일 체크 (숫자 -> 문자)
+    days = ['월', '화', '수', '목', '금', '토', '일']
+    
+    now = datetime.now()
+    now_day = now.weekday()
+    today = days[now_day]
+    place_hours = BusinessHour.objects.filter(place = place, day = today)
+
+    days = ['월', '화', '수', '목', '금', '토', '일']
+    
+    for place_hour in place_hours:
+        # 휴무 여부 체크 
+        if place_hour.day == today and place_hour.dayoff == True: 
+            return False
+        # 영업 시간 체크 
+        if now.time() >= place_hour.open and now.time() <= place_hour.close:
+            if place_hour.b_start or place_hour.b_end:
+                if place_hour.b_start <= now.time() <= place_hour.b_end:
+                    return False
+            else: 
+                return True
+    return False
+
 
 class ListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -18,7 +45,7 @@ class ListView(APIView):
                     'place_name': mypin.place.name,
                     'address': mypin.place.address.address,
                     'category': mypin.place.category,
-                    'isopen':True,
+                    'isopen':CheckBusinessHour(mypin.place),
                     'mypin_name': mypin.name,
                     'list_name': mypin.list.name
                 }
