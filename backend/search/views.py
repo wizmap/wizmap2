@@ -7,12 +7,12 @@ from django.shortcuts import get_object_or_404
 # Create your views here.
 class SearchAPIView(APIView):
     def post(self, request, *args, **kwargs):
-        search_term = request.data.get('search_term')  # POST 요청으로부터 검색어를 가져옵니다.
+        search_term = request.data.get('search_term')
 
-        # Place 모델에서 검색어를 포함하는 장소들을 필터링합니다.
+        
         places = Place.objects.filter(name__icontains=search_term)
 
-        # 각 장소에 대한 BusinessHour를 가져옵니다.
+        
         place_data = []
         for place in places:
             business_hours = BusinessHour.objects.filter(place=place)
