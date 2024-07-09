@@ -1,20 +1,24 @@
 <template>
   <v-app>
     <v-main>
-      <IndexMap/>
+        <router-view/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import IndexMap from './components/IndexMap.vue'
+import { RouterView } from 'vue-router';
+import SearchResult from './components/SearchResult.vue';
+import Home from './components/Home.vue';
+
 
 
 export default {
   name: 'App',
 
   components: {
-    IndexMap,
+    SearchResult,
+    Home,
   },
 
   data: () => ({
