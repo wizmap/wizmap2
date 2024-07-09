@@ -19,7 +19,9 @@ def CheckBusinessHour(place):
 
     days = ['월', '화', '수', '목', '금', '토', '일']
     
+    
     for place_hour in place_hours:
+        # print(place_hour.day, place_hour.open, place_hour.close)
         # 휴무 여부 체크 
         if place_hour.day == today and place_hour.dayoff == True: 
             return False
@@ -51,7 +53,7 @@ class ListView(APIView):
                     'list_name': mypin.list.name
                 }
             )
-        print(data)
+        # print(data)
         
         return Response({'MyPin': data}, status=status.HTTP_200_OK)
     
@@ -59,7 +61,7 @@ class ListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = ListSerializer(data=request.data)
+        serializer = ListSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -111,8 +113,8 @@ class ListDeleteView(APIView):
         
 class MyPinCreateView(APIView):
     permission_classes = [IsAuthenticated]
-    def post(self, request):
-        serializer = MyPinSerializer(data=request.data)
+    def post(self, request, list_id):
+        serializer = MyPinSerializer(data={**request.data, 'list': list_id})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
