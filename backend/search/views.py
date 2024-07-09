@@ -5,6 +5,7 @@ from .serializers import AddressSerializer, PlaceSerializer, BusinessHourSeriali
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from history.views import save_history
+from favorites.views import CheckBusinessHour
 # Create your views here.
 class SearchAPIView(APIView):
     def post(self, request, *args, **kwargs):
@@ -40,5 +41,5 @@ class PinPlaceAPIView(APIView):
         
         return Response({
             'place': place_serializer.data,
-            'business_hours': business_hour_serializer.data
+            'business_hours': business_hour_serializer.data,
         })
