@@ -39,7 +39,21 @@
 
 
 <script>
+import axios from 'axios';
 export default {
+    name : "Home",
+    props: {
+        msg: String
+    },
+    created() {
+        axios.get('http://localhost:8080/')
+        .then(function(response) {
+            console.log(response);
+        })
+        .catch(function(error) {
+            console.log(error);
+        })
+    },
     data() {
         return {
             modalCheck: false,
