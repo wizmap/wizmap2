@@ -21,7 +21,6 @@ def CheckBusinessHour(place):
     
     
     for place_hour in place_hours:
-        # print(place_hour.day, place_hour.open, place_hour.close)
         # 휴무 여부 체크 
         if place_hour.day == today and place_hour.dayoff == True: 
             return False
