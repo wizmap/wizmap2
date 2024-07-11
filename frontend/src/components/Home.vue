@@ -114,7 +114,7 @@ export default {
       registerPassword: '', // Registration Password
       registerEmail: '', // Registration Email
       registerPhone: '', // Registration Phone
-      registerGender: "ture", // Registration Gender
+      registerGender: "true", // Registration Gender
       registerBirth: '' // Registration Birthdate
     };
   },
