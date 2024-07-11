@@ -7,6 +7,8 @@ from .serializers import ListSerializer, MyPinSerializer,QuickSlotSerializer
 from search.models import BusinessHour
 from datetime import datetime
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import AllowAny
+
 
 def CheckBusinessHour(place):
     # 현재 요일 체크 (숫자 -> 문자)
@@ -44,12 +46,16 @@ class ListView(APIView):
         for mypin in mypins:
             data.append(
                 {
+                    'place_id':mypin.place.id,
                     'place_name': mypin.place.name,
                     'address': mypin.place.address.address,
                     'category': mypin.place.category,
                     'isopen':CheckBusinessHour(mypin.place),
+                    'mypin_id':mypin.id,
                     'mypin_name': mypin.name,
-                    'list_name': mypin.list.name
+                    'list_name': mypin.list.name,
+                    'latitude' : mypin.place.address.latitude,
+                    'longitude' : mypin.place.address.longitude
                 }
             )
         # print(data)
@@ -130,12 +136,12 @@ class MyPinUpdateView(APIView):
             return Response({'error': 'MyPin not found'}, status=status.HTTP_404_NOT_FOUND)
         
     def put(self, request, pk):
-        mypin_obj = MyPin.objects.get(id = pk)
-        
-        if not mypin_obj:
+        try:
+            mypin_obj = MyPin.objects.get(id=pk)
+        except MyPin.DoesNotExist:
             return Response({'error': 'MyPin not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = MyPinSerializer(mypin_obj, data=request.data)
+        serializer = MyPinSerializer(mypin_obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -156,7 +162,7 @@ class MyPinDeleteView(APIView):
         try:
             mypin_obj = MyPin.objects.get(id=pk)
         except MyPin.DoesNotExist:
-            return Response({'error': 'mypin not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'MyPin not found'}, status=status.HTTP_404_NOT_FOUND)
 
         mypin_obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
