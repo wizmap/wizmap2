@@ -4,14 +4,14 @@
     crossorigin="anonymous" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
-    <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeModals">
+    <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
     <div class="modal-favorite-container" @click="preventClose">
 
         <div class="modal-btn">
         <button id="quikslot-button" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
         <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
         </svg></button>
-        <div class="modal-quikslot-wrap" v-show="secondModalOpen" @click="closeModals">
+        <div class="modal-quikslot-wrap" v-show="secondModalOpen" @click="closeQuikModals">
         <div class="modal-quikslot-container" @click="preventClose">
         <div id = "quik-buttons">
             <div class="modal-btn"><button id="first-quik"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
@@ -32,7 +32,7 @@
         <button id="favorits-button" @click="openFavModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
         <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
         </svg></button>
-        <div class="modal-favorits-wrap" v-show="thirdModalOpen" @click="closeModals">
+        <div class="modal-favorits-wrap" v-show="thirdModalOpen" @click="closeFavModals">
         <div class="modal-favorits-container" @click="preventClose">
             <div class="modal-btn"></div>
         
@@ -46,7 +46,7 @@
         <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
         <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
         </svg></button>
-        <div class="modal-history-wrap" v-show="fourthModalOpen" @click="closeModals">
+        <div class="modal-history-wrap" v-show="fourthModalOpen" @click="closeHisModals">
         <div class="modal-history-container" @click="preventClose">
             <div class="modal-btn"></div>
         
@@ -68,7 +68,7 @@
     </div>
     </div>
     <button id="modal-button" @click="openModal"><i class="fas fa-user fa-2x"></i></button>
-    <div class="modal-wrap" v-show="modalOpen" @click="closeModals">
+    <div class="modal-wrap" v-show="modalOpen" @click="closeModal">
     <div class="modal-container" @click="preventClose">
         
         <img id="profile">
@@ -88,6 +88,7 @@
     </div>
     </div>
     <div id="search-map"></div>
+<<<<<<< HEAD
     <div v-if="placeData">
     <h2>{{ placeData.place.name }}</h2>
     <p>{{ placeData.place.address }}</p>
@@ -101,6 +102,27 @@
       </li>
     </ul>
   </div>
+=======
+
+    <!-- placeData를 화면에 표시 -->
+  <div v-if="placeData">
+  <div v-if="placeData && placeData.length > 0">
+  <ul>
+    <li v-for="(place, index) in placeData" :key="index">
+      <h3>{{ place.place_name }}</h3>
+      <p>주소: {{ place.address }}</p>
+      <p>카테고리: {{ place.category }}</p>
+      <p>영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
+      <p>내 핀 이름: {{ place.mypin_name }}</p>
+      <p>리스트 이름: {{ place.list_name }}</p>
+    </li>
+  </ul>
+</div>
+<div v-else>
+  <p>장소 정보가 없습니다.</p>
+</div>
+</div>
+>>>>>>> a5c84baca12aa20eaadc9ada8808ca55b560a49c
 </template>
 
 
@@ -109,6 +131,7 @@
 import axios from 'axios';
 
 export default {
+<<<<<<< HEAD
   data() {
     return {
       favoriteModalOpen: false,
@@ -187,6 +210,98 @@ export default {
     }
   },
   mounted() {
+=======
+    data() {
+  return {
+    favoriteModalOpen: false,
+    secondModalOpen: false,
+    thirdModalOpen: false,
+    fourthModalOpen: false,
+    modalOpen: false,
+    placeData: null,
+  };
+},
+methods: {
+  openFavoriteModal() {
+    this.favoriteModalOpen = true;
+    this.closeModalsExcept('favoriteModalOpen');
+  },
+  openQuikModal() {
+    this.secondModalOpen = true;
+    this.closeModalsExcept('secondModalOpen');
+  },
+  openFavModal() {
+    this.thirdModalOpen = true;
+    this.closeModalsExcept('thirdModalOpen');
+  },
+  openHisModal() {
+    this.fourthModalOpen = true;
+    this.closeModalsExcept('fourthModalOpen');
+  },
+  openModal() {
+    this.modalOpen = true;
+    this.closeModalsExcept('modalOpen');
+  },
+  closeFavoriteModals() {
+    this.favoriteModalOpen = false;
+  },
+  closeQuikModals() {
+    this.favoriteModalOpen = true;
+    this.secondModalOpen = false;
+  },
+  closeFavModals() {
+    this.favoriteModalOpen = true;
+    this.thirdModalOpen = false;
+  },
+  closeHisModals() {
+    this.favoriteModalOpen = true;
+    this.fourthModalOpen = false;
+  },
+  closeModal() {
+    this.favoriteModalOpen = true;
+    this.modalOpen = false;
+  },
+  preventClose(event) {
+    event.stopPropagation();
+  },
+  closeModalsExcept(exceptModal) {
+    if (exceptModal !== 'favoriteModalOpen') {
+    this.favoriteModalOpen = true;
+  }
+  if (exceptModal !== 'secondModalOpen') {
+    this.secondModalOpen = false;
+  }
+  if (exceptModal !== 'thirdModalOpen') {
+    this.thirdModalOpen = false;
+  }
+  if (exceptModal !== 'fourthModalOpen') {
+    this.fourthModalOpen = false;
+  }
+  if (exceptModal !== 'modalOpen') {
+    this.modalOpen = false;
+  }
+  },
+  fetchPlaceData(id) {
+      console.log(`Fetching place data for ID: ${id}`);
+      const userToken = localStorage.getItem('userToken');
+      console.log(userToken)
+      axios.get(`http://localhost:8000/favorites/list/${id}/`, {
+        headers: {
+            // Bearer 스키마를 사용하여 토큰을 전송
+            'Authorization': `Bearer ${userToken}`
+          }
+      })  // PinPlaceAPIView에서 데이터 가져오기
+        .then(response => {
+          this.placeData = response.data.MyPin;
+          console.log('Response data:', response.data);  // 응답 데이터 로그 추가
+        })
+        .catch(error => {
+          console.error("There was an error fetching the place data!", error);
+        });
+  }
+},
+mounted() {
+>>>>>>> a5c84baca12aa20eaadc9ada8808ca55b560a49c
     // 네이버 지도 API 로드
     const script = document.createElement("script");
     script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL;
@@ -202,8 +317,16 @@ export default {
       });
     };
 
+<<<<<<< HEAD
     // 컴포넌트가 마운트될 때 place 데이터를 가져옴
     this.fetchPlaceData(4);  // 예시로 id 3을 사용
+=======
+    // id 값을 사용하여 fetchPlaceData 함수 호출
+    const id = this.$route.params.id;
+    if (id) {
+      this.fetchPlaceData(id);
+    }
+>>>>>>> a5c84baca12aa20eaadc9ada8808ca55b560a49c
   }
 };
 </script>
