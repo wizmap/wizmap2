@@ -12,12 +12,13 @@ class BusinessHourSerializer(serializers.ModelSerializer):
         fields = ['day', 'open', 'close', 'b_start', 'b_end', 'dayoff']
 
 class PlaceSerializer(serializers.ModelSerializer):
+    address = AddressSerializer(read_only=True)
     business_hours = BusinessHourSerializer(many=True, read_only=True)
     is_open = serializers.SerializerMethodField()
 
     class Meta:
         model = Place
-        fields = ['address', 'name', 'menu', 'phone', 'memo', 'category', 'is_open', 'business_hours']
+        fields = ['id','address', 'name', 'menu', 'phone', 'memo', 'category', 'is_open', 'business_hours']
         # is_open 필드를 category 다음에 정의
 
     def get_is_open(self, obj):

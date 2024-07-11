@@ -6,8 +6,11 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from history.views import save_history
 from favorites.views import CheckBusinessHour
+from rest_framework.permissions import AllowAny
 # Create your views here.
 class SearchAPIView(APIView):
+    permission_classes = [AllowAny]
+    
     def post(self, request, *args, **kwargs):
         search_term = request.data.get('search_term')
         
