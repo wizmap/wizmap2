@@ -1,8 +1,12 @@
 import { createWebHistory, createRouter } from "vue-router";
 import SearchResult from "../components/SearchResult.vue";
 import Home from "../components/Home.vue";
+<<<<<<< HEAD
 import SearchFavorite from "../components/SearchFavorite.vue";
 
+=======
+import SearchHistory from "../components/SearchHistory.vue";
+>>>>>>> ee426d85970b5385f458401588e2485e161fd105
 
 const router = createRouter({
     history : createWebHistory(),
@@ -14,9 +18,15 @@ const router = createRouter({
             component: SearchResult,  // Path로 이동될 Component
         },
         {
+<<<<<<< HEAD
             path: "/favorites",
             name: "Favorites",
             component: SearchFavorite,
+=======
+            path: "/history",
+            name: "SearchHistory",
+            component: SearchHistory,
+>>>>>>> ee426d85970b5385f458401588e2485e161fd105
         },
     ]
 });
