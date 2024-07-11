@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import SearchResult from "../components/SearchResult.vue";
 import Home from "../components/Home.vue";
-
+import SearchHistory from "../components/SearchHistory.vue";
 
 const router = createRouter({
     history : createWebHistory(),
@@ -11,6 +11,11 @@ const router = createRouter({
             path: "/search",  // TestComponent.vue로 이동할 Path
             name: "SearchResult",  // router name
             component: SearchResult,  // Path로 이동될 Component
+        },
+        {
+            path: "/history",
+            name: "SearchHistory",
+            component: SearchHistory,
         },
     ]
 });
