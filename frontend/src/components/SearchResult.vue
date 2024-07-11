@@ -88,61 +88,81 @@
     </div>
     </div>
     <div id="search-map"></div>
+
+    <!-- placeData를 화면에 표시 -->
+  <div v-if="placeData">
+  <div v-if="placeData && placeData.length > 0">
+  <ul>
+    <li v-for="(place, index) in placeData" :key="index">
+      <h3>{{ place.place_name }}</h3>
+      <p>주소: {{ place.address }}</p>
+      <p>카테고리: {{ place.category }}</p>
+      <p>영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
+      <p>내 핀 이름: {{ place.mypin_name }}</p>
+      <p>리스트 이름: {{ place.list_name }}</p>
+    </li>
+  </ul>
+</div>
+<div v-else>
+  <p>장소 정보가 없습니다.</p>
+</div>
+</div>
 </template>
 
 
 
 <script>
+import axios from 'axios';
+
 export default {
-    data() {
+  data() {
     return {
       favoriteModalOpen: false,
       secondModalOpen: false,
       thirdModalOpen: false,
       fourthModalOpen: false,
-      modalOpen: false
+      modalOpen: false,
+      placeData: null,  
     };
   },
   methods: {
     openFavoriteModal() {
       if (this.modalOpen) {
         this.modalOpen = false;
+      } else {
+        this.favoriteModalOpen = true;
       }
-      else this.favoriteModalOpen = true;
     },
-    openQuikModal(){
-        if (this.openFavoriteModal) {
+    openQuikModal() {
+      if (this.openFavoriteModal) {
         this.modalOpen = false;
-            if (this.thirdModalOpen) {
-                this.thirdModalOpen = false;
-            }
-            else if (this.fourthModalOpen) {
-                this.fourthModalOpen = false;
-            }
+        if (this.thirdModalOpen) {
+          this.thirdModalOpen = false;
+        } else if (this.fourthModalOpen) {
+          this.fourthModalOpen = false;
+        }
       }
       this.secondModalOpen = true;
     },
-    openFavModal(){
-        if (this.openFavoriteModal) {
+    openFavModal() {
+      if (this.openFavoriteModal) {
         this.modalOpen = false;
-            if (this.secondModalOpen) {
-                this.secondModalOpen = false;
-            }
-            else if (this.fourthModalOpen) {
-                this.fourthModalOpen = false;
-            }
+        if (this.secondModalOpen) {
+          this.secondModalOpen = false;
+        } else if (this.fourthModalOpen) {
+          this.fourthModalOpen = false;
+        }
       }
       this.thirdModalOpen = true;
     },
-    openHisModal(){
-        if (this.openFavoriteModal) {
+    openHisModal() {
+      if (this.openFavoriteModal) {
         this.modalOpen = false;
-            if (this.secondModalOpen) {
-                this.secondModalOpen = false;
-            }
-            else if (this.thirdModalOpen) {
-                this.thirdModalOpen = false;
-            }
+        if (this.secondModalOpen) {
+          this.secondModalOpen = false;
+        } else if (this.thirdModalOpen) {
+          this.thirdModalOpen = false;
+        }
       }
       this.fourthModalOpen = true;
     },
@@ -160,27 +180,49 @@ export default {
       this.modalOpen = false;
     },
     preventClose(event) {
-    event.stopPropagation();
+      event.stopPropagation();
+    },
+    fetchPlaceData(id) {
+      console.log(`Fetching place data for ID: ${id}`);
+      const userToken = localStorage.getItem('userToken');
+      axios.get(`http://localhost:8000/favorites/list/${id}/`, {
+        headers: {
+            // Bearer 스키마를 사용하여 토큰을 전송
+            'Authorization': `Bearer ${userToken}`
+          }
+      })  // PinPlaceAPIView에서 데이터 가져오기
+        .then(response => {
+          this.placeData = response.data.MyPin;
+          console.log('Response data:', response.data);  // 응답 데이터 로그 추가
+        })
+        .catch(error => {
+          console.error("There was an error fetching the place data!", error);
+        });
     }
   },
-mounted() {
+  mounted() {
     // 네이버 지도 API 로드
     const script = document.createElement("script");
-    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL
+    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL;
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
 
     script.onload = () => {
-    // 네이버 지도 생성
-    new window.naver.maps.Map("search-map", {
+      // 네이버 지도 생성
+      new window.naver.maps.Map("search-map", {
         center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
         zoom: 10
-    });
+      });
     };
-}
-};
 
+    // id 값을 사용하여 fetchPlaceData 함수 호출
+    const id = this.$route.params.id;
+    if (id) {
+      this.fetchPlaceData(id);
+    }
+  }
+};
 </script>
 
 
