@@ -70,7 +70,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080/",  # Vue.js 개발 서버 주소
+    "http://localhost:8080",  # Vue.js 개발 서버 주소
 ]
 
 ROOT_URLCONF = 'wizmap.urls'

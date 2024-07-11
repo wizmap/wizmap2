@@ -7,7 +7,9 @@ from django.shortcuts import get_object_or_404
 from history.views import save_history
 from favorites.views import CheckBusinessHour
 # Create your views here.
+from rest_framework.permissions import AllowAny
 class SearchAPIView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         search_term = request.data.get('search_term')
         
@@ -32,6 +34,7 @@ class SearchAPIView(APIView):
         return Response(place_data)
 
 class PinPlaceAPIView(APIView):
+    permission_classes = [AllowAny]
     def get(self, request, id, *args, **kwargs):
         place = get_object_or_404(Place, id=id)
         business_hours = BusinessHour.objects.filter(place=place)
