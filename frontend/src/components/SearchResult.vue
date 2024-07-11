@@ -88,61 +88,75 @@
     </div>
     </div>
     <div id="search-map"></div>
+    <div v-if="placeData">
+    <h2>{{ placeData.place.name }}</h2>
+    <p>{{ placeData.place.address }}</p>
+    <p>{{ placeData.place.phone }}</p>
+    <p>{{ placeData.place.memo }}</p>
+    <p>{{ placeData.place.category }}</p>
+    <h3>Business Hours</h3>
+    <ul>
+      <li v-for="hour in placeData.business_hours" :key="hour.day">
+        {{ hour.day }}: {{ hour.open }} - {{ hour.close }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 
 
 <script>
+import axios from 'axios';
+
 export default {
-    data() {
+  data() {
     return {
       favoriteModalOpen: false,
       secondModalOpen: false,
       thirdModalOpen: false,
       fourthModalOpen: false,
-      modalOpen: false
+      modalOpen: false,
+      placeData: null,  // place 데이터를 저장할 변수 추가
     };
   },
   methods: {
     openFavoriteModal() {
       if (this.modalOpen) {
         this.modalOpen = false;
+      } else {
+        this.favoriteModalOpen = true;
       }
-      else this.favoriteModalOpen = true;
     },
-    openQuikModal(){
-        if (this.openFavoriteModal) {
+    openQuikModal() {
+      if (this.openFavoriteModal) {
         this.modalOpen = false;
-            if (this.thirdModalOpen) {
-                this.thirdModalOpen = false;
-            }
-            else if (this.fourthModalOpen) {
-                this.fourthModalOpen = false;
-            }
+        if (this.thirdModalOpen) {
+          this.thirdModalOpen = false;
+        } else if (this.fourthModalOpen) {
+          this.fourthModalOpen = false;
+        }
       }
       this.secondModalOpen = true;
     },
-    openFavModal(){
-        if (this.openFavoriteModal) {
+    openFavModal() {
+      if (this.openFavoriteModal) {
         this.modalOpen = false;
-            if (this.secondModalOpen) {
-                this.secondModalOpen = false;
-            }
-            else if (this.fourthModalOpen) {
-                this.fourthModalOpen = false;
-            }
+        if (this.secondModalOpen) {
+          this.secondModalOpen = false;
+        } else if (this.fourthModalOpen) {
+          this.fourthModalOpen = false;
+        }
       }
       this.thirdModalOpen = true;
     },
-    openHisModal(){
-        if (this.openFavoriteModal) {
+    openHisModal() {
+      if (this.openFavoriteModal) {
         this.modalOpen = false;
-            if (this.secondModalOpen) {
-                this.secondModalOpen = false;
-            }
-            else if (this.thirdModalOpen) {
-                this.thirdModalOpen = false;
-            }
+        if (this.secondModalOpen) {
+          this.secondModalOpen = false;
+        } else if (this.thirdModalOpen) {
+          this.thirdModalOpen = false;
+        }
       }
       this.fourthModalOpen = true;
     },
@@ -160,27 +174,38 @@ export default {
       this.modalOpen = false;
     },
     preventClose(event) {
-    event.stopPropagation();
+      event.stopPropagation();
+    },
+    fetchPlaceData(id) {
+      axios.get(`http://localhost:8000/search/pin/${id}/`)  // PinPlaceAPIView에서 데이터 가져오기
+        .then(response => {
+          this.placeData = response.data;
+        })
+        .catch(error => {
+          console.error("There was an error fetching the place data!", error);
+        });
     }
   },
-mounted() {
+  mounted() {
     // 네이버 지도 API 로드
     const script = document.createElement("script");
-    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL
+    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL;
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
 
     script.onload = () => {
-    // 네이버 지도 생성
-    new window.naver.maps.Map("search-map", {
+      // 네이버 지도 생성
+      new window.naver.maps.Map("search-map", {
         center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
         zoom: 10
-    });
+      });
     };
-}
-};
 
+    // 컴포넌트가 마운트될 때 place 데이터를 가져옴
+    this.fetchPlaceData(4);  // 예시로 id 3을 사용
+  }
+};
 </script>
 
 
