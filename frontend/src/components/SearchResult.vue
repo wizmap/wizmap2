@@ -220,16 +220,11 @@ mounted() {
       });
     };
 
-<<<<<<< HEAD
-    // 컴포넌트가 마운트될 때 place 데이터를 가져옴
-    this.fetchPlaceData(4);  // 예시로 id 3을 사용
-=======
     // id 값을 사용하여 fetchPlaceData 함수 호출
     const id = this.$route.params.id;
     if (id) {
       this.fetchPlaceData(id);
     }
->>>>>>> a5c84baca12aa20eaadc9ada8808ca55b560a49c
   }
 };
 </script>
