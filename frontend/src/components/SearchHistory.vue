@@ -50,7 +50,21 @@
         <div class="modal-history-container" @click="preventClose">
             <ul>
                 <li v-for="history in histories" :key="history.id">
-                    {{ history.search }} - {{ history.created_at }}
+                    <span @click="() => { 
+                        if (history.place) {
+                            fetchPlaceDetails(history.place.id); 
+                            setSearchTerm(history.place.name); 
+                        } else {
+                            setSearchTerm(history.search);
+                        }
+                    }">
+                        {{ history.search }}
+                    </span>
+                    <button @click="deleteHistory(history.id)">삭제</button>
+                    <br>
+                    <span>
+                        {{ history.place ? `주소 : ${history.place.address.address}` : '' }}
+                    </span>
                 </li>
             </ul>
             <div class="modal-btn"></div>
@@ -72,7 +86,16 @@
         </form>
         <ul id="search-history" v-show="historyVisible">
           <li v-for="history in histories" :key="history.id">
-            <span @click="setSearchTerm(history.search)">{{ history.search }}</span>
+            <span @click="() => { 
+                if (history.place) {
+                    fetchPlaceDetails(history.place.id); 
+                    setSearchTerm(history.place.name); 
+                } else {
+                    setSearchTerm(history.search);
+                }
+            }">
+                {{ history.search }}
+            </span>
             <button @click="deleteHistory(history.id)">삭제</button>
           </li>
         </ul>
