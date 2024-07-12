@@ -186,24 +186,21 @@ class FavoritesView(APIView):
         return Response(response_data)
 
 class QuickView(APIView):
-    permission_classes = [IsAuthenticated]
+ 
 
     def get(self, request, pk):
-        quicks= QuickSlot.objects.filter(type = pk)
-        data = []
-        for quick in quicks:
-            data.append(
-                {
-                    'place_name': quick.place.name,
-                    'address': quick.place.address.address,
-                    'category': quick.place.category,
-                    'isopen':CheckBusinessHour(quick.place),
-                    'quick_name': quick.name
-                }
-            )
-        print(data)
-        
-        return Response({'quick': data}, status=status.HTTP_200_OK)
+        quickslot = get_object_or_404(QuickSlot, pk=pk)
+        place = quickslot.place
+        is_open = CheckBusinessHour(place)  # 영업 상태 확인
+
+        data = {
+            'place_name': place.name,
+            'address': place.address.address,
+            'category': place.category,
+            'isopen': is_open,
+            'quick_name': quickslot.name
+        }
+        return Response(data, status=status.HTTP_200_OK)
 class QuickUpdateView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, pk):
