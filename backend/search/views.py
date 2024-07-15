@@ -14,6 +14,7 @@ class SearchAPIView(APIView):
     def post(self, request, *args, **kwargs):
         search_term = request.data.get('search_term')
         
+        print('search_term',search_term)
         # 검색어 저장
         if request.user.is_authenticated:
             save_history(user=request.user, search=search_term)
