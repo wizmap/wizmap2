@@ -82,21 +82,6 @@
             <input type="text" v-model="searchTerm" id="search-input" placeholder="       장소를 입력하세요" @focus="showHistory" @blur="hideHistory">
               <router-link to="/searchresult" id="search-button"><i class="fas fa-search fa-lg"></i></router-link>
           </form>
-          <!-- <ul id="search-history" v-show="historyVisible">
-            <li v-for="history in histories" :key="history.id">
-              <span @click="() => { 
-                  if (history.place) {
-                      fetchPlaceDetails(history.place.id); 
-                      setSearchTerm(history.place.name); 
-                  } else {
-                      setSearchTerm(history.search);
-                  }
-              }">
-                  {{ history.search }}
-              </span>
-              <button @click="deleteHistory(history.id)">삭제</button>
-            </li>
-          </ul> -->
       </div>
       </div>
       <button id="modal-button" @click="openModal"><i class="fas fa-user fa-2x"></i></button>
