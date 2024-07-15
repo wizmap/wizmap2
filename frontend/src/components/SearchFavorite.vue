@@ -667,6 +667,7 @@
           <button id="save-mypin">저장</button>
         `;
   
+
         const modal = document.createElement('div');
         modal.innerHTML = listSelectHtml;
         document.body.appendChild(modal);
@@ -772,6 +773,7 @@
       this.addNewMarker(latitude, longitude);
     }
   },
+
   mounted() {
       // 네이버 지도 API 로드
       const script = document.createElement("script");
@@ -807,3 +809,4 @@
   
   
   </style>
+
