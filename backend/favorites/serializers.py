@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import List, MyPin,QuickSlot
+from search.models import Place, Address
 
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,3 +22,13 @@ class QuickSlotSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuickSlot
         fields = ['id', 'name', 'user','place','type']
+        
+class PlaceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Place
+        fields = ['id', 'address', 'name', 'menu', 'phone', 'memo', 'category']
+        
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['address', 'latitude', 'longitude']
