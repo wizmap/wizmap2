@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer  
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import AllowAny
-
+from rest_framework_simplejwt.tokens import RefreshToken
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -24,3 +24,4 @@ class DeleteUserView(APIView):
         user = request.user
         user.delete()
         return Response({'message': '삭제 완료'}, status=status.HTTP_200_OK)
+
