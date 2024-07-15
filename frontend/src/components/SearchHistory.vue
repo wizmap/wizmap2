@@ -7,6 +7,53 @@
     <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
     <div class="modal-favorite-container" @click="preventClose">
 
+      <div class="modal-btn">
+        <button id="modal-search-button" @click="openSearchModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+      </svg></button>
+        <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
+        <div class="modal-search-container" @click="preventClose">
+            <div class="modal-btn">
+              <div id="search-results">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item" v-for="result in searchResults" :key="result.place.id">
+                  <button @click="openSearchDetailModal(result)">
+                    <p id="name">{{ result.place.name }}</p>
+                  <p id="category">{{ result.place.category }}</p>
+                  <p id="address">{{ result.place.address.address }}</p>
+                  <p id="isopen">영업 상태: <span :class="{ 'open': result.place.isopen, 'closed': !result.place.isopen }">{{ result.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                  </button>
+                    <div class="modal-btn">
+                      <div class="modal-search-detail-wrap" v-show="firstDetailModalOpen" @click="closeSearchDetailModals">
+                        <div class="modal-search-detail-container" @click="preventClose">
+                            <div id="place-details" v-if="selectedPlace">
+                              <p id="name-details">{{ selectedPlace.place.name }}</p>
+                              <p id="category">{{ selectedPlace.place.category }}</p>
+                              <p id="address-details">주소: {{ selectedPlace.place.address.address }}</p>
+                              <p>위도: {{ selectedPlace.place.address.latitude }}</p>
+                              <p>경도: {{ selectedPlace.place.address.longitude }}</p>
+                              <p>메뉴: {{ selectedPlace.place.menu }}</p>
+                              <p>전화번호: {{ selectedPlace.place.phone }}</p>
+                              <p>메모: {{ selectedPlace.place.memo }}</p>
+                              <p id="isopen">영업 상태: <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                              <ul>
+                                <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
+                              </ul>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  
+               <!-- 버튼 추가 -->
+                </li>
+              </ul>
+            </div>
+            </div>
+        
+        </div>
+        </div>
+        </div>
+
         <div class="modal-btn">
         <button id="quikslot-button" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
         <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
@@ -48,13 +95,12 @@
         </svg></button>
         <div class="modal-history-wrap" v-show="fourthModalOpen" @click="closeHisModals">
         <div class="modal-history-container" @click="preventClose">
-            <ul>
-                <li v-for="history in histories" :key="history.id">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" v-for="history in histories" :key="history.id">
                     {{ history.search }} - {{ history.created_at }}
+                    <button @click="deleteHistory(history.id)">삭제</button>
                 </li>
             </ul>
-            <div class="modal-btn"></div>
-        
         </div>
         </div>
         </div>
@@ -70,12 +116,7 @@
           <input type="text" v-model="searchTerm" id="search-input" placeholder="       장소를 입력하세요" @focus="showHistory" @blur="hideHistory">
             <button id="search-button"><i class="fas fa-search fa-lg"></i></button>
         </form>
-        <ul id="search-history" v-show="historyVisible">
-          <li v-for="history in histories" :key="history.id">
-            <span @click="setSearchTerm(history.search)">{{ history.search }}</span>
-            <button @click="deleteHistory(history.id)">삭제</button>
-          </li>
-        </ul>
+
     </div>
     </div>
     <button id="modal-button" @click="openModal"><i class="fas fa-user fa-2x"></i></button>
@@ -99,33 +140,7 @@
     </div>
     </div>
     <div id="search-map"></div>
-<div id="search-results">
-  <ul>
-    <li v-for="result in searchResults" :key="result.place.id">
-      <h3>{{ result.place.name }}</h3>
-      <p>주소: {{ result.place.address.address }}</p>
-      <p>카테고리: {{ result.place.category }}</p>
-      <p>영업 상태: <span :class="{ 'open': result.place.isopen, 'closed': !result.place.isopen }">{{ result.place.isopen ? '영업 중' : '휴무' }}</span></p>
-      <button @click="fetchPlaceDetails(result.place.id)">상세 정보 보기</button> <!-- 버튼 추가 -->
-    </li>
-  </ul>
-</div>
-<hr>
-<h3>상세정보</h3>
-<div id="place-details" v-if="selectedPlace">
-  <h3>{{ selectedPlace.place.name }}</h3>
-  <p>주소: {{ selectedPlace.place.address.address }}</p>
-  <p>위도: {{ selectedPlace.place.address.latitude }}</p>
-  <p>경도: {{ selectedPlace.place.address.longitude }}</p>
-  <p>메뉴: {{ selectedPlace.place.menu }}</p>
-  <p>전화번호: {{ selectedPlace.place.phone }}</p>
-  <p>메모: {{ selectedPlace.place.memo }}</p>
-  <p>카테고리: {{ selectedPlace.place.category }}</p>
-  <p>영업 상태: <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
-  <ul>
-    <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
-  </ul>
-</div>
+
 </template>
 
 
@@ -136,6 +151,8 @@ export default {
     data() {
   return {
     favoriteModalOpen: false,
+    firstModalOpen: false,
+    firstDetailModalOpen: false,
     secondModalOpen: false,
     thirdModalOpen: false,
     fourthModalOpen: false,
@@ -154,6 +171,15 @@ methods: {
   openFavoriteModal() {
     this.favoriteModalOpen = true;
     this.closeModalsExcept('favoriteModalOpen');
+  },
+  openSearchModal() {
+    this.firstModalOpen = true;
+    this.closeModalsExcept('firstModalOpen');
+  },
+  openSearchDetailModal(result) {
+    this.fetchPlaceDetails(result.place.id)//id값으로 장소데이터 불러오기
+    this.firstDetailModalOpen = true;
+    this.closeModalsExcept('firstDetailModalOpen');
   },
   openQuikModal() {
     this.secondModalOpen = true;
@@ -175,6 +201,15 @@ methods: {
   closeFavoriteModals() {
     this.favoriteModalOpen = false;
   },
+  closeSearchDetailModals() {
+    this.favoriteModalOpen = true;
+    this.firstModalOpen = true;
+    this.firstDetailModalOpen = false;
+  },
+  closeSearchModals() {
+    this.favoriteModalOpen = true;
+    this.firstModalOpen = false;
+  },
   closeQuikModals() {
     this.favoriteModalOpen = true;
     this.secondModalOpen = false;
@@ -188,26 +223,115 @@ methods: {
     this.fourthModalOpen = false;
   },
   closeModal() {
-    this.favoriteModalOpen = true;
     this.modalOpen = false;
   },
   preventClose(event) {
     event.stopPropagation();
   },
   closeModalsExcept(exceptModal) {
-    if (exceptModal !== 'favoriteModalOpen') {
+  if (exceptModal !== 'favoriteModalOpen') {
+    if (exceptModal == 'firstModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'firstDetailModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'modalOpen') {
+      if (this.favoriteModalOpen == 'true') {
+        this.favoriteModalOpen = true;
+      }
+    }
+    else {
     this.favoriteModalOpen = true;
+    }
+  }
+  if (exceptModal !== 'firstModalOpen') {
+    if (exceptModal == 'firstModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'firstDetailModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'modalOpen') {
+      if (this.firstModalOpen == 'true') {
+        this.firstModalOpen = true;
+      }
+    }
+    else {
+    this.firstModalOpen = false;
+    }
+  }
+  if (exceptModal !== 'firstDetailModalOpen') {
+    if (exceptModal == 'firstModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'firstDetailModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'modalOpen') {
+      if (this.firstDetailModalOpen == 'true') {
+        this.firstDetailModalOpen = true;
+      }
+    }
+    else {
+    this.firstDetailModalOpen = false;
+    }
   }
   if (exceptModal !== 'secondModalOpen') {
+    if (exceptModal == 'firstModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'firstDetailModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'modalOpen') {
+      if (this.secondModalOpen == 'true') {
+        this.secondModalOpen = true;
+      }
+    }
+    else {
     this.secondModalOpen = false;
+    }
   }
   if (exceptModal !== 'thirdModalOpen') {
+    if (exceptModal == 'firstModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'firstDetailModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'modalOpen') {
+      if (this.thirdModalOpen == 'true') {
+        this.thirdModalOpen = true;
+      }
+    }
+    else {
     this.thirdModalOpen = false;
+    }
   }
   if (exceptModal !== 'fourthModalOpen') {
+    if (exceptModal == 'firstModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'firstDetailModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'modalOpen') {
+      if (this.fourthModalOpen == 'true') {
+        this.fourthModalOpen = true;
+      }
+    }
+    else {
     this.fourthModalOpen = false;
+    }
   }
   if (exceptModal !== 'modalOpen') {
+    if (exceptModal == 'firstModalOpen') {
+      this.firstModalOpen = true;
+    }
+    if (exceptModal == 'firstDetailModalOpen') {
+      this.firstModalOpen = true;
+    }
     this.modalOpen = false;
   }
   },

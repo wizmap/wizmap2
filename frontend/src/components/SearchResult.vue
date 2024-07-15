@@ -7,6 +7,18 @@
     <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
     <div class="modal-favorite-container" @click="preventClose">
 
+      <div class="modal-btn">
+        <button id="modal-search-button" @click="openSearchModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+      </svg></button>
+        <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
+        <div class="modal-search-container" @click="preventClose">
+            <div class="modal-btn"></div>
+        
+        </div>
+        </div>
+        </div>
+
         <div class="modal-btn">
         <button id="quikslot-button" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
         <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
@@ -118,6 +130,7 @@ export default {
     data() {
   return {
     favoriteModalOpen: false,
+    firstModalOpen: false,
     secondModalOpen: false,
     thirdModalOpen: false,
     fourthModalOpen: false,
@@ -129,6 +142,10 @@ methods: {
   openFavoriteModal() {
     this.favoriteModalOpen = true;
     this.closeModalsExcept('favoriteModalOpen');
+  },
+  openSearchModal() {
+    this.firstModalOpen = true;
+    this.closeModalsExcept('firstModalOpen');
   },
   openQuikModal() {
     this.secondModalOpen = true;
@@ -148,6 +165,10 @@ methods: {
   },
   closeFavoriteModals() {
     this.favoriteModalOpen = false;
+  },
+  closeSearchModals() {
+    this.favoriteModalOpen = true;
+    this.firstModalOpen = false;
   },
   closeQuikModals() {
     this.favoriteModalOpen = true;
