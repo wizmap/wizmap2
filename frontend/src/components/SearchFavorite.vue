@@ -176,6 +176,10 @@ export default {
     isLoggedIn: false, // 로그인 상태
     listData: null,  // 리스트 상세 데이터
     favoriteData: null, // 즐겨찾기 데이터 
+    currentMarker: null, // 현재 마커
+    newLatitude: null,  // 새 마커의 위도
+    newLongitude: null, // 새 마커의 경도 
+    newAddress: null, // 새 마커의 주소
   };
 },
 methods: {
@@ -434,10 +438,21 @@ methods: {
   // 새로운 장소를 클릭했을 때 마커를 추가하는 메서드
   addNewMarker(latitude, longitude) {
     console.log('addNewMarker');
+
+    // 기존 마커 있으면 제거 
+    if (this.currentMarker) {
+      this.currentMarker.setMap(null);
+    }
+
     var marker = new naver.maps.Marker({
       position: new naver.maps.LatLng(latitude, longitude),
       map: this.map
     });
+
+    //현재 마커 저장
+    this.currentMarker = marker;
+
+    console.log(this.currentMarker);
 
     // 정보창 내용 설정
     var infowindow = new naver.maps.InfoWindow();
@@ -458,6 +473,13 @@ methods: {
       ].join('');
 
       infowindow.setContent(contentString);
+
+      // 새 주소, 위도, 경도 저장 
+      this.newAddress = address;
+      this.newLatitude = latitude;
+      this.newLongitude = longitude;  
+
+      console.log(this.newAddress, this.newLatitude, this.newLongitude);
     });
 
     // 마커 클릭 이벤트 추가
@@ -647,8 +669,8 @@ mounted() {
       });
       // 모든 마커를 포함할 수 있는 LatLngBounds 객체 생성
       this.bounds = new naver.maps.LatLngBounds();
-      // 지도 클릭 이벤트 추가
-      naver. maps.Event.addListener(this.map, 'click', this.handleMapClick.bind(this));
+      // 지도 클릭 이벤트 추가 : 우클릭
+      naver. maps.Event.addListener(this.map, 'rightclick', this.handleMapClick.bind(this));
     };
 
     // this.checkLoginStatus(); // 컴포넌트가 마운트될 때 로그인 상태 확인
