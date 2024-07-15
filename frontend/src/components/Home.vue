@@ -21,15 +21,16 @@
               <input type="password" v-model="loginPassword" id="login-password-input" placeholder="PASSWORD" />
             </div>
           </div>
-          <div class="modal-btn">
+          <div class="home-modal-btn">
             <button id="login-button" @click="login">login</button>
             <button id="register-button" @click="showRegisterForm">register</button>
           </div>
         </div>
       </div>
       <!-- 로그인된 경우 마이페이지 내용 표시 -->
-      <div v-else>
-        <p>마이페이지 내용이 여기에 표시됩니다.</p>
+      <div v-else class="mypage_container">
+        <p>{{loginId}}님</p>
+        <p>{{registerEmail}}</p>
         <!-- 로그아웃 버튼 등 마이페이지 관련 내용 -->
         <button id="delete-account-button" @click="deleteAccount">회원탈퇴</button>
 
@@ -70,19 +71,19 @@
         <input type="text" v-model="registerPhone" id="register-phone-input" placeholder="Phone" />
       </div>
       <br />
-      <div>
+      <div class="gender">
         <label class="gender-option">
           <input type="radio" v-model="registerGender" value="true" />
-          남성
+          <span>남성</span>
         </label>
         <label class="gender-option">
           <input type="radio" v-model="registerGender" value="false" />
-          여성
+          <span>여성</span>
         </label>
       </div>
       <br />
       <div>
-        <input type="date" v-model="registerBirth" id="register-birth-input" placeholder="Birthdate" />
+        <span>생년월일</span><input type="date" v-model="registerBirth" id="register-birth-input" placeholder="생년월일"></input>
       </div>
     </div>
     <div class="modal-btn">
