@@ -57,12 +57,12 @@
     </div>
     </div>
 
-
+    <!-- search_term -->
     <div id="main">
     <div id="search-center">
         <img id="search-logo">
-        <form id="search">
-          <input type="text" id="search-input" placeholder="       장소를 입력하세요">
+        <form id="search"  @submit.prevent="onSearch">
+          <input type="text" v-model="searchTerm" id="search-input" placeholder="장소를 입력하세요"> 
             <button id="search-button"><i class="fas fa-search fa-lg"></i></button>
         </form>
     </div>
@@ -89,26 +89,34 @@
     </div>
     <div id="search-map"></div>
 
-    <!-- placeData를 화면에 표시 -->
-  <div v-if="placeData">
-  <div v-if="placeData && placeData.length > 0">
+<div id="search-results">
   <ul>
-    <li v-for="(place, index) in placeData" :key="index">
-      <h3>{{ place.place_name }}</h3>
-      <p>주소: {{ place.address }}</p>
-      <p>카테고리: {{ place.category }}</p>
-      <p>영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
-      <p>내 핀 이름: {{ place.mypin_name }}</p>
-      <p>리스트 이름: {{ place.list_name }}</p>
+    <li v-for="result in searchResults" :key="result.place.id">
+      <h3>{{ result.place.name }}</h3>
+      <p>주소: {{ result.place.address.address }}</p>
+      <p>카테고리: {{ result.place.category }}</p>
+      <p>영업 상태: <span :class="{ 'open': result.place.isopen, 'closed': !result.place.isopen }">{{ result.place.isopen ? '영업 중' : '휴무' }}</span></p>
+      <button @click="fetchPlaceDetails(result.place.id)">상세 정보 보기</button> <!-- 버튼 추가 -->
     </li>
   </ul>
 </div>
-<div v-else>
-  <p>장소 정보가 없습니다.</p>
-</div>
+<hr>
+<h3>상세정보</h3>
+<div id="place-details" v-if="selectedPlace">
+  <h3>{{ selectedPlace.place.name }}</h3>
+  <p>주소: {{ selectedPlace.place.address.address }}</p>
+  <p>위도: {{ selectedPlace.place.address.latitude }}</p>
+  <p>경도: {{ selectedPlace.place.address.longitude }}</p>
+  <p>메뉴: {{ selectedPlace.place.menu }}</p>
+  <p>전화번호: {{ selectedPlace.place.phone }}</p>
+  <p>메모: {{ selectedPlace.place.memo }}</p>
+  <p>카테고리: {{ selectedPlace.place.category }}</p>
+  <p>영업 상태: <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
+  <ul>
+    <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
+  </ul>
 </div>
 </template>
-
 
 
 <script>
@@ -123,6 +131,12 @@ export default {
     fourthModalOpen: false,
     modalOpen: false,
     placeData: null,
+    searchTerm: '',
+    searchResults: [],
+    map: null, // 지도 객체를 저장할 변수 추가
+    mapInitialized: false, // 지도 초기화 상태를 저장할 변수 추가
+    markers: [], // 마커 객체를 저장할 배열 추가
+    selectedPlace: null, // 선택된 장소의 상세 정보를 저장할 변수 추가
   };
 },
 methods: {
@@ -185,46 +199,87 @@ methods: {
     this.modalOpen = false;
   }
   },
-  fetchPlaceData(id) {
-      console.log(`Fetching place data for ID: ${id}`);
-      const userToken = localStorage.getItem('userToken');
-      console.log(userToken)
-      axios.get(`http://localhost:8000/favorites/list/${id}/`, {
-        headers: {
-            // Bearer 스키마를 사용하여 토큰을 전송
-            'Authorization': `Bearer ${userToken}`
-          }
-      })  // PinPlaceAPIView에서 데이터 가져오기
-        .then(response => {
-          this.placeData = response.data.MyPin;
-          console.log('Response data:', response.data);  // 응답 데이터 로그 추가
-        })
-        .catch(error => {
-          console.error("There was an error fetching the place data!", error);
+  async fetchSearchResults(query) {
+      try {
+        const response = await fetch('http://localhost:8000/search/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 'search_term': query })
         });
-  }
-},
-mounted() {
-    // 네이버 지도 API 로드
-    const script = document.createElement("script");
-    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
+        this.searchResults = await response.json();
+        this.searchModalOpen = true; // 검색 결과 모달 열기
+
+        // 검색 결과의 첫 번째 장소의 위도와 경도로 지도 중심 변경
+        if (this.searchResults.length > 0) {
+          const firstResult = this.searchResults[0].place;
+          const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
+          if (this.mapInitialized) {
+            this.map.setCenter(newCenter);
+
+            // 검색 결과의 위치에 마커 추가
+            this.searchResults.forEach(result => {
+              const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
+              const marker = new window.naver.maps.Marker({
+                position,
+                map: this.map,
+                title: result.place.name
+              });
+              this.markers.push(marker);
+            });
+          } else {
+            console.error('Map is not initialized');
+          }
+        }
+      } catch (error) {
+        console.error("There was an error fetching the search results!", error);
+      }
+    },
+    async fetchPlaceDetails(id) {
+      try {
+        console.log(`Fetching details for place ID: ${id}`);
+        const response = await fetch(`http://localhost:8000/search/pin/${id}/`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Failed to fetch place details:', errorText);
+          throw new Error('Failed to fetch place details');
+        }
+        this.selectedPlace = await response.json();
+        console.log('Place details fetched successfully:', this.selectedPlace);
+      } catch (error) {
+        console.error("There was an error fetching the place details!", error);
+      }
+    },
+    onSearch() {
+      if (this.mapInitialized) {
+        this.fetchSearchResults(this.searchTerm);
+      } else {
+        console.error('Map is not initialized yet');
+      }
+    }
+  },
+    mounted() {
+      // 네이버 지도 API 로드
+      const script = document.createElement("script");
+      script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
 
     script.onload = () => {
       // 네이버 지도 생성
-      new window.naver.maps.Map("search-map", {
+      this.map = new window.naver.maps.Map("search-map", {
         center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
-        zoom: 10
+        zoom: 12
       });
+      this.mapInitialized = true; // 지도 초기화 상태 업데이트
     };
-
-    // id 값을 사용하여 fetchPlaceData 함수 호출
-    const id = this.$route.params.id;
-    if (id) {
-      this.fetchPlaceData(id);
-    }
   }
 };
 </script>
