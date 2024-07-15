@@ -283,14 +283,40 @@ methods: {
   },
 
   // 마커를 추가하는 메서드
-  addMarker(latitude, longitude) {
-    console.log('addMarker')
+  addMarker(latitude, longitude, placeInfo) {
+    console.log('addMarker');
     var marker = new naver.maps.Marker({
-    position: new naver.maps.LatLng(latitude, longitude),
-    map: this.map
-  });
+      position: new naver.maps.LatLng(latitude, longitude),
+      map: this.map
+    });
+
     // 마커의 위치를 LatLngBounds 객체에 추가
     this.bounds.extend(marker.getPosition());
+
+    // 정보창 내용 설정
+    var contentString = [
+      '<div class="iw_inner">',
+      `   <h3>${placeInfo.mypin_name}</h3>`,
+      `   <p>장소 이름: ${placeInfo.place_name}<br />`,
+      `   주소: ${placeInfo.address}<br />`,
+      `   카테고리: ${placeInfo.category}<br />`,
+      `   영업 상태: ${placeInfo.isopen ? '영업 중' : '휴무'}<br />`,
+      `   리스트 이름: ${placeInfo.list_name}</p>`,
+      '</div>'
+    ].join('');
+
+    var infowindow = new naver.maps.InfoWindow({
+      content: contentString
+    });
+
+    // 마커 클릭 이벤트 추가
+    naver.maps.Event.addListener(marker, "click", function(e) {
+      if (infowindow.getMap()) {
+        infowindow.close();
+      } else {
+        infowindow.open(this.map, marker);
+      }
+    }.bind(this));
   },
   
   // 모든 마커가 추가된 후 지도의 중심을 재설정하는 메서드
@@ -312,8 +338,8 @@ methods: {
       this.listData = response.data.MyPin;
       console.log(this.listData)
       this.listData.forEach(place => {
-          console.log(place.latitude, place.longitude);
-          this.addMarker(place.latitude, place.longitude);
+          console.log(place.latitude, place.longitude, place);
+          this.addMarker(place.latitude, place.longitude, place);
       });
       this.adjustMapCenter(); // 지도의 중심을 마커들의 중심으로 조정
       console.log('Response data:', response.data);
@@ -403,12 +429,212 @@ methods: {
     .catch(error => {
       console.error("There was an error deleting the place!", error);
     });
+  },
+  
+  // 새로운 장소를 클릭했을 때 마커를 추가하는 메서드
+  addNewMarker(latitude, longitude) {
+    console.log('addNewMarker');
+    var marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(latitude, longitude),
+      map: this.map
+    });
+
+    // 정보창 내용 설정
+    var infowindow = new naver.maps.InfoWindow();
+
+    // 클릭한 위치의 주소를 가져와서 정보창 내용 업데이트 (퀵슬롯 추가 / 마이핀 추가 선택)
+    this.getAddressFromCoords(latitude, longitude, (address) => {
+      var contentString = [
+        '<div class="iw_inner">',
+        `   <h3>새 장소</h3>`,
+        `   <p>장소 이름: 클릭한 장소<br />`,
+        `   주소: ${address}<br />`,
+        `   카테고리: 알 수 없음<br />`,
+        `   영업 상태: 영업 중<br />`,
+        `   리스트 이름: 기본 리스트</p>`,
+        `   <button onclick="window.addQuickSlot(${latitude}, ${longitude}, '${address}')">퀵슬롯 추가</button>`,
+        `   <button onclick="window.addMyPin(${latitude}, ${longitude}, '${address}')">마이핀 추가</button>`,
+        '</div>'
+      ].join('');
+
+      infowindow.setContent(contentString);
+    });
+
+    // 마커 클릭 이벤트 추가
+    naver.maps.Event.addListener(marker, "click", function(e) {
+      if (infowindow.getMap()) {
+        infowindow.close();
+      } else {
+        infowindow.open(this.map, marker);
+      }
+    }.bind(this));
+
+  },
+
+  // 좌표를 주소로 변환하는 메서드
+  getAddressFromCoords(latitude, longitude, callback) {
+    const latlng = new naver.maps.LatLng(latitude, longitude);
+    naver.maps.Service.reverseGeocode({
+      coords: latlng,
+      orders: [
+        naver.maps.Service.OrderType.ADDR,
+        naver.maps.Service.OrderType.ROAD_ADDR
+      ].join(',')
+    }, function(status, response) {
+      if (status === naver.maps.Service.Status.ERROR) {
+        console.error('Reverse geocoding failed:', status);
+        callback('알 수 없음');
+        return;
+      }
+
+      setTimeout(() => {
+        const items = response.v2.addresses;
+        let address;
+        console.log('Response:', response.v2.addresses); // 응답 데이터 출력
+        console.log('Items:', items); // items 변수 출력
+        if (items && items.length > 0) {
+          const address = items[0].roadAddress || items[0].jibunAddress;
+          callback(address);
+        } else {
+          console.error('No addresses found');
+          console.log('Response:', response.v2.address); // 응답 데이터 출력
+          const items = response.v2.address;
+          console.log(items);
+          address = items.roadAddress || items.jibunAddress;
+          console.log(address)
+          callback(address);
+        }
+      }, 200); // 100ms 지연 추가
+      
+    });
+  },
+
+  // 마이핀 리스트 선택 모달을 표시하는 메서드
+  showListSelectionModal(latitude, longitude) {
+    // 리스트 데이터를 가져와서 모달에 표시
+    if (this.favoriteData && this.favoriteData.list && this.favoriteData.list.length > 0) {
+      const listOptions = this.favoriteData.list.map(list => `<option value="${list.id}">${list.name}</option>`).join('');
+      const listSelectHtml = `
+        <div>
+          <label for="list-select">리스트를 선택하세요:</label>
+          <select id="list-select">${listOptions}</select>
+        </div>
+        <div>
+          <label for="mypin-name">마이핀의 이름을 입력하세요:</label>
+          <input type="text" id="mypin-name" />
+        </div>
+        <button id="save-mypin">저장</button>
+      `;
+
+      const modal = document.createElement('div');
+      modal.innerHTML = listSelectHtml;
+      document.body.appendChild(modal);
+
+      document.getElementById('save-mypin').addEventListener('click', () => {
+        const listId = document.getElementById('list-select').value;
+        const name = document.getElementById('mypin-name').value;
+        this.getAddressFromCoords(latitude, longitude, (address) => {
+          this.saveMypin(Number(latitude.toFixed(6)), Number(longitude.toFixed(6)), address, listId, name);
+          document.body.removeChild(modal); // 모달 제거
+        });
+      });
+    } else {
+      console.error('No favorite lists found');
+    }
+  },
+
+  // 마이핀 저장 메서드
+  saveMypin(latitude, longitude, address, listId, name) {
+    const userToken = localStorage.getItem('userToken');
+    console.log(address, latitude, longitude)
+    axios.post(`http://localhost:8000/favorites/mypin/create/${listId}/`, {
+      address: address, // 주소 문자열을 전송
+      latitude: latitude,
+      longitude: longitude,
+      list: listId,
+      name: name,
+      menu: null, // 필요에 따라 추가
+      phone: null, // 필요에 따라 추가
+      memo: "마이핀 추가", // 필요에 따라 추가
+      category: '기타' // 필요에 따라 추가
+    }, {
+      headers: {
+        'Authorization': `Bearer ${userToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      console.log('Mypin saved:', response.data);
+    })
+    .catch(error => {
+      console.error('Error saving mypin:', error);
+    });
+  },
+
+   // 퀵슬롯 모달을 표시하는 메서드
+  showQuickSlotModal(latitude, longitude, address) {
+    const quickSlotHtml = `
+      <div>
+        <label for="quickslot-name">퀵슬롯의 이름을 입력하세요:</label>
+        <input type="text" id="quickslot-name" />
+      </div>
+      <button id="save-quickslot">저장</button>
+    `;
+
+    const modal = document.createElement('div');
+    modal.innerHTML = quickSlotHtml;
+    document.body.appendChild(modal);
+
+    document.getElementById('save-quickslot').addEventListener('click', () => {
+      const name = document.getElementById('quickslot-name').value;
+      this.saveQuickSlot(Number(latitude.toFixed(6)), Number(longitude.toFixed(6)), address, name);
+      document.body.removeChild(modal); // 모달 제거
+    });
+  },
+
+
+  // 퀵슬롯 추가 요청 메서드
+  saveQuickSlot(latitude, longitude, address, listId, name) {
+    const userToken = localStorage.getItem('userToken');
+    console.log(address, latitude, longitude)
+    axios.post(`http://localhost:8000/favorites/quick/create/${listId}/`, {
+      address: address, // 주소 문자열을 전송
+      latitude: latitude,
+      longitude: longitude,
+      list: listId,
+      name: name,
+      menu: null, // 필요에 따라 추가
+      phone: null, // 필요에 따라 추가
+      memo: "퀵슬롯 추가", // 필요에 따라 추가
+      category: '기타' // 필요에 따라 추가
+    }, {
+      headers: {
+        'Authorization': `Bearer ${userToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      console.log('QuickSlot saved:', response.data);
+    })
+    .catch(error => {
+      console.error('Error saving quickslot:', error);
+    });
+  },
+
+  // 지도 클릭 이벤트 처리 메서드
+  handleMapClick(e) {
+    const latitude = e.coord.lat();
+    const longitude = e.coord.lng();
+    console.log(`Map clicked at: ${latitude}, ${longitude}`);
+
+    // 클릭한 위치에 새로운 마커 추가
+    this.addNewMarker(latitude, longitude);
   }
 },
 mounted() {
     // 네이버 지도 API 로드
     const script = document.createElement("script");
-    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL;
+    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL+ "&ncpClientSecret=" + process.env.VUE_APP_MAPKEY+ "&submodules=geocoder";  // geocoder 서브모듈 추가
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
@@ -421,15 +647,18 @@ mounted() {
       });
       // 모든 마커를 포함할 수 있는 LatLngBounds 객체 생성
       this.bounds = new naver.maps.LatLngBounds();
+      // 지도 클릭 이벤트 추가
+      naver. maps.Event.addListener(this.map, 'click', this.handleMapClick.bind(this));
     };
 
     // this.checkLoginStatus(); // 컴포넌트가 마운트될 때 로그인 상태 확인
     this.fetchFavoriteData();  // 컴포넌트가 마운트될 때 즐겨찾기 데이터 요청
+    window.addQuickSlot = this.showQuickSlotModal.bind(this);  // 퀵슬롯 추가 요청
+    window.addMyPin = this.showListSelectionModal.bind(this);  // 마이핀 추가 요청
     
   }
 };
 </script>
-
 
 
 <style>

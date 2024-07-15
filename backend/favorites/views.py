@@ -3,12 +3,11 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .models import List, MyPin,QuickSlot,Place
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ListSerializer, MyPinSerializer,QuickSlotSerializer
+from .serializers import ListSerializer, MyPinSerializer,QuickSlotSerializer, PlaceSerializer, AddressSerializer
 from search.models import BusinessHour
 from datetime import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
-
 
 def CheckBusinessHour(place):
     # 현재 요일 체크 (숫자 -> 문자)
@@ -34,7 +33,6 @@ def CheckBusinessHour(place):
             else: 
                 return True
     return False
-
 
 class ListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -119,10 +117,51 @@ class ListDeleteView(APIView):
 class MyPinCreateView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, list_id):
-        serializer = MyPinSerializer(data={**request.data, 'list': list_id})
+         # 주소 데이터를 Address 모델에 저장
+        address_data = {
+            'address': request.data.get('address'),
+            'latitude': request.data.get('latitude'),
+            'longitude': request.data.get('longitude')
+        }
+        address_serializer = AddressSerializer(data=address_data)
+        if address_serializer.is_valid():
+            address = address_serializer.save()
+        else:
+            print("address")
+            print(request.data.get('address'), type(request.data.get('latitude')), type(request.data.get('longitude')))
+            print(address_serializer.errors)
+            return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Place 데이터를 Place 모델에 저장
+        place_data = {
+            'address': address.id,
+            'name': request.data.get('name'),
+            'menu': request.data.get('menu'),
+            'phone': request.data.get('phone'),
+            'memo': request.data.get('memo'),
+            'category': request.data.get('category')
+        }
+        place_serializer = PlaceSerializer(data=place_data)
+        if place_serializer.is_valid():
+            place = place_serializer.save()
+        else:
+            print("place")
+            print(place_serializer.errors)
+            return Response(place_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # MyPin 데이터를 MyPin 모델에 저장
+        mypin_data = {
+            'list': list_id,
+            'place': place.id,
+            'name': request.data.get('name')
+        }
+        serializer = MyPinSerializer(data=mypin_data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MyPinUpdateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -248,7 +287,46 @@ class QuickDeleteView(APIView):
 
 class QuickCreateView(APIView):
     def post(self, request):
-        serializer = QuickSlotSerializer(data=request.data)
+         # 주소 데이터를 Address 모델에 저장
+        address_data = {
+            'address': request.data.get('address'),
+            'latitude': request.data.get('latitude'),
+            'longitude': request.data.get('longitude')
+        }
+        address_serializer = AddressSerializer(data=address_data)
+        if address_serializer.is_valid():
+            address = address_serializer.save()
+        else:
+            print("address")
+            print(request.data.get('address'), type(request.data.get('latitude')), type(request.data.get('longitude')))
+            print(address_serializer.errors)
+            return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Place 데이터를 Place 모델에 저장
+        place_data = {
+            'address': address.id,
+            'name': request.data.get('name'),
+            'menu': request.data.get('menu'),
+            'phone': request.data.get('phone'),
+            'memo': request.data.get('memo'),
+            'category': request.data.get('category')
+        }
+        place_serializer = PlaceSerializer(data=place_data)
+        if place_serializer.is_valid():
+            place = place_serializer.save()
+        else:
+            print("place")
+            print(place_serializer.errors)
+            return Response(place_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        # QuickSlot 데이터 QuickSlot 모델에 저장 
+        quick_data = {
+            'user': request.user,
+            'place': place.id,
+            'name': request.data.get('name'),
+            'type': request.data.get('type'),
+        }
+        serializer = QuickSlotSerializer(data=quick_data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
