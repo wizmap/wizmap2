@@ -28,6 +28,7 @@ overflow: hidden;
 display: block;
 width: 300px;
 font-size: 13px;
+margin-left: 15px;
 text-overflow: ellipsis;  
 white-space: nowrap; 	
 overflow: hidden;
@@ -167,6 +168,12 @@ transform: scale(1.3);
 }
 
 /* 검색, 퀵, 즐겨찾기, 히스토리, 검색 상세 */
+#history-delete-button {
+font-size: 11px;
+margin-top: 5px;
+margin-left: 260px;
+}
+
 #quikslot-button, #favorits-button, #history-button, #modal-search-button {
 font-size: large;
 color: #000000;
@@ -221,6 +228,10 @@ border-radius: 10px;
 box-shadow: 5px 5px 5px gray;
 overflow-y: scroll;
 z-index: 3;
+}
+
+#history-name-details {
+margin-left: 1.5em;
 }
 
 .modal-quikslot-container::-webkit-scrollbar, .modal-favorits-container::-webkit-scrollbar, .modal-history-container::-webkit-scrollbar, .modal-search-container::-webkit-scrollbar,
@@ -342,7 +353,6 @@ top: 20px;
 left: 50%;
 transform: translateX(-50%);
 width: 70%;
-/* height: 5%; */
 display: flex;
 flex-direction: row;
 justify-content: center;
@@ -364,15 +374,15 @@ position: relative;
 width: 650px;
 height: 50px;
 background: #f8f8f8;
-border: 1px solid gray; /* 수정: border 스타일 지정 */
+border: 1px solid gray;
 border-radius: 25px;
 box-shadow: 5px 5px 5px gray;
 }
 
 #search-button {
-position: relative; /* 자식 요소를 absolute로 설정 */
-right: 70px; /* 원하는 위치에 맞게 조정 */
-top: 45%; /* 세로 중앙 정렬을 위해 50%로 설정 */
+position: relative; 
+right: 70px; 
+top: 45%; 
 width: 30px;
 height: 30px;
 z-index: 2;
