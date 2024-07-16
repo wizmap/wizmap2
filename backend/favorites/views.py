@@ -225,24 +225,21 @@ class FavoritesView(APIView):
         return Response(response_data)
 
 class QuickView(APIView):
-    permission_classes = [IsAuthenticated]
+ 
 
     def get(self, request, pk):
-        quicks= QuickSlot.objects.filter(type = pk)
-        data = []
-        for quick in quicks:
-            data.append(
-                {
-                    'place_name': quick.place.name,
-                    'address': quick.place.address.address,
-                    'category': quick.place.category,
-                    'isopen':CheckBusinessHour(quick.place),
-                    'quick_name': quick.name
-                }
-            )
-        print(data)
-        
-        return Response({'quick': data}, status=status.HTTP_200_OK)
+        quickslot = get_object_or_404(QuickSlot, pk=pk)
+        place = quickslot.place
+        is_open = CheckBusinessHour(place)  # 영업 상태 확인
+
+        data = {
+            'place_name': place.name,
+            'address': place.address.address,
+            'category': place.category,
+            'isopen': is_open,
+            'quick_name': quickslot.name
+        }
+        return Response(data, status=status.HTTP_200_OK)
 class QuickUpdateView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, pk):
@@ -250,16 +247,16 @@ class QuickUpdateView(APIView):
             quick_obj = QuickSlot.objects.get(id=pk)
             serializer = QuickSlotSerializer(quick_obj)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except List.DoesNotExist:
-            return Response({'error': 'quickslot not found'}, status=status.HTTP_404_NOT_FOUND)
+        except QuickSlot.DoesNotExist:
+            return Response({'error': 'QuickSlot not found'}, status=status.HTTP_404_NOT_FOUND)
         
     def put(self, request, pk):
-        quick_obj = QuickSlot.objects.get(id = pk)
+        try:
+            quick_obj = QuickSlot.objects.get(id=pk)
+        except QuickSlot.DoesNotExist:
+            return Response({'error': 'QuickSlot not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        if not quick_obj:
-            return Response({'error': 'quickslot not found'}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = ListSerializer(quick_obj, data=request.data)
+        serializer = QuickSlotSerializer(quick_obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -284,10 +281,10 @@ class QuickDeleteView(APIView):
 
         quick_obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 class QuickCreateView(APIView):
     def post(self, request):
          # 주소 데이터를 Address 모델에 저장
+        
         address_data = {
             'address': request.data.get('address'),
             'latitude': request.data.get('latitude'),
@@ -321,12 +318,13 @@ class QuickCreateView(APIView):
         
         # QuickSlot 데이터 QuickSlot 모델에 저장 
         quick_data = {
-            'user': request.user,
+            'user':request.user.id,
             'place': place.id,
             'name': request.data.get('name'),
             'type': request.data.get('type'),
         }
-        serializer = QuickSlotSerializer(data=quick_data)
+        serializer = QuickSlotSerializer(data=quick_data,context={'request': request})
+        print(request.user.id)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -13,8 +13,8 @@ urlpatterns = [
     path('mypin/update/<int:pk>/', MyPinUpdateView.as_view(), name='mypin_update'),
     path('mypin/delete/<int:pk>/', MyPinDeleteView.as_view(), name='mypin_delete'),
     path('',FavoritesView.as_view()),
-    path('quick/<int:pk>',QuickView.as_view()),
-    path('quick/update/<int:pk>',QuickUpdateView.as_view()),
-    path('quick/delete/<int:pk>', QuickDeleteView.as_view()),
+    path('quick/<int:pk>/',QuickView.as_view()),
+    path('quick/update/<int:pk>/',QuickUpdateView.as_view()),
+    path('quick/delete/<int:pk>/', QuickDeleteView.as_view()),
     path('quick/create/',QuickCreateView.as_view()),
 ]
