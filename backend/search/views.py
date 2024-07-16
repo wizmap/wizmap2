@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from history.views import save_history, save_pin_history
 from favorites.views import CheckBusinessHour
 from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
+
 # Create your views here.
 class SearchAPIView(APIView):
     permission_classes = [AllowAny]
@@ -14,6 +16,7 @@ class SearchAPIView(APIView):
     def post(self, request, *args, **kwargs):
         search_term = request.data.get('search_term')
         
+        # print('search_term',search_term) # search_term 데이터 잘 들어오나 확인
         # 검색어 저장
         if request.user.is_authenticated:
             save_history(user=request.user, search=search_term)
@@ -34,6 +37,7 @@ class SearchAPIView(APIView):
 
         return Response(place_data)
 
+@permission_classes([AllowAny])
 class PinPlaceAPIView(APIView):
     def get(self, request, id, *args, **kwargs):
         place = get_object_or_404(Place, id=id)

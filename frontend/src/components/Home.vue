@@ -21,7 +21,7 @@
               <input type="password" v-model="loginPassword" id="login-password-input" placeholder="PASSWORD" />
             </div>
           </div>
-          <div class="modal-btn">
+          <div class="home-modal-btn">
             <button id="login-button" @click="login">login</button>
             
             <button id="register-button" @click="showRegisterForm">register</button>
