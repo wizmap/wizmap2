@@ -11,6 +11,7 @@
           <button id="modal-search-button" @click="openSearchModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
         </svg></button>
+
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
           <div class="modal-search-container" @click="preventClose">
               <div class="modal-btn">
@@ -342,140 +343,78 @@
       console.error("There was an error fetching the history!", error);
     }
   },
-   async fetchSearchResults(query) {
-        try {
-          const userToken = localStorage.getItem('userToken'); // 사용자 토큰 가져오기
-          const response = await fetch('http://localhost:8000/search/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${userToken}` // 헤더에 토큰 추가
-            },
-            body: JSON.stringify({ search_term: query })
-          });
-          this.searchResults = await response.json();
-  
-          // 기존 마커 제거
-          this.markers.forEach(marker => marker.setMap(null));
-          this.markers = [];
-  
-          // 검색 결과의 첫 번째 장소의 위도와 경도로 지도 중심 변경
-          if (this.searchResults.length > 0) {
-            const firstResult = this.searchResults[0].place;
-            const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
-            if (this.mapInitialized) {
-              this.map.setCenter(newCenter);
-  
-              // 검색 결과의 위치에 마커 추가
-              this.searchResults.forEach(result => {
-                const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
-                const marker = new window.naver.maps.Marker({
-                  position,
-                  map: this.map,
-                  title: result.place.name
-                });
-                marker.addListener('click', () => {
-                  this.fetchPlaceDetails(result.place.id);
-                });
-                this.markers.push(marker);
-              });
-            } else {
-              console.error('Map is not initialized');
-            }
-          }
-          // 새로운 검색이 수행되면 장소 세부 정보 숨기기
-          this.selectedPlace = null;
-        } catch (error) {
-          console.error("There was an error fetching the search results!", error);
-        }
-      },
-      async fetchPlaceDetails(id) {
+  async fetchSearchResults(query) {
       try {
-        console.log(`Fetching details for place ID: ${id}`); // 추가된 로그
-        const userToken = localStorage.getItem('userToken'); // 사용자 토큰 가져오기
+        const response = await fetch('http://localhost:8000/search/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 'search_term': query })
+        });
+        this.searchResults = await response.json();
+        this.searchModalOpen = true; // 검색 결과 모달 열기
+
+        // 검색 결과의 첫 번째 장소의 위도와 경도로 지도 중심 변경
+        if (this.searchResults.length > 0) {
+          const firstResult = this.searchResults[0].place;
+          const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
+          if (this.mapInitialized) {
+            this.map.setCenter(newCenter);
+
+            // 검색 결과의 위치에 마커 추가
+            this.searchResults.forEach(result => {
+              const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
+              const marker = new window.naver.maps.Marker({
+                position,
+                map: this.map,
+                title: result.place.name
+              });
+              this.markers.push(marker);
+            });
+          } else {
+            console.error('Map is not initialized');
+          }
+        }
+      } catch (error) {
+        console.error("There was an error fetching the search results!", error);
+      }
+    },
+    async fetchPlaceDetails(id) {
+      try {
+        console.log(`Fetching details for place ID: ${id}`);
         const response = await fetch(`http://localhost:8000/search/pin/${id}/`, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userToken}` // 헤더에 토큰 추가
+            'Content-Type': 'application/json'
           }
         });
-        if (response.ok) {
-          this.selectedPlace = await response.json();
-          console.log('Place details fetched successfully:', this.selectedPlace); // 추가된 로그
-        } else {
+        if (!response.ok) {
           const errorText = await response.text();
-          console.error('Failed to fetch place details:', errorText); // 추가된 로그
+          console.error('Failed to fetch place details:', errorText);
           throw new Error('Failed to fetch place details');
         }
+        this.selectedPlace = await response.json();
+        console.log('Place details fetched successfully:', this.selectedPlace);
       } catch (error) {
         console.error("There was an error fetching the place details!", error);
       }
     },
-      onSearch() {
-        if (this.mapInitialized) {
-          this.fetchSearchResults(this.searchTerm);
-        } else {
-          console.error('Map is not initialized yet');
-        }
-      },
-      setSearchTerm(term) {
-        this.searchTerm = term;
-        this.onSearch();
-      },
-      async deleteHistory(id) {
-        const userToken = localStorage.getItem('userToken');
-        try {
-          const response = await fetch(`http://localhost:8000/history/delete/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${userToken}`,
-              'Content-Type': 'application/json'
-            }
-          });
-          if (response.ok) {
-            this.histories = this.histories.filter(history => history.id !== id);
-          } else {
-            throw new Error('Failed to delete history');
-          }
-        } catch (error) {
-          console.error("There was an error deleting the history!", error);
-        }
-      },
-      showHistory() {
-        this.historyVisible = true;
-        this.fetchHistory();
-      },
-      hideHistory() {
-        this.historyVisible = false;
+    onSearch() {
+      if (this.mapInitialized) {
+        this.fetchSearchResults(this.searchTerm);
+      } else {
+        console.error('Map is not initialized yet');
       }
-    },
-    fetchPlaceData(id) {
-      console.log(`Fetching place data for ID: ${id}`);
-      const userToken = localStorage.getItem('userToken');
-      console.log(userToken)
-      axios.get(`http://localhost:8000/favorites/list/${id}/`, {
-        headers: {
-            // Bearer 스키마를 사용하여 토큰을 전송
-            'Authorization': `Bearer ${userToken}`
-          }
-      })  // PinPlaceAPIView에서 데이터 가져오기
-        .then(response => {
-          this.placeData = response.data.MyPin;
-          console.log('Response data:', response.data);  // 응답 데이터 로그 추가
-        })
-        .catch(error => {
-          console.error("There was an error fetching the place data!", error);
-        });
-      },
-  mounted() {
+    }
+  },
+    mounted() {
       // 네이버 지도 API 로드
       const script = document.createElement("script");
       script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL;
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);
-  
       script.onload = () => {
         // 네이버 지도 생성
         this.map = new window.naver.maps.Map("search-map", {
@@ -487,11 +426,11 @@
     }
   };
   </script>
-  
-  
-  
+
+
+
   <style>
   @import "../assets/css/search.css";
-  
-  
+
+
   </style>
