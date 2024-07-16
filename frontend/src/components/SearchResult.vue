@@ -344,58 +344,79 @@
     }
   },
   async fetchSearchResults(query) {
-      try {
-        const response = await fetch('http://localhost:8000/search/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ 'search_term': query })
-        });
-        this.searchResults = await response.json();
-        this.searchModalOpen = true; // 검색 결과 모달 열기
-
-        // 검색 결과의 첫 번째 장소의 위도와 경도로 지도 중심 변경
-        if (this.searchResults.length > 0) {
-          const firstResult = this.searchResults[0].place;
-          const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
-          if (this.mapInitialized) {
-            this.map.setCenter(newCenter);
-
-            // 검색 결과의 위치에 마커 추가
-            this.searchResults.forEach(result => {
-              const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
-              const marker = new window.naver.maps.Marker({
-                position,
-                map: this.map,
-                title: result.place.name
+        try {
+          // localStorage.removeItem('userToken'); //사용자 토큰 삭제
+          const userToken = localStorage.getItem('userToken'); // 사용자 토큰 가져오기
+          const headers = {
+            'Content-Type': 'application/json',
+          };
+          if (userToken) {
+            headers['Authorization'] = `Bearer ${userToken}`; // 헤더에 토큰 추가
+          }
+          const response = await fetch('http://localhost:8000/search/', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ search_term: query })
+          });
+          this.searchResults = await response.json();
+  
+          // 기존 마커 제거
+          this.markers.forEach(marker => marker.setMap(null));
+          this.markers = [];
+  
+          // 검색 결과의 첫 번째 장소의 위도와 경도로 지도 중심 변경
+          if (this.searchResults.length > 0) {
+            const firstResult = this.searchResults[0].place;
+            const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
+            if (this.mapInitialized) {
+              this.map.setCenter(newCenter);
+  
+              // 검색 결과의 위치에 마커 추가
+              this.searchResults.forEach(result => {
+                const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
+                const marker = new window.naver.maps.Marker({
+                  position,
+                  map: this.map,
+                  title: result.place.name
+                });
+                marker.addListener('click', () => {
+                  this.fetchPlaceDetails(result.place.id);
+                  this.openSearchDetailModal(result);
+                });
+                this.markers.push(marker);
               });
-              this.markers.push(marker);
-            });
-          } else {
-            console.error('Map is not initialized');
+            } else {
+              console.error('Map is not initialized');
+            }
           }
+          // 새로운 검색이 수행되면 장소 세부 정보 숨기기
+          this.selectedPlace = null;
+        } catch (error) {
+          console.error("There was an error fetching the search results!", error);
         }
-      } catch (error) {
-        console.error("There was an error fetching the search results!", error);
-      }
-    },
-    async fetchPlaceDetails(id) {
-      try {
-        console.log(`Fetching details for place ID: ${id}`);
-        const response = await fetch(`http://localhost:8000/search/pin/${id}/`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-        if (!response.ok) {
+      },
+      async fetchPlaceDetails(id) {
+        try {
+            console.log(`Fetching details for place ID: ${id}`); // 추가된 로그
+            const userToken = localStorage.getItem('userToken'); // 사용자 토큰 가져오기
+            const headers = {
+              'Content-Type': 'application/json',
+            };
+            if (userToken) {
+              headers['Authorization'] = `Bearer ${userToken}`; // 헤더에 토큰 추가
+            }
+            const response = await fetch(`http://localhost:8000/search/pin/${id}/`, {
+              method: 'GET',
+              headers,
+            });
+        if (response.ok) {
+          this.selectedPlace = await response.json();
+          console.log('Place details fetched successfully:', this.selectedPlace); // 추가된 로그
+        } else {
           const errorText = await response.text();
-          console.error('Failed to fetch place details:', errorText);
+          console.error('Failed to fetch place details:', errorText); // 추가된 로그
           throw new Error('Failed to fetch place details');
         }
-        this.selectedPlace = await response.json();
-        console.log('Place details fetched successfully:', this.selectedPlace);
       } catch (error) {
         console.error("There was an error fetching the place details!", error);
       }
