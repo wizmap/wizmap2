@@ -150,6 +150,7 @@
       markers: [], // 마커 객체를 저장할 배열 추가
       histories: [], // 검색 기록을 저장할 배열
       selectedPlace: null, // 선택된 장소의 상세 정보를 저장할 변수 추가
+      placeId: null,
     };
   },
   created() {
@@ -381,7 +382,7 @@
                 });
                 marker.addListener('click', () => {
                   this.fetchPlaceDetails(result.place.id);
-                  this.openSearchDetailModal(result);
+                  this.firstDetailModalOpen = true; // 데이터 로딩 후 모달 열기
                 });
                 this.markers.push(marker);
               });
@@ -411,6 +412,9 @@
             });
         if (response.ok) {
           this.selectedPlace = await response.json();
+          // 장소 이름 검색어로 설정
+          this.searchTerm = this.selectedPlace.place.name;
+
           console.log('Place details fetched successfully:', this.selectedPlace); // 추가된 로그
         } else {
           const errorText = await response.text();
@@ -419,6 +423,20 @@
         }
       } catch (error) {
         console.error("There was an error fetching the place details!", error);
+      }
+    },
+    async checkInitialSearch() {
+      if (this.mapInitialized) {
+        if (this.$route.query.searchTerm) {
+          this.searchTerm = this.$route.query.searchTerm;
+          console.log(this.searchTerm);
+          this.onSearch(); // 검색어로 검색 실행
+        } else if (this.$route.query.placeId) {
+          this.placeId = this.$route.query.placeId;
+          console.log(this.placeId);
+          await this.fetchPlaceDetails(this.placeId); // 장소 ID로 상세 정보 검색
+          this.onSearch()
+        }
       }
     },
     onSearch() {
@@ -443,6 +461,8 @@
           zoom: 12
         });
         this.mapInitialized = true; // 지도 초기화 상태 업데이트
+
+        this.checkInitialSearch(); // 지도 초기화 후 초기 검색 조건 확인 및 실행
       };
     }
   };

@@ -50,14 +50,8 @@
           <div class="modal-history-container" @click="preventClose">
               <ul class="list-group list-group-flush">
                   <li class="list-group-item" v-for="history in histories" :key="history.id">
-                      <span id="history-name-details" @click="() => { 
-                          if (history.place) {
-                              fetchPlaceDetails(history.place.id); 
-                          } else {
-                              setSearchTerm(history.search);
-                          }
-                      }">
-                          {{ history.search }}
+                      <span id="history-name-details" @click="navigateToSearchResult(history)">
+                        {{ history.search }}
                       </span>
                       <br>
                       <span id="address-details">
@@ -417,6 +411,15 @@
       setSearchTerm(term) {
         this.searchTerm = term;
         this.onSearch();
+      },
+      navigateToSearchResult(history) {
+        if (history.place) {
+          // 장소 ID를 쿼리 파라미터로 전달
+          this.$router.push({ name: 'SearchResult', query: { placeId: history.place.id } });
+        } else {
+          // 검색어를 쿼리 파라미터로 전달
+          this.$router.push({ name: 'SearchResult', query: { searchTerm: history.search } });
+        }
       },
       async deleteHistory(id) {
         const userToken = localStorage.getItem('userToken');
