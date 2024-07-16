@@ -121,6 +121,8 @@
       thirdModalOpen: false,
       fourthModalOpen: false,
       modalOpen: false,
+      isLoggedIn: false, // 로그인 상태 여부
+      loginId: '', // 로그인한 사용자의 ID
       placeData: null,
       searchTerm: '',
       searchResults: [],

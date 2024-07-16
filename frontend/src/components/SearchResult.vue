@@ -104,26 +104,6 @@
           </form>
       </div>
       </div>
-      <button id="modal-button" @click="openModal"><i class="fas fa-user fa-2x"></i></button>
-      <div class="modal-wrap" v-show="modalOpen" @click="closeModal">
-      <div class="modal-container" @click="preventClose">
-          
-          <img id="profile">
-          <div class="input_container">
-          <div>
-              <input type="text" id="login-id-input" placeholder="ID" />
-          </div>
-          <br/>
-          <div>
-              <input type="text" id="login-password-input" placeholder="PASSWORD" />
-          </div>
-          </div>
-          
-          <div class="modal-btn">
-          <button id="register-button" @click="modalOpen">register</button>
-          </div>
-      </div>
-      </div>
       <div id="search-map"></div>
   
   </template>
@@ -142,6 +122,10 @@
       thirdModalOpen: false,
       fourthModalOpen: false,
       modalOpen: false,
+      // modalCheck: false,
+      // isLoggedIn: false,
+      // loginId: '',
+      // loginPassword: '',
       placeData: null,
       searchTerm: '',
       searchResults: [],
@@ -153,8 +137,14 @@
     };
   },
   created() {
-      this.openSearchModal();
-    },
+    this.openSearchModal();
+    // 라우팅된 파라미터에서 로그인 관련 데이터를 가져옵니다.
+    // this.loginId = this.$route.params.loginId;
+    // this.loginPassword = this.$route.params.loginPassword;
+    // this.isLoggedIn = this.$route.params.isLoggedIn;
+    // this.modalCheck = this.$route.params.modalCheck;
+    // 이제 가져온 데이터를 사용할 수 있습니다.
+  },
   methods: {
     openFavoriteModal() {
       this.favoriteModalOpen = true;
@@ -427,7 +417,12 @@
       } else {
         console.error('Map is not initialized yet');
       }
-    }
+    },
+    checkLoginStatus() {
+      // 로컬 스토리지에서 토큰 확인
+      const token = localStorage.getItem('userToken');
+      this.isLoggedIn = !!token; // 토큰 유무에 따라 로그인 상태 설정
+    },
   },
     mounted() {
       // 네이버 지도 API 로드

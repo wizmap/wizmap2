@@ -1,4 +1,4 @@
-#register-button:hover, #login-button:hover, #delete-account-button:hover, #register-submit-button:hover, 
+#register-button:hover, #login-button:hover, #logout-button:hover, #delete-account-button:hover, #register-submit-button:hover, 
 #register-cancel-button:hover {
 background-color:black;
 transition: 0.7s;
@@ -109,11 +109,12 @@ padding: 7px 30px;
 margin-left: 10px;
 }
 
-#delete-account-button {
+#logout-button, #delete-account-button {
 padding: 7px 30px;
+margin-left: 10px;
 }
  
-#register-button, #login-button, #delete-account-button, #register-submit-button, #register-cancel-button {
+#register-button, #login-button, #logout-button, #delete-account-button, #register-submit-button, #register-cancel-button {
 margin-bottom: 15px;
 font-size: large;
 color: #f8f8f8;
