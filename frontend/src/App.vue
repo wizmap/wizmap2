@@ -8,8 +8,9 @@
 
 <script>
 import { RouterView } from 'vue-router';
-import SearchResult from './components/SearchResult.vue';
 import Home from './components/Home.vue';
+import Search from './components/Search.vue';
+import SearchResult from './components/SearchResult.vue';
 import SearchHistory from './components/SearchHistory.vue';
 import SearchFavorite from './components/SearchFavorite.vue';
 
@@ -21,6 +22,7 @@ export default {
 
   components: {
     SearchResult,
+    Search,
     Home,
     SearchHistory,
     SearchFavorite,
