@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 
 # Create your views here.
+from rest_framework.permissions import AllowAny
 class SearchAPIView(APIView):
     permission_classes = [AllowAny]
     
@@ -39,6 +40,7 @@ class SearchAPIView(APIView):
 
 @permission_classes([AllowAny])
 class PinPlaceAPIView(APIView):
+    permission_classes = [AllowAny]
     def get(self, request, id, *args, **kwargs):
         place = get_object_or_404(Place, id=id)
         business_hours = BusinessHour.objects.filter(place=place)
