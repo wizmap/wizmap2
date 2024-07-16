@@ -8,15 +8,20 @@
       <div class="modal-favorite-container" @click="preventClose">
 
         <div class="modal-btn">
-        <button id="quikslot-button" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
-        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
-        </svg></button>
-        <div class="modal-quikslot-wrap" v-show="secondModalOpen" @click="closeQuikModals">
-        <div class="modal-quikslot-container" @click="preventClose">
-        <div id = "quik-buttons">
-          
-          <!-- type이 0인 경우 하트 모양 버튼, 아닌 경우 기존 버튼 -->
-  <div class="modal-btn">
+            <router-link to="/searchresult" id="modal-search-button" @click="openSearchModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg></router-link>
+          </div>
+  
+          <div class="modal-btn">
+          <button id="quikslot-button" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
+          </svg></button>
+          <div class="modal-quikslot-wrap" v-show="secondModalOpen" @click="closeQuikModals">
+          <div class="modal-quikslot-container" @click="preventClose">
+          <div id = "quik-buttons">
+
+              <div class="modal-btn">
     
     <button v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.some(item => item.type === 0)"@click="handleButtonClick(0)">
       <!-- 작은 네모 버튼 -->
@@ -116,65 +121,6 @@
   <button @click="isEditModalOpen = false">취소</button>
 </div>
 </div>
-        </div>
-        </div>
-        </div>
-        </div>
-
-        <div class="modal-btn">
-        <button id="favorits-button" @click="openFavModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
-        <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
-        </svg></button>
-        <div class="modal-favorits-wrap" v-show="thirdModalOpen" @click="closeFavModals">
-        <div class="modal-favorits-container" @click="preventClose">
-        <div>
-          <!-- listData가 있을 경우 listData를 띄우기 -->
-          <div v-if="listData && listData.length > 0">
-            <ul>
-              <li v-for="(place, index) in listData" :key="index">
-                <h3 v-if="!place.editMode">{{ place.mypin_name }}</h3>
-                <!-- 수정 모드일 때 입력 필드 표시 -->
-                <input v-else v-model="place.newMypinName" placeholder="새로운 이름 입력">
-                
-                <!-- 수정 모드 토글 버튼 -->
-                <button @click="place.editMode = !place.editMode">
-                  {{ place.editMode ? '취소' : '수정' }}
-                </button>
-                
-                <!-- 수정 완료 버튼 -->
-                <button v-if="place.editMode" @click="updateMypinName(place.mypin_id, place.newMypinName)">수정 완료</button>
-                
-                <!-- 삭제 버튼 -->
-                <button @click="deletePlace(place.mypin_id)">삭제</button>
-                
-                <p>장소 이름: {{ place.place_name }}</p>
-                <p>주소: {{ place.address }}</p>
-                <p>카테고리: {{ place.category }}</p>
-                <p>영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
-                <p>리스트 이름: {{ place.list_name }}</p>
-              </li>
-            </ul>
-            <router-link to="/searchresult" id="modal-search-button" @click="openSearchModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-          </svg></router-link>
-          </div>
-  
-          <div class="modal-btn">
-          <button id="quikslot-button" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
-          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
-          </svg></button>
-          <div class="modal-quikslot-wrap" v-show="secondModalOpen" @click="closeQuikModals">
-          <div class="modal-quikslot-container" @click="preventClose">
-          <div id = "quik-buttons">
-              <div class="modal-btn"><button id="first-quik"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
-              <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-              </svg></button></div>
-              <div class="modal-btn"><button id="second-quik"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
-              <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-              </svg></button></div>
-              <div class="modal-btn"><button id="third-quik"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
-              <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-              </svg></button></div>
           </div>
           </div>
           </div>
@@ -304,104 +250,42 @@
               <p>마이페이지 내용이 여기에 표시됩니다.</p>
               <!-- 로그아웃 버튼 등 마이페이지 관련 내용 -->
           </div>
-        </div>
-        <div class="modal-btn"></div>
-        
-        </div>
-        </div>
-        </div>
-
-        <div class="modal-btn">
-        <button id="history-button" @click="openHisModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
-        <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
-        <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
-        <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
-        </svg></button>
-        <div class="modal-history-wrap" v-show="fourthModalOpen" @click="closeHisModals">
-        <div class="modal-history-container" @click="preventClose">
-            <div class="modal-btn"></div>
-        
-        </div>
-        </div>
-        </div>
-        
-    </div>
-    </div>
-
-
-    <div id="main">
-    <div id="search-center">
-        <img id="search-logo">
-        <form id="search">
-          <input type="text" id="search-input" placeholder="       장소를 입력하세요">
-            <button id="search-button"><i class="fas fa-search fa-lg"></i></button>
-        </form>
-    </div>
-    </div>
-    <button id="modal-button" @click="openModal"><i class="fas fa-user fa-2x"></i></button>
-    <div class="modal-wrap" v-show="modalOpen" @click="closeModal">
-    <div class="modal-container" @click="preventClose">
-        
-        <img id="profile">
-        <div v-if="!isLoggedIn" class="modal-wrap" v-show="modalOpen" @click="modalOpen">
-        <div class="modal-container" @click.stop="">
-            <!-- 로그인 폼 -->
-            <img id="profile">
-            <div class="input_container">
-            <div>
-                <input type="text" v-model="loginId" id="login-id-input" placeholder="ID" />
-            </div>
-            <br/>
-            <div>
-                <input type="password" v-model="loginPassword" id="login-password-input" placeholder="PASSWORD" />
-            </div>
-            </div>
-            <div class="modal-btn">
-            <button id="login-button" @click="login">login</button>
-            <button id="register-button" @click="modalOpen">register</button>
-            </div>
-        </div>
-        </div>
-            <!-- 로그인된 경우 마이페이지 내용 표시 -->
-        <div v-else>
-            <p>마이페이지 내용이 여기에 표시됩니다.</p>
-            <!-- 로그아웃 버튼 등 마이페이지 관련 내용 -->
-        </div>
-    </div>
-    </div>
-    <div id="search-map"></div>
- 
-
-    <!-- listData를 화면에 표시 -->
- 
-</template>
-
-
-
-<script>
-import axios from 'axios';
-
-export default {
-    data() {
-  return {
-    favoriteModalOpen: false,
-    secondModalOpen: false,
-    thirdModalOpen: false,
-    fourthModalOpen: false,
-    modalOpen: false,
-    isLoggedIn: false, // 로그인 상태
-    listData: null,  // 리스트 상세 데이터
-    favoriteData: null, // 즐겨찾기 데이터 
-    currentMarker: null, // 현재 마커
-    newLatitude: null,  // 새 마커의 위도
-    newLongitude: null, // 새 마커의 경도 
-    newAddress: null, // 새 마커의 주소
-    quickData:null,
+      </div>
+      </div>
+      <div id="search-map"></div>
+  
+      <!-- listData를 화면에 표시 -->
+   
+  </template>
+  
+  
+  
+  <script>
+  import axios from 'axios';
+  
+  export default {
+      data() {
+    return {
+      favoriteModalOpen: true,
+      firstModalOpen: false,
+      firstDetailModalOpen: false,
+      secondModalOpen: false,
+      thirdModalOpen: false,
+      fourthModalOpen: false,
+      modalOpen: false,
+      isLoggedIn: false, // 로그인 상태
+      listData: null,  // 리스트 상세 데이터
+      favoriteData: null, // 즐겨찾기 데이터 
+      currentMarker: null, // 현재 마커
+      newLatitude: null,  // 새 마커의 위도
+      newLongitude: null, // 새 마커의 경도 
+      newAddress: null, // 새 마커의 주소
+      quickData:null,
     newQuickSlotName: '',
     isEditModalOpen: false,
     editingQuickData: null,
-  };
-},
+    };
+  },
   created() {
       this.openFavModal();
     },
@@ -924,66 +808,6 @@ export default {
         console.error('Error saving mypin:', error);
       });
     },
-  
-     // 퀵슬롯 모달을 표시하는 메서드
-    showQuickSlotModal(latitude, longitude, address) {
-      const quickSlotHtml = `
-        <div>
-          <label for="quickslot-name">퀵슬롯의 이름을 입력하세요:</label>
-          <input type="text" id="quickslot-name" />
-        </div>
-        <button id="save-quickslot">저장</button>
-      `;
-  
-      const modal = document.createElement('div');
-      modal.innerHTML = quickSlotHtml;
-      document.body.appendChild(modal);
-  
-      document.getElementById('save-quickslot').addEventListener('click', () => {
-        const name = document.getElementById('quickslot-name').value;
-        this.saveQuickSlot(Number(latitude.toFixed(6)), Number(longitude.toFixed(6)), address, name);
-        document.body.removeChild(modal); // 모달 제거
-      });
-    },
-  
-  
-    // 퀵슬롯 추가 요청 메서드
-    saveQuickSlot(latitude, longitude, address, listId, name) {
-      const userToken = localStorage.getItem('userToken');
-      console.log(address, latitude, longitude)
-      axios.post(`http://localhost:8000/favorites/quick/create/${listId}/`, {
-        address: address, // 주소 문자열을 전송
-        latitude: latitude,
-        longitude: longitude,
-        list: listId,
-        name: name,
-        menu: null, // 필요에 따라 추가
-        phone: null, // 필요에 따라 추가
-        memo: "퀵슬롯 추가", // 필요에 따라 추가
-        category: '기타' // 필요에 따라 추가
-      }, {
-        headers: {
-          'Authorization': `Bearer ${userToken}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => {
-        console.log('QuickSlot saved:', response.data);
-      })
-      .catch(error => {
-        console.error('Error saving quickslot:', error);
-      });
-    },
-  
-    // 지도 클릭 이벤트 처리 메서드
-    handleMapClick(e) {
-      const latitude = e.coord.lat();
-      const longitude = e.coord.lng();
-      console.log(`Map clicked at: ${latitude}, ${longitude}`);
-  
-      // 클릭한 위치에 새로운 마커 추가
-      this.addNewMarker(latitude, longitude);
-    },
     showQuickSlotModal(type) {
     
     const quickSlotHtml = `
@@ -1179,5 +1003,3 @@ openEditModal(quickData) {
   
   
   </style>
-
-   
