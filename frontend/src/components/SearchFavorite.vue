@@ -490,6 +490,8 @@
       })
       .then(response => {
         console.log('Response status:', response.status);
+        // 페이지 리로드
+        window.location.reload();
       })
       .catch(error => {
         console.error("There was an error fetching the place data!", error);
@@ -510,6 +512,8 @@
       })
       .then(response => {
         console.log('Response status:', response.status);
+        // 페이지 리로드
+        window.location.reload();
       })
       .catch(error => {
         console.error("There was an error fetching the place data!", error);
@@ -529,6 +533,8 @@
       })
       .then(response => {
         console.log('Response status:', response.status);
+        // 페이지 리로드
+        window.location.reload();
       })
       .catch(error => {
         console.error("There was an error updating the mypin_name!", error);
@@ -548,6 +554,8 @@
       .then(response => {
         console.log('Response status:', response.status);
         // 성공적으로 삭제되었을 때의 로직
+        // 페이지 리로드
+        window.location.reload();
       })
       .catch(error => {
         console.error("There was an error deleting the place!", error);
@@ -707,6 +715,8 @@
       })
       .then(response => {
         console.log('Mypin saved:', response.data);
+        // 페이지 리로드
+        window.location.reload();
       })
       .catch(error => {
         console.error('Error saving mypin:', error);
