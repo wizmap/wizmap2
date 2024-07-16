@@ -53,7 +53,6 @@
                       <span id="history-name-details" @click="() => { 
                           if (history.place) {
                               fetchPlaceDetails(history.place.id); 
-                              setSearchTerm(history.place.name); 
                           } else {
                               setSearchTerm(history.search);
                           }
@@ -325,16 +324,21 @@
   },
    async fetchSearchResults(query) {
         try {
+          //localStorage.removeItem('userToken'); //사용자 토큰 삭제
           const userToken = localStorage.getItem('userToken'); // 사용자 토큰 가져오기
+          const headers = {
+            'Content-Type': 'application/json',
+          };
+          if (userToken) {
+            headers['Authorization'] = `Bearer ${userToken}`; // 헤더에 토큰 추가
+          }
           const response = await fetch('http://localhost:8000/search/', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${userToken}` // 헤더에 토큰 추가
-            },
+            headers,
             body: JSON.stringify({ search_term: query })
           });
           this.searchResults = await response.json();
+
   
           // 기존 마커 제거
           this.markers.forEach(marker => marker.setMap(null));
@@ -357,6 +361,7 @@
                 });
                 marker.addListener('click', () => {
                   this.fetchPlaceDetails(result.place.id);
+                  this.openSearchDetailModal(result);
                 });
                 this.markers.push(marker);
               });
@@ -371,19 +376,28 @@
         }
       },
       async fetchPlaceDetails(id) {
-      try {
+       try {
         console.log(`Fetching details for place ID: ${id}`); // 추가된 로그
         const userToken = localStorage.getItem('userToken'); // 사용자 토큰 가져오기
+        const headers = {
+          'Content-Type': 'application/json',
+        };
+        if (userToken) {
+          headers['Authorization'] = `Bearer ${userToken}`; // 헤더에 토큰 추가
+        }
         const response = await fetch(`http://localhost:8000/search/pin/${id}/`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userToken}` // 헤더에 토큰 추가
-          }
+          headers,
         });
         if (response.ok) {
           this.selectedPlace = await response.json();
           console.log('Place details fetched successfully:', this.selectedPlace); // 추가된 로그
+
+          // 장소 이름 검색어로 설정
+          this.searchTerm = this.selectedPlace.place.name;    
+          // 검색 결과 배열 비우기
+          this.searchResults = [];
+
         } else {
           const errorText = await response.text();
           console.error('Failed to fetch place details:', errorText); // 추가된 로그
