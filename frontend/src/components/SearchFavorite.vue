@@ -100,10 +100,7 @@
     <p>{{ quickData.address }}</p>
     <p>{{ quickData.category }}</p>
     <p>{{ quickData.isopen }}</p>
-     <!-- 수정 버튼 -->
-  <button @click="openEditModal(quickData.id)">수정</button>
-  <!-- 삭제 버튼 -->
-  <button @click="deleteQuickData(quickData.id)">삭제</button>
+
   </div>
   <div v-else-if="displayNewLocation">
     <!-- 새 위치 데이터 표시 -->
@@ -113,13 +110,7 @@
     <p>데이터가 없습니다.</p>
   </div>
   
-  <div v-if="isEditModalOpen" class="edit-modal">
-  <input type="text" v-model="editingQuickData.quick_name" placeholder="퀵슬롯 이름">
-  <input type="text" v-model="editingQuickData.place_name" placeholder="장소 이름">
-  <!-- 기타 필요한 입력 필드 추가 -->
-  <button @click="updateQuickData(editingQuickData.id, editingQuickData)">수정 완료</button>
-  <button @click="isEditModalOpen = false">취소</button>
-</div>
+
 </div>
           </div>
           </div>
@@ -876,15 +867,8 @@
     // 클릭한 위치에 새로운 마커 추가
     this.addNewMarker(latitude, longitude);
   },
-  showNewLocation() {
-    this.displayQuickData = false; // 기존 퀵 데이터 표시를 비활성화
-    this.displayNewLocation = true; // 새 위치 데이터 표시를 활성화
-    this.newQuickSlotName = ''; 
-    this.$nextTick(() => {
-    // DOM 업데이트가 완료된 후 실행할 코드
-    this.$forceUpdate(); // 강제로 컴포넌트를 업데이트
-  });
-  },
+
+  
   updateQuickData(id, updatedData) {
   axios.put(`http://localhost:8000/favorites/quick/update/${id}/`, updatedData, {
     headers: {
@@ -946,7 +930,7 @@ openEditModal(quickData) {
       <input type="text" id="quickslot-name" />
       <button id="save-name">저장</button>
     </div>
-  `;
+  `
 
   const modal = document.createElement('div');
   modal.innerHTML = quickSlotHtml;
@@ -958,26 +942,71 @@ openEditModal(quickData) {
   });
   },
   updateQuickSlotName(id) {
-    const newName = document.getElementById('quickslot-name').value;
-    const userToken = localStorage.getItem('userToken');
-    axios.put(`http://localhost:8000/favorites/quick/update/${id}/`, {
-      name: newName
-    }, {
-      headers: {
-        'Authorization': `Bearer ${userToken}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => {
-      console.log('QuickSlot updated:', response.data);
-      // 모달 제거 또는 추가적인 UI 업데이트
-    })
-    .catch(error => {
-      console.error('Error updating QuickSlot:', error);
+  const newName = document.getElementById('quickslot-name').value;
+  const userToken = localStorage.getItem('userToken');
+  axios.put(`http://localhost:8000/favorites/quick/update/${id}/`, {
+    name: newName
+  }, {
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => {
+    console.log('QuickSlot updated:', response.data);
+    // 서버 응답이 성공적이면, 로컬 데이터를 업데이트합니다.
+    this.updateLocalQuickSlotName(id, newName);
+    this.$nextTick(() => {
+      console.log("DOM 업데이트 후 실행되는 코드");
     });
+  })
+  .catch(error => {
+    console.error('Error updating QuickSlot:', error);
+  });
+},
+updateLocalQuickSlotName(id, newName) {
+  const quickSlot = this.favoriteData.quicktype.find(item => item.id === id);
+  if (quickSlot) {
+    quickSlot.name = newName;
+    // 강제로 컴포넌트를 업데이트하려면 아래 코드를 사용할 수 있습니다.
+    this.$forceUpdate();
+  }
+},
+  handleButtonClick(type) {
+    const item = this.favoriteData.quicktype.find(item => item.type === type);
+    if (item) {
+      this.fetchQuickViewData(item.id);
+      this.displayQuickData = true;
+      this.displayNewLocation = false;
+      this.$nextTick(() => {
+        // DOM 업데이트 후 실행할 코드
+      });
+    }
   },
+  fetchQuickViewData(id) {
+    const userToken = localStorage.getItem('userToken');
+    axios.get(`http://localhost:8000/favorites/quick/${id}/`, {
+  headers: {
+    'Authorization': `Bearer ${userToken}`
+  }
+})
+      .then(response => {
+        this.quickData = response.data; // 데이터 업데이트
+        this.$forceUpdate(); // 강제로 컴포넌트를 업데이트
+      })
+      .catch(error => {
+        console.error("There was an error fetching the QuickView data!", error);
+      });
   },
-
+  showNewLocation() {
+  this.displayQuickData = false;
+  this.displayNewLocation = true;
+  this.newQuickSlotName = ''; // 입력 필드 초기화
+  this.$nextTick(() => {
+    this.$forceUpdate();
+  });
+  },
+},
   mounted() {
     // 네이버 지도 API 로드
     const script = document.createElement("script");
