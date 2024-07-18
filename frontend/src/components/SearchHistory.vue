@@ -50,14 +50,8 @@
           <div class="modal-history-container" @click="preventClose">
               <ul class="list-group list-group-flush">
                   <li class="list-group-item" v-for="history in histories" :key="history.id">
-                      <span id="history-name-details" @click="() => { 
-                          if (history.place) {
-                              fetchPlaceDetails(history.place.id); 
-                          } else {
-                              setSearchTerm(history.search);
-                          }
-                      }">
-                          {{ history.search }}
+                      <span id="history-name-details" @click="navigateToSearchResult(history)">
+                        {{ history.search }}
                       </span>
                       <br>
                       <span id="address-details">
@@ -83,26 +77,6 @@
           </form>
       </div>
       </div>
-      <button id="modal-button" @click="openModal"><i class="fas fa-user fa-2x"></i></button>
-      <div class="modal-wrap" v-show="modalOpen" @click="closeModal">
-      <div class="modal-container" @click="preventClose">
-          
-          <img id="profile">
-          <div class="input_container">
-          <div>
-              <input type="text" id="login-id-input" placeholder="ID" />
-          </div>
-          <br/>
-          <div>
-              <input type="text" id="login-password-input" placeholder="PASSWORD" />
-          </div>
-          </div>
-          
-          <div class="modal-btn">
-          <button id="register-button" @click="modalOpen">register</button>
-          </div>
-      </div>
-      </div>
       <div id="search-map"></div>
   
   </template>
@@ -121,8 +95,6 @@
       thirdModalOpen: false,
       fourthModalOpen: false,
       modalOpen: false,
-      isLoggedIn: false, // 로그인 상태 여부
-      loginId: '', // 로그인한 사용자의 ID
       placeData: null,
       searchTerm: '',
       searchResults: [],
@@ -419,6 +391,15 @@
       setSearchTerm(term) {
         this.searchTerm = term;
         this.onSearch();
+      },
+      navigateToSearchResult(history) {
+        if (history.place) {
+          // 장소 ID를 쿼리 파라미터로 전달
+          this.$router.push({ name: 'SearchResult', query: { placeId: history.place.id } });
+        } else {
+          // 검색어를 쿼리 파라미터로 전달
+          this.$router.push({ name: 'SearchResult', query: { searchTerm: history.search } });
+        }
       },
       async deleteHistory(id) {
         const userToken = localStorage.getItem('userToken');

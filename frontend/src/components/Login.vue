@@ -32,21 +32,13 @@
         <div v-else class="mypage_container">
           <p>{{loginId}}님</p>
           <!-- 로그아웃 버튼 추가 -->
-          <button id="logout-button" @click="logout">로그아웃</button>
+          <router-link to="/searchresult" id="logout-button" @click="logout">로그아웃</router-link>
           <button id="delete-account-button" @click="confirmDeleteAccount">회원탈퇴</button>
   
         </div>
       </div>
     </div>
-    <div id="main">
-      <div id="center">
-        <img id="logo">
-        <form id="search">
-          <input type="text" id="home-search-input" placeholder=" 장소를 입력하세요">
-          <router-link to="/searchresult" id="home-search-button"><i class="fas fa-search fa-lg"></i></router-link>
-        </form>
-      </div>
-    </div>
+ 
   
     <!-- Registration Form Modal -->
     <div class="modal-wrap" v-show="registerFormVisible" @click="closeRegisterForm">

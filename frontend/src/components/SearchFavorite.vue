@@ -20,15 +20,107 @@
           <div class="modal-quikslot-wrap" v-show="secondModalOpen" @click="closeQuikModals">
           <div class="modal-quikslot-container" @click="preventClose">
           <div id = "quik-buttons">
-              <div class="modal-btn"><button id="first-quik"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
-              <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-              </svg></button></div>
-              <div class="modal-btn"><button id="second-quik"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
-              <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-              </svg></button></div>
-              <div class="modal-btn"><button id="third-quik"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
-              <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-              </svg></button></div>
+
+              <div class="modal-btn">
+    
+    <button v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.some(item => item.type === 0)"@click="handleButtonClick(0)">
+      <!-- 작은 네모 버튼 -->
+      <button class="small-square-button" @click="showNameInputModal(favoriteData.quicktype.find(item => item.type === 0)?.id)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
+        </svg>
+      </button>
+      <!-- 하트 모양 SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.912 3.452-2.923 5.365-5.096 6.286-6.912.955-1.884.838-3.362.314-4.385C13.486.878 10.4.281 8.717 2.01L8 2.748zm0 0c-.319-.319-.636-.637-.717-.737-.08.1-.398.418-.717.737z"/>
+      </svg>
+      <p v-if="favoriteData && favoriteData.quicktype">
+      {{ favoriteData.quicktype.find(item => item.type === 0)?.name || 'Type 0 이름 없음' }}
+    </p>
+      <!-- 작은 빨간 x 버튼 -->
+    <span class="close-btn" @click.stop="removeItem(favoriteData.quicktype.find(item => item.type === 0)?.id)">×</span>
+    </button>
+    <button v-else id="first-quik" @click="showQuickSlotModal(0)"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
+            <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+            </svg></button></div>
+             <!-- type이 1인 경우 하트 모양 버튼, 아닌 경우 기존 버튼 -->
+  <div class="modal-btn">
+    <button v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.some(item => item.type === 1)"@click="handleButtonClick(1)">
+      <!-- 작은 네모 버튼 -->
+      <button class="small-square-button" @click="showNameInputModal(favoriteData.quicktype.find(item => item.type === 1)?.id)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
+        </svg>
+      </button>
+      <!-- 하트 모양 SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.912 3.452-2.923 5.365-5.096 6.286-6.912.955-1.884.838-3.362.314-4.385C13.486.878 10.4.281 8.717 2.01L8 2.748zm0 0c-.319-.319-.636-.637-.717-.737-.08.1-.398.418-.717.737z"/>
+      </svg>
+      <p v-if="favoriteData && favoriteData.quicktype">
+      {{ favoriteData.quicktype.find(item => item.type === 1)?.name || 'Type 1 이름 없음' }}
+    </p>
+      <!-- 작은 빨간 x 버튼 -->
+    <span class="close-btn" @click.stop="removeItem(favoriteData.quicktype.find(item => item.type === 1)?.id)">×</span>
+    </button>
+    <button v-else id="second-quik" @click="showQuickSlotModal(1)"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
+            <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+            </svg></button></div>
+            <!-- type이 2인 경우 하트 모양 버튼, 아닌 경우 기존 버튼 -->
+  <div class="modal-btn">
+    <button v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.some(item => item.type === 2)"@click="handleButtonClick(2)">
+      <!-- 작은 네모 버튼 -->
+      <button class="small-square-button" @click="showNameInputModal(favoriteData.quicktype.find(item => item.type === 2)?.id)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
+        </svg>
+      </button>
+      <!-- 하트 모양 SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.912 3.452-2.923 5.365-5.096 6.286-6.912.955-1.884.838-3.362.314-4.385C13.486.878 10.4.281 8.717 2.01L8 2.748zm0 0c-.319-.319-.636-.637-.717-.737-.08.1-.398.418-.717.737z"/>
+      </svg>
+      <p v-if="favoriteData && favoriteData.quicktype">
+      {{ favoriteData.quicktype.find(item => item.type === 2)?.name || 'Type 2 이름 없음' }}
+    </p>
+      <!-- 작은 빨간 x 버튼 -->
+    <span class="close-btn" @click.stop="removeItem(favoriteData.quicktype.find(item => item.type === 2)?.id)">×</span>
+    </button>
+    <button v-else id="third-quik"  @click="showQuickSlotModal(2)"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
+            <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+            </svg></button> 
+          </div>
+        </div>
+
+        
+        <div v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.length > 0">
+          <div>
+  <div v-if="displayQuickData">
+    <!-- 기존 퀵 데이터 표시 -->
+    <p>{{ quickData.quick_name }}</p>
+    <p>{{ quickData.place_name }}</p>
+    <p>{{ quickData.address }}</p>
+    <p>{{ quickData.category }}</p>
+    <p>{{ quickData.isopen }}</p>
+     <!-- 수정 버튼 -->
+  <button @click="openEditModal(quickData.id)">수정</button>
+  <!-- 삭제 버튼 -->
+  <button @click="deleteQuickData(quickData.id)">삭제</button>
+  </div>
+  <div v-else-if="displayNewLocation">
+    <!-- 새 위치 데이터 표시 -->
+    <p>주소: {{ newAddress }}</p>
+  </div>
+  <div v-else>
+    <p>데이터가 없습니다.</p>
+  </div>
+  
+  <div v-if="isEditModalOpen" class="edit-modal">
+  <input type="text" v-model="editingQuickData.quick_name" placeholder="퀵슬롯 이름">
+  <input type="text" v-model="editingQuickData.place_name" placeholder="장소 이름">
+  <!-- 기타 필요한 입력 필드 추가 -->
+  <button @click="updateQuickData(editingQuickData.id, editingQuickData)">수정 완료</button>
+  <button @click="isEditModalOpen = false">취소</button>
+</div>
+</div>
           </div>
           </div>
           </div>
@@ -103,11 +195,11 @@
           </div>
   
           <div class="modal-btn">
-          <button id="history-button" @click="openHisModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
+          <router-link to="/history" id="history-button" @click="openHisModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
           <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
           <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
           <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
-          </svg></button>
+          </svg></router-link>
           <div class="modal-history-wrap" v-show="fourthModalOpen" @click="closeHisModals">
           <div class="modal-history-container" @click="preventClose">
               <div class="modal-btn"></div>
@@ -129,40 +221,7 @@
           </form>
       </div>
       </div>
-      <button id="modal-button" @click="openModal"><i class="fas fa-user fa-2x"></i></button>
-      <div class="modal-wrap" v-show="modalOpen" @click="closeModal">
-      <div class="modal-container" @click="preventClose">
-          
-          <img id="profile">
-          <div v-if="!isLoggedIn" class="modal-wrap" v-show="modalOpen" @click="modalOpen">
-          <div class="modal-container" @click.stop="">
-              <!-- 로그인 폼 -->
-              <img id="profile">
-              <div class="input_container">
-              <div>
-                  <input type="text" v-model="loginId" id="login-id-input" placeholder="ID" />
-              </div>
-              <br/>
-              <div>
-                  <input type="password" v-model="loginPassword" id="login-password-input" placeholder="PASSWORD" />
-              </div>
-              </div>
-              <div class="modal-btn">
-              <button id="login-button" @click="login">login</button>
-              <button id="register-button" @click="modalOpen">register</button>
-              </div>
-          </div>
-          </div>
-              <!-- 로그인된 경우 마이페이지 내용 표시 -->
-          <div v-else>
-              <p>마이페이지 내용이 여기에 표시됩니다.</p>
-              <!-- 로그아웃 버튼 등 마이페이지 관련 내용 -->
-          </div>
-      </div>
-      </div>
       <div id="search-map"></div>
-  
-      <!-- listData를 화면에 표시 -->
    
   </template>
   
@@ -188,6 +247,10 @@
       newLatitude: null,  // 새 마커의 위도
       newLongitude: null, // 새 마커의 경도 
       newAddress: null, // 새 마커의 주소
+      quickData:null,
+    newQuickSlotName: '',
+    isEditModalOpen: false,
+    editingQuickData: null,
     };
   },
   created() {
@@ -712,95 +775,213 @@
         console.error('Error saving mypin:', error);
       });
     },
-  
-     // 퀵슬롯 모달을 표시하는 메서드
-    showQuickSlotModal(latitude, longitude, address) {
-      const quickSlotHtml = `
-        <div>
-          <label for="quickslot-name">퀵슬롯의 이름을 입력하세요:</label>
-          <input type="text" id="quickslot-name" />
-        </div>
-        <button id="save-quickslot">저장</button>
-      `;
-  
-      const modal = document.createElement('div');
-      modal.innerHTML = quickSlotHtml;
-      document.body.appendChild(modal);
-  
-      document.getElementById('save-quickslot').addEventListener('click', () => {
-        const name = document.getElementById('quickslot-name').value;
-        this.saveQuickSlot(Number(latitude.toFixed(6)), Number(longitude.toFixed(6)), address, name);
-        document.body.removeChild(modal); // 모달 제거
-      });
-    },
-  
-  
-    // 퀵슬롯 추가 요청 메서드
-    saveQuickSlot(latitude, longitude, address, listId, name) {
-      const userToken = localStorage.getItem('userToken');
-      console.log(address, latitude, longitude)
-      axios.post(`http://localhost:8000/favorites/quick/create/${listId}/`, {
-        address: address, // 주소 문자열을 전송
-        latitude: latitude,
-        longitude: longitude,
-        list: listId,
-        name: name,
-        menu: null, // 필요에 따라 추가
-        phone: null, // 필요에 따라 추가
-        memo: "퀵슬롯 추가", // 필요에 따라 추가
-        category: '기타' // 필요에 따라 추가
-      }, {
+    showQuickSlotModal(type) {
+    
+    const quickSlotHtml = `
+      <div>
+        <label for="quickslot-name">퀵슬롯의 이름을 입력하세요:</label>
+        <input type="text" id="quickslot-name" />
+      </div>
+      <button id="save-quickslot">저장</button>
+    `;
+      
+    const modal = document.createElement('div');
+    modal.innerHTML = quickSlotHtml;
+    document.body.appendChild(modal);
+
+    document.getElementById('save-quickslot').addEventListener('click', () => {
+      const name = document.getElementById('quickslot-name').value;
+      this.saveQuickSlot(name,type);
+      document.body.removeChild(modal); // 모달 제거
+    });
+  },
+
+
+  // 퀵슬롯 추가 요청 메서드
+  saveQuickSlot(name,type) {
+    const userToken = localStorage.getItem('userToken');
+    console.log(this.newLatitude,this.newLongitude,this.newAddress)
+    axios.post(`http://localhost:8000/favorites/quick/create/`, {
+      address: this.newAddress, // 주소 문자열을 전송
+      latitude: Number(this.newLatitude.toFixed(6)),
+      longitude: Number(this.newLongitude.toFixed(6)),
+      name: name,
+      menu: null, // 필요에 따라 추가
+      phone: null, // 필요에 따라 추가
+      memo: "퀵슬롯 추가", // 필요에 따라 추가
+      category: '기타', // 필요에 따라 추가
+      type:type
+    }, {
+      headers: {
+        'Authorization': `Bearer ${userToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      console.log('QuickSlot saved:', response.data);
+    })
+    .catch(error => {
+      console.error('Error saving quickslot:', error);
+    });
+  },
+
+  // 지도 클릭 이벤트 처리 메서드
+  handleMapClick(e) {
+    const latitude = e.coord.lat();
+    const longitude = e.coord.lng();
+    console.log(`Map clicked at: ${latitude}, ${longitude}`);
+
+    // 클릭한 위치에 새로운 마커 추가
+    this.addNewMarker(latitude, longitude);
+  },
+  showNewLocation() {
+    this.displayQuickData = false; // 기존 퀵 데이터 표시를 비활성화
+    this.displayNewLocation = true; // 새 위치 데이터 표시를 활성화
+    this.newQuickSlotName = ''; 
+    this.$nextTick(() => {
+    // DOM 업데이트가 완료된 후 실행할 코드
+    this.$forceUpdate(); // 강제로 컴포넌트를 업데이트
+  });
+  },
+  updateQuickData(id, updatedData) {
+  axios.put(`http://localhost:8000/favorites/quick/update/${id}/`, updatedData, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => {
+    console.log('Quick data updated:', response.data);
+    this.isEditModalOpen = false; // 수정 모달 닫기
+    // 성공적으로 수정 후의 로직 (예: 데이터 갱신)
+  })
+  .catch(error => {
+    console.error('Error updating quick data:', error);
+  });
+},
+deleteQuickData(quickId) {
+  axios.delete(`http://localhost:8000/favorites/quick/delete/${quickId}/`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+    }
+  })
+  .then(() => {
+    console.log('Quick data deleted successfully');
+    // 여기에 성공적으로 삭제 후의 로직을 추가하세요.
+  })
+  .catch(error => {
+    console.error('Error deleting quick data:', error);
+  });
+},
+openEditModal(quickData) {
+    this.editingQuickData = {...quickData}; // 현재 퀵 데이터를 복사하여 저장
+    this.isEditModalOpen = true; // 수정 모달 열기
+  },
+  removeItem(id) {
+    axios.delete(`http://localhost:8000/favorites/quick/delete/${id}/`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+      }
+    })
+    .then(response => {
+      console.log('Item deleted successfully:', response);
+      // 성공적으로 삭제 후 UI 업데이트 또는 알림
+      this.updateUIAfterDeletion(id);
+    })
+    .catch(error => {
+      console.error('Error deleting item:', error);
+      // 에러 처리 로직
+    });
+  },
+  updateUIAfterDeletion(deletedId) {
+    // 삭제된 아이템을 UI에서 제거
+    this.favoriteData.quicktype = this.favoriteData.quicktype.filter(item => item.id !== deletedId);
+  },
+  showNameInputModal(id) {
+    const quickSlotHtml = `
+    <div>
+      <label for="quickslot-name">퀵슬롯의 이름을 입력하세요:</label>
+      <input type="text" id="quickslot-name" />
+      <button id="save-name">저장</button>
+    </div>
+  `;
+
+  const modal = document.createElement('div');
+  modal.innerHTML = quickSlotHtml;
+  document.body.appendChild(modal);
+
+  document.getElementById('save-name').addEventListener('click', () => {
+    this.updateQuickSlotName(id);
+    document.body.removeChild(modal); // 모달 제거
+  });
+  },
+  updateQuickSlotName(id) {
+    const newName = document.getElementById('quickslot-name').value;
+    const userToken = localStorage.getItem('userToken');
+    axios.put(`http://localhost:8000/favorites/quick/update/${id}/`, {
+      name: newName
+    }, {
+      headers: {
+        'Authorization': `Bearer ${userToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      console.log('QuickSlot updated:', response.data);
+      // 모달 제거 또는 추가적인 UI 업데이트
+    })
+    .catch(error => {
+      console.error('Error updating QuickSlot:', error);
+    });
+  },
+  async fetchHistory() {
+    const userToken = localStorage.getItem('userToken');
+    try {
+      const response = await fetch('http://localhost:8000/history/', {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${userToken}`,
           'Content-Type': 'application/json'
         }
-      })
-      .then(response => {
-        console.log('QuickSlot saved:', response.data);
-      })
-      .catch(error => {
-        console.error('Error saving quickslot:', error);
       });
-    },
-  
-    // 지도 클릭 이벤트 처리 메서드
-    handleMapClick(e) {
-      const latitude = e.coord.lat();
-      const longitude = e.coord.lng();
-      console.log(`Map clicked at: ${latitude}, ${longitude}`);
-  
-      // 클릭한 위치에 새로운 마커 추가
-      this.addNewMarker(latitude, longitude);
+      if (response.ok) {
+        const data = await response.json();
+        this.histories = data.histories; // 검색 기록을 데이터에 저장
+      } else {
+        throw new Error('Failed to fetch history');
+      }
+    } catch (error) {
+      console.error("There was an error fetching the history!", error);
     }
+  },
   },
 
   mounted() {
-      // 네이버 지도 API 로드
-      const script = document.createElement("script");
-      script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL+ "&ncpClientSecret=" + process.env.VUE_APP_MAPKEY+ "&submodules=geocoder";  // geocoder 서브모듈 추가
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-  
-      script.onload = () => {
-        // 네이버 지도 생성
-        this.map = new window.naver.maps.Map("search-map", {
-          center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
-          zoom: 10
-        });
-        // 모든 마커를 포함할 수 있는 LatLngBounds 객체 생성
-        this.bounds = new naver.maps.LatLngBounds();
-        // 지도 클릭 이벤트 추가 : 우클릭
-        naver. maps.Event.addListener(this.map, 'rightclick', this.handleMapClick.bind(this));
-      };
-  
-      // this.checkLoginStatus(); // 컴포넌트가 마운트될 때 로그인 상태 확인
-      this.fetchFavoriteData();  // 컴포넌트가 마운트될 때 즐겨찾기 데이터 요청
-      window.addQuickSlot = this.showQuickSlotModal.bind(this);  // 퀵슬롯 추가 요청
-      window.addMyPin = this.showListSelectionModal.bind(this);  // 마이핀 추가 요청
-      
-    }
-  };
+    // 네이버 지도 API 로드
+    const script = document.createElement("script");
+    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL+ "&ncpClientSecret=" + process.env.VUE_APP_MAPKEY+ "&submodules=geocoder";  // geocoder 서브모듈 추가
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+
+    script.onload = () => {
+      // 네이버 지도 생성
+      this.map = new window.naver.maps.Map("search-map", {
+        center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
+        zoom: 10
+      });
+      // 모든 마커를 포함할 수 있는 LatLngBounds 객체 생성
+      this.bounds = new naver.maps.LatLngBounds();
+      // 지도 클릭 이벤트 추가 : 우클릭
+      naver. maps.Event.addListener(this.map, 'rightclick', this.handleMapClick.bind(this));
+    };
+
+    //this.checkLoginStatus(); // 컴포넌트가 마운트될 때 로그인 상태 확인
+    this.fetchFavoriteData();  // 컴포넌트가 마운트될 때 즐겨찾기 데이터 요청
+    window.addQuickSlot = this.showQuickSlotModal.bind(this);  // 퀵슬롯 추가 요청
+    window.addMyPin = this.showListSelectionModal.bind(this);  // 마이핀 추가 요청
+  }
+};
   </script>
   
   
@@ -809,4 +990,3 @@
   
   
   </style>
-

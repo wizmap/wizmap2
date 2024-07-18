@@ -22,6 +22,11 @@ class QuickSlotSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuickSlot
         fields = ['id', 'name', 'user','place','type']
+
+        def create(self, validated_data):
+        # 사용자 정보를 자동으로 추가
+            validated_data['user'] = self.context['request'].user
+            return super().create(validated_data)
         
 class PlaceSerializer(serializers.ModelSerializer):
     class Meta:

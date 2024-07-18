@@ -4,6 +4,16 @@
       crossorigin="anonymous" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
+  <div id="main">
+      <div id="center">
+        <img id="logo">
+        <form id="search">
+          <input type="text" id="home-search-input" placeholder=" 장소를 입력하세요">
+          <router-link to="/searchresult" id="home-search-button"><i class="fas fa-search fa-lg"></i></router-link>
+        </form>
+      </div>
+    </div>
+
   <div id="map"></div>
 
 </template>
