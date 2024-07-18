@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'search',
     'history',
     'favorites',
+    'searchengine',
     
     #cors
     'corsheaders',
