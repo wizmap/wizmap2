@@ -121,65 +121,65 @@
           <button id="favorits-button" @click="openFavModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
           </svg></button>
-          <div class="modal-favorits-wrap" v-show="thirdModalOpen" @click="closeFavModals">
+         <!--즐겨찾기 리스트 목록 표시-->
+         <div class="modal-favorits-wrap" v-show="thirdModalOpen" @click="closeFavModals">
           <div class="modal-favorits-container" @click="preventClose">
-          <div>
-            <!-- listData가 있을 경우 listData를 띄우기 -->
-            <div v-if="listData && listData.length > 0">
-              <ul>
-                <li v-for="(place, index) in listData" :key="index">
-                  <h3 v-if="!place.editMode">{{ place.mypin_name }}</h3>
-                  <!-- 수정 모드일 때 입력 필드 표시 -->
-                  <input v-else v-model="place.newMypinName" placeholder="새로운 이름 입력">
-                  
-                  <!-- 수정 모드 토글 버튼 -->
-                  <button @click="place.editMode = !place.editMode">
-                    {{ place.editMode ? '취소' : '수정' }}
-                  </button>
-                  
-                  <!-- 수정 완료 버튼 -->
-                  <button v-if="place.editMode" @click="updateMypinName(place.mypin_id, place.newMypinName)">수정 완료</button>
-                  
-                  <!-- 삭제 버튼 -->
-                  <button @click="deletePlace(place.mypin_id)">삭제</button>
-                  
-                  <p>장소 이름: {{ place.place_name }}</p>
-                  <p>주소: {{ place.address }}</p>
-                  <p>카테고리: {{ place.category }}</p>
-                  <p>영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
-                  <p>리스트 이름: {{ place.list_name }}</p>
-                </li>
-              </ul>
-            </div>
-            <!-- listData가 없고 favoriteData만 있을 경우 favoriteData를 띄우기 -->
-            <div v-else-if="favoriteData && favoriteData.list && favoriteData.list.length > 0">
-              <ul>
-                <li v-for="favorite in favoriteData.list" :key="favorite.id">
-                  <!-- 리스트 상세 표시 -->
-                  <button @click="handleFavoriteClick(favorite.id)" v-if="!favorite.editMode">{{ favorite.name }}</button>
-  
-                  <!-- 수정 모드일 때 입력 필드 표시 -->
-                  <input v-else v-model="favorite.newName" placeholder="새로운 이름 입력">
-                  
-                  <!-- 수정 모드 토글 버튼 -->
-                  <button @click="favorite.editMode = !favorite.editMode">
-                    {{ favorite.editMode ? '취소' : '수정' }}
-                  </button>
-                  
-                  <!-- 수정 완료 버튼 -->
-                  <button v-if="favorite.editMode" @click="updateFavoriteName(favorite.id, favorite.newName)">수정 완료</button>
-                  
-                  <!-- 삭제 버튼 -->
-                  <button @click="deleteFavorite(favorite.id)">삭제</button>
-                </li>
-              </ul>
-            </div>
-            <!-- 둘 다 없을 경우 메시지 표시 -->
-            <div v-else>
-              <p>장소 정보가 없습니다.</p>
-            </div>
-          </div>
-          <div class="modal-btn"></div>
+              <div class="modal-btn">
+                <div id="favorite-results" v-if="favoriteData && favoriteData.list">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item" v-for="favorite in favoriteData.list" :key="favorite.id">
+                    <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode">
+                      <p id="name">{{ favorite.name }}</p>
+                    </button>
+                     <!-- 수정 모드일 때 입력 필드 표시 -->
+                    <input v-else v-model="favorite.newName" placeholder="새로운 이름 입력">
+                    <!-- 수정 모드 토글 버튼 -->
+                    <button @click="favorite.editMode = !favorite.editMode">
+                      {{ favorite.editMode ? '취소' : '수정' }}
+                    </button>
+                    <!-- 수정 완료 버튼 -->
+                    <button v-if="favorite.editMode" @click="updateFavoriteName(favorite.id, favorite.newName)">수정 완료</button>
+                    <!-- 삭제 버튼 -->
+                    <button @click="deleteFavorite(favorite.id)">삭제</button>
+
+                     <!-- 즐겨찾기 리스트 디테일 표시 -->
+                      <div class="modal-btn">
+                        <div class="modal-favorite-detail-wrap" v-show="thirdDetailModalOpen" @click="closeFavoriteDetailModals">
+                          <div class="modal-favorite-detail-container" @click="preventClose">
+                              <div id="place-details" v-if="listData">
+                                <ul>
+                                  <li v-for="(place, index) in listData" :key="index">
+                                    <div v-if="!place.editMode">
+                                      <p id="name-details" v-if="!place.editMode">{{ place.place_name }}</p>
+                                      <p id="category">{{ place.category }}</p>
+                                      <p id="address-details">주소: {{ place.address }}</p>
+                                      <p id="isopen">영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
+                                    </div>
+                                    <!-- 수정 모드일 때 입력 필드 표시 -->
+                                    <input v-else v-model="place.newMypinName" placeholder="새로운 이름 입력">
+                                    
+                                    <!-- 수정 모드 토글 버튼 -->
+                                    <button @click="place.editMode = !place.editMode">
+                                      {{ place.editMode ? '취소' : '수정' }}
+                                    </button>
+                                    <!-- 수정 완료 버튼 -->
+                                    <button v-if="place.editMode" @click="updateMypinName(place.mypin_id, place.newMypinName)">수정완료</button>
+                                    
+                                    <!-- 삭제 버튼 -->
+                                    <button @click="deletePlace(place.mypin_id)">삭제</button>
+                                  </li>
+                                </ul>
+                              </div>
+                              <div v-else>
+                              <p>장소 정보가 없습니다.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </li>
+                </ul>
+              </div>
+              </div>
           
           </div>
           </div>
@@ -262,6 +262,7 @@
       firstDetailModalOpen: false,
       secondModalOpen: false,
       thirdModalOpen: false,
+      thirdDetailModalOpen: false, // 즐겨찾기 리스트 디테일
       fourthModalOpen: false,
       modalOpen: false,
       isLoggedIn: false, // 로그인 상태
@@ -302,6 +303,12 @@
         this.thirdModalOpen = true;
         this.closeModalsExcept('thirdModalOpen');
       },
+      // 즐겨찾기 리스트 디테일
+      openFavoriteDetailModal(result) {
+        this.fetchlistData(result.id)//id값으로 장소데이터 불러오기
+        this.thirdDetailModalOpen = true;
+        this.closeModalsExcept('thirdDetailModalOpen');
+      },
       openHisModal() {
         this.fourthModalOpen = true;
         this.closeModalsExcept('fourthModalOpen');
@@ -312,6 +319,12 @@
       },
       closeFavoriteModals() {
         this.favoriteModalOpen = false;
+      },
+      // 즐겨찾기 리스트 디테일
+      closeFavoriteDetailModals() {
+        this.favoriteModalOpen = true;
+        this.thirdModalOpen = true;
+        this.thirdDetailModalOpen = false;
       },
       closeSearchDetailModals() {
         this.favoriteModalOpen = true;
