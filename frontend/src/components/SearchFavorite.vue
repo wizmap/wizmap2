@@ -473,6 +473,7 @@
           localStorage.setItem('userToken', response.data.access); // 토큰 저장
           this.isLoggedIn = true; // 로그인 상태 업데이트
           this.modalOpen = false; // 로그인 성공 후 모달 닫기
+          window.location.reload();
           })
           .catch(error => {
             console.error("Login error:", error);
