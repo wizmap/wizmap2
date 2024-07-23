@@ -1012,14 +1012,7 @@ updateLocalQuickSlotName(id, newName) {
         console.error("There was an error fetching the QuickView data!", error);
       });
   },
-  showNewLocation() {
-  this.displayQuickData = false;
-  this.displayNewLocation = true;
-  this.newQuickSlotName = ''; // 입력 필드 초기화
-  this.$nextTick(() => {
-    this.$forceUpdate();
-  });
-  },
+
 },
   mounted() {
     // 네이버 지도 API 로드
