@@ -21,7 +21,7 @@ class MyPinSerializer(serializers.ModelSerializer):
 class QuickSlotSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuickSlot
-        fields = ['id', 'name', 'user','place','type']
+        fields = ['id', 'name', 'user','place','type','icon']
 
         def create(self, validated_data):
         # 사용자 정보를 자동으로 추가
