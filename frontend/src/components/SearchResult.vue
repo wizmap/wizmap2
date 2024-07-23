@@ -354,10 +354,10 @@
           if (userToken) {
             headers['Authorization'] = `Bearer ${userToken}`; // 헤더에 토큰 추가
           }
-          const response = await fetch('http://localhost:8000/search/', {
+          const response = await fetch('http://localhost:8000/searchengine/', {
             method: 'POST',
             headers,
-            body: JSON.stringify({ search_term: query })
+            body: JSON.stringify({ search: query })
           });
           this.searchResults = await response.json();
   
