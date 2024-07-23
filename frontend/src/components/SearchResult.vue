@@ -344,6 +344,7 @@
       console.error("There was an error fetching the history!", error);
     }
   },
+
   async fetchSearchResults() {
       if (!this.searchTerm) {
         console.error("Search term is null or empty");
@@ -386,6 +387,7 @@
               marker.addListener('click', () => {
                 this.fetchPlaceDetails(result.place.id);
                 this.openSearchDetailModal(result);
+
               });
               this.markers.push(marker);
             });
