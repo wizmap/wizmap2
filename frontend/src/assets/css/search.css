@@ -2,6 +2,26 @@ body {
 margin: 0px; /* 기본 margin 없애기 */
 }
 
+/* 로그인 필요 알림창 */
+.alert-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.5);
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.alert-box {
+background: white;
+padding: 20px;
+border-radius: 5px;
+text-align: center;
+}
+
 /* 서치 모달 */
 #name {
 font-size: large;
@@ -101,7 +121,7 @@ box-shadow: 5px 5px 5px gray;
 z-index: 3;
 }
 
-.modal-search-detail-wrap {
+.modal-search-detail-wrap, .modal-favorits-detail-wrap {
 position: fixed;
 top: 50%;
 left: 740PX;
@@ -210,7 +230,7 @@ overflow-y: scroll;
 z-index: 3;
 }
 
-.modal-search-detail-container {
+.modal-search-detail-container, .modal-favorits-detail-container {
 position: fixed;
 top: 0;
 left: 370px;
@@ -235,19 +255,19 @@ margin-left: 1.5em;
 }
 
 .modal-quikslot-container::-webkit-scrollbar, .modal-favorits-container::-webkit-scrollbar, .modal-history-container::-webkit-scrollbar, .modal-search-container::-webkit-scrollbar,
-.modal-search-detail-container::-webkit-scrollbar {
+.modal-search-detail-container::-webkit-scrollbar, .modal-favorite-detail-container::-webkit-scrollbar {
 width: 5px;  /* 스크롤바의 너비 */
 height: 5px;
 }
 
-.modal-quikslot-container::-webkit-scrollbar-thumb, .modal-search-container::-webkit-scrollbar-thumb, .modal-search-detail-container::-webkit-scrollbar-thumb {
+.modal-quikslot-container::-webkit-scrollbar-thumb, .modal-search-container::-webkit-scrollbar-thumb, .modal-search-detail-container::-webkit-scrollbar-thumb, .modal-favorite-detail-container::-webkit-scrollbar-thumb {
 height: 30%; /* 스크롤바의 길이 */
 background: #727171; /* 스크롤바의 색상 */
 
 border-radius: 10px;
 }
 
-.modal-search-container::-webkit-scrollbar-track, .modal-search-detail-container::-webkit-scrollbar-track {
+.modal-search-container::-webkit-scrollbar-track, .modal-search-detail-container::-webkit-scrollbar-track, .modal-favorite-detail-container::-webkit-scrollbar-track {
 background: rgba(171, 171, 171, 0.1);  /*스크롤바 뒷 배경 색상*/
 }
 

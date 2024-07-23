@@ -31,8 +31,15 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const isLoggedIn = localStorage.getItem('userToken') // 로그인 상태 확인
     if (to.matched.some(record => record.meta.requiresAuth) && !isLoggedIn) {
-        // 인증이 필요한 페이지에 접근하려고 할 때 로그인되어있지 않다면 searchresult 페이지로 이동
-        next('/searchresult')
+        //인증이 필요한 페이지에 접근하려고 할 때 로그인되어있지 않을때
+        if (to.name === 'home') {
+            // Home.vue에서 로그아웃한 경우 그대로 Home.vue
+            next('/')
+        }
+        // 아니면 searchresult 페이지로 이동
+        else {
+            next('/searchresult')
+        }
     } else {
         next()
     }

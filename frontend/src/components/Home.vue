@@ -7,9 +7,9 @@
   <div id="main">
       <div id="center">
         <img id="logo">
-        <form id="search">
-          <input type="text" id="home-search-input" placeholder=" 장소를 입력하세요">
-          <router-link to="/searchresult" id="home-search-button"><i class="fas fa-search fa-lg"></i></router-link>
+        <form id="search" @submit.prevent="navigateToSearchResult({ search: searchTerm })">
+          <input type="text" v-model="searchTerm" id="home-search-input" placeholder=" 장소를 입력하세요">
+          <router-link to="/searchresult" id="home-search-button" @click="search"><i class="fas fa-search fa-lg"></i></router-link>
         </form>
       </div>
     </div>
@@ -24,8 +24,22 @@ import axios from 'axios';
 export default {
   data() {
     return {
-
+      searchTerm: ''
     };
+  },
+  methods: {
+    search() {
+      this.$router.push({ name: 'SearchResult', query: { searchTerm: this.searchTerm } });
+    },
+    navigateToSearchResult(history) {
+        if (history.place) {
+          // 장소 ID를 쿼리 파라미터로 전달
+          this.$router.push({ name: 'SearchResult', query: { placeId: history.place.id } });
+        } else {
+          // 검색어를 쿼리 파라미터로 전달
+          this.$router.push({ name: 'SearchResult', query: { searchTerm: history.search } });
+        }
+      }
   },
   mounted() {
     // 네이버 지도 API 로드

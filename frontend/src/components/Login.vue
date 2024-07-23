@@ -32,7 +32,7 @@
         <div v-else class="mypage_container">
           <p>{{loginId}}님</p>
           <!-- 로그아웃 버튼 추가 -->
-          <router-link to="/searchresult" id="logout-button" @click="logout">로그아웃</router-link>
+          <button id="logout-button" @click="logout">로그아웃</button>
           <button id="delete-account-button" @click="confirmDeleteAccount">회원탈퇴</button>
   
         </div>
@@ -194,6 +194,12 @@
         localStorage.removeItem('userToken'); // 토큰 삭제
         this.isLoggedIn = false; // 로그인 상태 업데이트
         this.modalCheck = false; // 로그아웃 후 모달 닫기
+
+        if (this.$route.name === 'home') {
+          this.$router.push({ name: 'home' }); // Home.vue로 이동
+        } else {
+          this.$router.push({ name: 'SearchResult' }); // SearchResult.vue로 이동
+        }
       },
       closeLoginFailedModal() {
       this.loginFailed = false;
