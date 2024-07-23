@@ -70,7 +70,7 @@
   
       <div id="main">
       <div id="search-center">
-        <router-link to="/"><img id="search-logo"></router-link>
+          <router-link to="/"><img id="search-logo"></router-link>
           <form id="search"  @submit.prevent="navigateToSearchResult({ search: searchTerm })">
             <input type="text" v-model="searchTerm" id="search-input" placeholder="       장소를 입력하세요" @focus="showHistory" @blur="hideHistory">
               <router-link to ="/searchresult" id="search-button" @click="search"><i class="fas fa-search fa-lg"></i></router-link>

@@ -344,8 +344,8 @@
       console.error("There was an error fetching the history!", error);
     }
   },
-  async fetchSearchResults() {
-      if (!this.searchTerm) {
+  async fetchSearchResults() {   //query
+      if (!this.searchTerm) {  //추가
         console.error("Search term is null or empty");
         return;
       }
@@ -357,10 +357,10 @@
         if (userToken) {
           headers['Authorization'] = `Bearer ${userToken}`;
         }
-        const response = await fetch('http://localhost:8000/search/', {
+        const response = await fetch('http://localhost:8000/searchengine/', {
           method: 'POST',
           headers,
-          body: JSON.stringify({ search_term: this.searchTerm })
+          body: JSON.stringify({ search: this.searchTerm }) //변경
         });
         this.searchResults = await response.json();
 
@@ -386,6 +386,8 @@
               marker.addListener('click', () => {
                 this.fetchPlaceDetails(result.place.id);
                 this.openSearchDetailModal(result);
+                // this.firstDetailModalOpen = true; 
+                // 데이터 로딩 후 모달 열기
               });
               this.markers.push(marker);
             });
