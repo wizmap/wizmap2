@@ -881,24 +881,6 @@
     // 클릭한 위치에 새로운 마커 추가
     this.addNewMarker(latitude, longitude);
   },
-
-  
-  updateQuickData(id, updatedData) {
-  axios.put(`http://localhost:8000/favorites/quick/update/${id}/`, updatedData, {
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(response => {
-    console.log('Quick data updated:', response.data);
-    this.isEditModalOpen = false; // 수정 모달 닫기
-    // 성공적으로 수정 후의 로직 (예: 데이터 갱신)
-  })
-  .catch(error => {
-    console.error('Error updating quick data:', error);
-  });
-},
 deleteQuickData(quickId) {
   axios.delete(`http://localhost:8000/favorites/quick/delete/${quickId}/`, {
     headers: {
