@@ -89,7 +89,7 @@
               <div id="favorite-results" v-if="favoriteData && favoriteData.list">
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item" v-for="favorite in favoriteData.list" :key="favorite.id">
-                    <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode">
+                    <button @click="openFavoriteDetailModal" v-if="!favorite.editMode"> 
                       <p id="name">{{ favorite.name }}</p>
                     </button>
                     <!-- 수정 모드일 때 입력 필드 표시 -->
@@ -102,39 +102,40 @@
                     <button v-if="favorite.editMode" @click="updateFavoriteName(favorite.id, favorite.newName)">수정 완료</button>
                     <!-- 삭제 버튼 -->
                     <button @click="deleteFavorite(favorite.id)">삭제</button>
-
-                    <!-- 즐겨찾기 리스트 디테일 표시 -->
-                    <div class="modal-btn">
-                      <div class="modal-favorite-detail-wrap" v-show="thirdDetailModalOpen" @click="closeFavoriteDetailModals">
-                        <div class="modal-favorite-detail-container" @click="preventClose">
-                          <div id="place-details" v-if="listData">
-                            <ul>
-                              <li v-for="(place, index) in listData" :key="index">
-                                <div v-if="!place.editMode">
-                                  <p id="name-details" v-if="!place.editMode">{{ place.place_name }}</p>
-                                  <p id="category">{{ place.category }}</p>
-                                  <p id="address-details">주소: {{ place.address }}</p>
-                                  <p id="isopen">영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
-                                </div>
-                                <!-- 수정 모드일 때 입력 필드 표시 -->
-                                <input v-else v-model="place.newMypinName" placeholder="새로운 이름 입력">
-                                <!-- 수정 모드 토글 버튼 -->
-                                <button @click="place.editMode = !place.editMode">
-                                  {{ place.editMode ? '취소' : '수정' }}
-                                </button>
-                                <!-- 수정 완료 버튼 -->
-                                <button v-if="place.editMode" @click="updateMypinName(place.mypin_id, place.newMypinName)">수정완료</button>
-                                <!-- 삭제 버튼 -->
-                                <button @click="deletePlace(place.mypin_id)">삭제</button>
-                              </li>
-                            </ul>
-                          </div>
-                          <div v-else>
-                            <p>장소 정보가 없습니다.</p>
+                     <!-- 즐겨찾기 리스트 디테일 표시 -->
+                      <div class="modal-btn">
+                        <div class="modal-favorits-detail-wrap" v-show="thirdDetailModalOpen" @click="closeFavoriteDetailModals">
+                          <div class="modal-favorits-detail-container" @click="preventClose">
+                              <div id="place-details" v-if="listData">
+                                <ul>
+                                  <li v-for="(place, index) in listData" :key="index">
+                                    <div v-if="!place.editMode">
+                                      <p id="name-details" v-if="!place.editMode">{{ place.place_name }}</p>
+                                      <p id="category">{{ place.category }}</p>
+                                      <p id="address-details">주소: {{ place.address }}</p>
+                                      <p id="isopen">영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
+                                    </div>
+                                    <!-- 수정 모드일 때 입력 필드 표시 -->
+                                    <input v-else v-model="place.newMypinName" placeholder="새로운 이름 입력">
+                                    
+                                    <!-- 수정 모드 토글 버튼 -->
+                                    <button @click="place.editMode = !place.editMode">
+                                      {{ place.editMode ? '취소' : '수정' }}
+                                    </button>
+                                    <!-- 수정 완료 버튼 -->
+                                    <button v-if="place.editMode" @click="updateMypinName(place.mypin_id, place.newMypinName)">수정완료</button>
+                                    
+                                    <!-- 삭제 버튼 -->
+                                    <button @click="deletePlace(place.mypin_id)">삭제</button>
+                                  </li>
+                                </ul>
+                              </div>
+                              <div v-else>
+                              <p>장소 정보가 없습니다.</p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
                   </li>
                 </ul>
               </div>
@@ -157,52 +158,21 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div id="main">
-    <div id="search-center">
-      <img id="search-logo">
-      <form id="search">
-        <input type="text" id="search-input" placeholder="       장소를 입력하세요">
-        <button id="search-button"><i class="fas fa-search fa-lg"></i></button>
-      </form>
-    </div>
-  </div>
-  <button id="modal-button" @click="openModal"><i class="fas fa-user fa-2x"></i></button>
-  <div class="modal-wrap" v-show="modalOpen" @click="closeModal">
-    <div class="modal-container" @click="preventClose">
-      <img id="profile">
-      <div v-if="!isLoggedIn" class="modal-wrap" v-show="modalOpen" @click="modalOpen">
-        <div class="modal-container" @click.stop="">
-          <!-- 로그인 폼 -->
-          <img id="profile">
-          <div class="input_container">
-            <div>
-              <input type="text" v-model="loginId" id="login-id-input" placeholder="ID" />
-            </div>
-            <br/>
-            <div>
-              <input type="password" v-model="loginPassword" id="login-password-input" placeholder="PASSWORD" />
-            </div>
-          </div>
-          <div class="modal-btn">
-            <button id="login-button" @click="login">login</button>
-            <button id="register-button" @click="modalOpen">register</button>
-          </div>
-        </div>
       </div>
-      <!-- 로그인된 경우 마이페이지 내용 표시 -->
-      <div v-else>
-        <p>마이페이지 내용이 여기에 표시됩니다.</p>
-        <!-- 로그아웃 버튼 등 마이페이지 관련 내용 -->
-      </div>
-    </div>
+  
   </div>
-  <div id="search-map"></div>
-
-  <!-- listData를 화면에 표시 -->
-</template>
+      <div id="main">
+      <div id="search-center">
+        <router-link to="/"><img id="search-logo"></router-link>
+          <form id="search" @submit.prevent="navigateToSearchResult({ search: searchTerm })">
+            <input type="text" id="search-input" placeholder="       장소를 입력하세요">
+              <router-link to="/searchresult" id="search-button" @click="search"><i class="fas fa-search fa-lg"></i></router-link>
+          </form>
+      </div>
+      </div>
+      <div id="search-map"></div>
+   
+  </template>
   
   
   
@@ -220,6 +190,7 @@
       thirdDetailModalOpen: false, // 즐겨찾기 리스트 디테일
       fourthModalOpen: false,
       modalOpen: false,
+      searchTerm: '', //검색어
       isLoggedIn: false, // 로그인 상태
       listData: null,  // 리스트 상세 데이터
       favoriteData: null, // 즐겨찾기 데이터 
@@ -316,6 +287,12 @@
         if (exceptModal == 'firstDetailModalOpen') {
           this.firstModalOpen = true;
         }
+        if (exceptModal == 'thirdModalOpen') {
+          this.thirdModalOpen = true;
+        }
+        if (exceptModal == 'thirdDetailModalOpen') {
+          this.thirdModalOpen = true;
+        }
         if (exceptModal == 'modalOpen') {
           if (this.favoriteModalOpen == 'true') {
             this.favoriteModalOpen = true;
@@ -331,6 +308,12 @@
         }
         if (exceptModal == 'firstDetailModalOpen') {
           this.firstModalOpen = true;
+        }
+        if (exceptModal == 'thirdModalOpen') {
+          this.thirdModalOpen = true;
+        }
+        if (exceptModal == 'thirdDetailModalOpen') {
+          this.thirdModalOpen = true;
         }
         if (exceptModal == 'modalOpen') {
           if (this.firstModalOpen == 'true') {
@@ -348,6 +331,12 @@
         if (exceptModal == 'firstDetailModalOpen') {
           this.firstModalOpen = true;
         }
+        if (exceptModal == 'thirdModalOpen') {
+          this.thirdModalOpen = true;
+        }
+        if (exceptModal == 'thirdDetailModalOpen') {
+          this.thirdModalOpen = true;
+        }
         if (exceptModal == 'modalOpen') {
           if (this.firstDetailModalOpen == 'true') {
             this.firstDetailModalOpen = true;
@@ -363,6 +352,12 @@
         }
         if (exceptModal == 'firstDetailModalOpen') {
           this.firstModalOpen = true;
+        }
+        if (exceptModal == 'thirdModalOpen') {
+          this.thirdModalOpen = true;
+        }
+        if (exceptModal == 'thirdDetailModalOpen') {
+          this.thirdModalOpen = true;
         }
         if (exceptModal == 'modalOpen') {
           if (this.secondModalOpen == 'true') {
@@ -380,6 +375,12 @@
         if (exceptModal == 'firstDetailModalOpen') {
           this.firstModalOpen = true;
         }
+        if (exceptModal == 'thirdModalOpen') {
+          this.thirdModalOpen = true;
+        }
+        if (exceptModal == 'thirdDetailModalOpen') {
+          this.thirdModalOpen = true;
+        }
         if (exceptModal == 'modalOpen') {
           if (this.thirdModalOpen == 'true') {
             this.thirdModalOpen = true;
@@ -389,12 +390,40 @@
         this.thirdModalOpen = false;
         }
       }
+      if (exceptModal !== 'thirdDetailModalOpen') {
+        if (exceptModal == 'firstModalOpen') {
+          this.firstModalOpen = true;
+        }
+        if (exceptModal == 'firstDetailModalOpen') {
+          this.firstModalOpen = true;
+        }
+        if (exceptModal == 'thirdModalOpen') {
+          this.thirdModalOpen = true;
+        }
+        if (exceptModal == 'thirdDetailModalOpen') {
+          this.thirdModalOpen = true;
+        }
+        if (exceptModal == 'modalOpen') {
+          if (this.firstDetailModalOpen == 'true') {
+            this.firstDetailModalOpen = true;
+          }
+        }
+        else {
+        this.thirdDetailModalOpen = false;
+        }
+      }
       if (exceptModal !== 'fourthModalOpen') {
         if (exceptModal == 'firstModalOpen') {
           this.firstModalOpen = true;
         }
         if (exceptModal == 'firstDetailModalOpen') {
           this.firstModalOpen = true;
+        }
+        if (exceptModal == 'thirdModalOpen') {
+          this.thirdModalOpen = true;
+        }
+        if (exceptModal == 'thirdDetailModalOpen') {
+          this.thirdModalOpen = true;
         }
         if (exceptModal == 'modalOpen') {
           if (this.fourthModalOpen == 'true') {
@@ -414,6 +443,19 @@
         }
         this.modalOpen = false;
       }
+      },
+      // 검색어를 searchresult로 전달
+      search() {
+      this.$router.push({ name: 'SearchResult', query: { searchTerm: this.searchTerm } });
+    },
+    navigateToSearchResult(history) {
+        if (history.place) {
+          // 장소 ID를 쿼리 파라미터로 전달
+          this.$router.push({ name: 'SearchResult', query: { placeId: history.place.id } });
+        } else {
+          // 검색어를 쿼리 파라미터로 전달
+          this.$router.push({ name: 'SearchResult', query: { searchTerm: history.search } });
+        }
       },
   
     // 로그인 요청

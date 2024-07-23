@@ -1,4 +1,6 @@
-from search.models import Place
+from search.models import Place, BusinessHour
+from search.serializers import PlaceSerializer, BusinessHourSerializer
+from history.views import save_history
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 from rest_framework.views import APIView
@@ -7,8 +9,9 @@ from dotenv import load_dotenv
 import os
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
-# import chromadb
-# from chromadb.config import Settings
+import chromadb
+from chromadb.config import Settings
+import asyncio
 
 load_dotenv()
 
@@ -20,7 +23,7 @@ embedding = OpenAIEmbeddings(
 )
 
 # client = chromadb.HttpClient(
-#     host="43.203.253.218", port=8000, settings=Settings(allow_reset=True)
+#     host="13.125.226.6", port=8000, settings=Settings(allow_reset=True)
 # )
 # client.reset()
 # collection = client.get_or_create_collection("my_collection")
@@ -72,19 +75,38 @@ vectordb_instance = Chroma(
 # vectordb_instance = Chroma(
 #         client=client,
 #         collection_name="my_collection",
-#         embedding_function=embedding
+#         embedding_function=embedding,
 #     )
 
 @permission_classes([AllowAny])
 class TestView(APIView):
     def post(self, request):
         search = request.data.get('search')
-        retriever = vectordb_instance.as_retriever(search_kwargs={"k": 10})
+        
+        if request.user.is_authenticated:
+            save_history(user=request.user, search=search)
+        
+        retriever = vectordb_instance.as_retriever(
+            # 검색 유형을 "유사도 점수 임계값"으로 설정합니다.
+            search_type="similarity_score_threshold",
+            search_kwargs={"score_threshold": 0.2,"k":10},
+        )
         docs = retriever.invoke(search)
-        # result = [doc.metadata["id"] for doc in docs]
         a = []
         for doc in docs:
             a.append(doc.metadata["id"])
             print(doc)
 
-        return Response(a)
+        places = Place.objects.filter(id__in=a)
+            
+        place_data = []
+        for place in places:
+            business_hours = BusinessHour.objects.filter(place=place)
+            business_hour_serializer = BusinessHourSerializer(business_hours, many=True)
+            place_serializer = PlaceSerializer(place)
+            place_data.append({
+                'place': place_serializer.data,
+                'business_hours': business_hour_serializer.data
+            })
+
+        return Response(place_data)
