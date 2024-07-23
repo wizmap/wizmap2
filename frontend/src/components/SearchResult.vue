@@ -358,10 +358,10 @@
         if (userToken) {
           headers['Authorization'] = `Bearer ${userToken}`;
         }
-        const response = await fetch('http://localhost:8000/search/', {
+        const response = await fetch('http://localhost:8000/searchengine/', {
           method: 'POST',
           headers,
-          body: JSON.stringify({ search_term: this.searchTerm })
+          body: JSON.stringify({ search: this.searchTerm })
         });
         this.searchResults = await response.json();
 
