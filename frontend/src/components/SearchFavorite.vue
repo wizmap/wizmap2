@@ -34,10 +34,15 @@
                     </svg>
                   </button>
                   <!-- 하트 모양 SVG -->
-                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.912 3.452-2.923 5.365-5.096 6.286-6.912.955-1.884.838-3.362.314-4.385C13.486.878 10.4.281 8.717 2.01L8 2.748zm0 0c-.319-.319-.636-.637-.717-.737-.08.1-.398.418-.717.737z"/>
-                  </svg>
-                  <p v-if="favoriteData && favoriteData.quicktype">
+                  
+                    <button v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.some(item => item.type === index)" @click="handleButtonClick(index)">
+                      <!-- 아이콘 변경 -->
+                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi" :class="getIconClass(index)" viewBox="0 0 16 16">
+                        <path :d="getIconPath(favoriteData.quicktype.find(item => item.type === index)?.icon-1)"></path>
+                      </svg>
+                    </button>
+                 
+                   <p v-if="favoriteData && favoriteData.quicktype">
                     {{ favoriteData.quicktype.find(item => item.type === index)?.name || `Type ${index} 이름 없음` }}
                   </p>
                   <!-- 작은 빨간 x 버튼 -->
@@ -49,7 +54,6 @@
                   </svg>
                 </button>
               </div>
-
               
             </div>
 
@@ -923,21 +927,21 @@ openEditModal(quickData) {
     <input type="text" id="quickslot-name" />
     <div>
       <button class="icon-button" data-icon="1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M8 3.293l-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9.293l-6-6zM1 9.293V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9.293l-7-7-7 7zM7.5 10v5h1v-5h-1z"/>
-        </svg>
-      </button>
-      <button class="icon-button" data-icon="2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.912 3.452-2.923 5.365-5.096 6.286-6.912.955-1.884.838-3.362.314-4.385C13.486.878 10.4.281 8.717 2.01L8 2.748zm0 0c-.319-.319-.636-.637-.717-.737-.08.1-.398.418-.717.737z"/>
-        </svg>
-      </button>
-      <button class="icon-button" data-icon="3">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-building" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M6.5 7.5v-1h3v1h-3zm0 2v-1h3v1h-3zm0 2v-1h3v1h-3zm-2-4v-1h1v1h-1zm0 2v-1h1v1h-1zm0 2v-1h1v1h-1z"/>
-          <path d="M14 1H2a1 1 0 0 0-1 1v13h14V2a1 1 0 0 0-1-1zM3 14v-4h2v4H3zm3 0v-4h4v4H6zm5 0v-4h2v4h-2zM3 9V4h2v5H3zm3 0V4h4v5H6zm5 0V4h2v5h-2z"/>
-        </svg>
-      </button>
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d='M8 3.293l-6 6V15h12v-5.707l-6-6zm0-1.414l6.707 6.707-.707.707H13v4h-2v-3H5v3H3v-4H1.414l-.707-.707L8 1.879z'/>
+    </svg>
+  </button>
+  <button class="icon-button" data-icon="2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.912 3.452-2.923 5.365-5.096 6.286-6.912.955-1.884.838-3.362.314-4.385C13.486.878 10.4.281 8.717 2.01L8 2.748zm0 0c-.319-.319-.636-.637-.717-.737-.08.1-.398.418-.717.737z"/>
+    </svg>
+  </button>
+  <button class="icon-button" data-icon="3">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-building" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M6.5 7.5v-1h3v1h-3zm0 2v-1h3v1h-3zm0 2v-1h3v1h-3zm-2-4v-1h1v1h-1zm0 2v-1h1v1h-1zm0 2v-1h1v1h-1z"/>
+      <path d='M15.5 1h-15C.223 1 0 1.224 0 1.5v13c0 .276.223.5.5.5H1v-1h1v1h12v-1h1v1h.5c.277 0 .5-.224.5-.5v-13c0-.276-.223-.5-.5-.5zM1 2h14v10H1V2zm1 11h5v-1H2v1zm6 0h5v-1H8v1zm-6-2h5v-1H2v1zm6 0h5v-1H8v1zm-6-2h5v-1H2v1zm6 0h5v-1H8v1zm-6-2h5V6H2v1zm6 0h5V6H8v1zm-6-2h5V4H2v1zm6 0h5V4H8v1z'/>
+    </svg>
+  </button>
     </div>
     <input type="hidden" id="quickslot-icon" />
     <button id="save-name">저장</button>
@@ -1022,6 +1026,28 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
       .catch(error => {
         console.error("There was an error fetching the QuickView data!", error);
       });
+  },
+  getIconClass(index) {
+    const icon = this.favoriteData.quicktype.find(item => item.type === index)?.icon;
+    switch (icon) {
+      case 1: return 'bi-house-fill';
+      case 2: return 'bi-heart-fill';
+      case 3: return 'bi-building';
+      default: return ''; // 기본값 혹은 에러 처리
+    }
+  },
+  getIconPath(index) {
+    const icon = this.favoriteData.quicktype.find(item => item.type === index)?.icon;
+    switch (icon) {
+      case 1:
+        return 'M8 3.293l-6 6V15h12v-5.707l-6-6zm0-1.414l6.707 6.707-.707.707H13v4h-2v-3H5v3H3v-4H1.414l-.707-.707L8 1.879z'; // 집 모양 SVG path
+      case 2:
+        return 'M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.912 3.452-2.923 5.365-5.096 6.286-6.912.955-1.884.838-3.362.314-4.385C13.486.878 10.4.281 8.717 2.01L8 2.748zm0 0c-.319-.319-.636-.637-.717-.737-.08.1-.398.418-.717.737z'; // 하트 모양 SVG path
+      case 3:
+        return 'M15.5 1h-15C.223 1 0 1.224 0 1.5v13c0 .276.223.5.5.5H1v-1h1v1h12v-1h1v1h.5c.277 0 .5-.224.5-.5v-13c0-.276-.223-.5-.5-.5zM1 2h14v10H1V2zm1 11h5v-1H2v1zm6 0h5v-1H8v1zm-6-2h5v-1H2v1zm6 0h5v-1H8v1zm-6-2h5v-1H2v1zm6 0h5v-1H8v1zm-6-2h5V6H2v1zm6 0h5V6H8v1zm-6-2h5V4H2v1zm6 0h5V4H8v1z'; // 건물 모양 SVG path
+      default:
+        return ''; // 기본값 혹은 에러 처리
+    }
   },
 
 },
