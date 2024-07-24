@@ -90,20 +90,34 @@
         <div class="modal-favorits-wrap" v-show="thirdModalOpen" @click="closeFavModals">
           <div class="modal-favorits-container" @click="preventClose">
             <div class="modal-btn">
+              <!-- 리스트 추가하기 버튼 -->
+              <div class="modal-btn">
+                <button id="add-list-button" @click="showListModal" class="add-list-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
+                    <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+                  </svg>
+                     새 리스트
+                </button>
+              </div>
               <div id="favorite-results" v-if="favoriteData && favoriteData.list">
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item" v-for="favorite in favoriteData.list" :key="favorite.id">
-                    <button @click="openFavoriteDetailModal" v-if="!favorite.editMode"> 
+                    <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode"> 
                       <p id="name">{{ favorite.name }}</p>
                     </button>
                     <!-- 수정 모드일 때 입력 필드 표시 -->
-                    <input v-else v-model="favorite.newName" placeholder="새로운 이름 입력">
+                    <div v-else>
+                      <input :value="favorite.editMode && favorite.newName === undefined ? (favorite.newName = favorite.name) : favorite.newName" @input="favorite.newName = $event.target.value">
+                      <label for="list-private-{{ favorite.id }}">비공개:</label>
+                      <input type="checkbox" :id="'list-private-' + favorite.id" v-model="favorite.newIsPrivate" :checked="favorite.private">
+                    </div>
+
                     <!-- 수정 모드 토글 버튼 -->
                     <button @click="favorite.editMode = !favorite.editMode">
                       {{ favorite.editMode ? '취소' : '수정' }}
                     </button>
                     <!-- 수정 완료 버튼 -->
-                    <button v-if="favorite.editMode" @click="updateFavoriteName(favorite.id, favorite.newName)">수정 완료</button>
+                    <button v-if="favorite.editMode" @click="() => { console.log('newName:', favorite.newName, 'name:', favorite.name); updateFavoriteName(favorite.id, favorite.newName, favorite.newIsPrivate); }">수정 완료</button>
                     <!-- 삭제 버튼 -->
                     <button @click="deleteFavorite(favorite.id)">삭제</button>
                      <!-- 즐겨찾기 리스트 디테일 표시 -->
@@ -143,10 +157,65 @@
                   </li>
                 </ul>
               </div>
+
+              <!-- 공개 리스트 표시 -->
+              <div id="public-favorite-results" v-if="favoriteData && favoriteData.public_list">
+                <h3>공개 리스트</h3>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item" v-for="favorite in favoriteData.public_list" :key="favorite.id">
+                    <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode"> 
+                      <p id="name">{{ favorite.name }}</p>
+                      <p id="username"> made by. {{ favorite.username }}</p>
+                    </button>
+                     <!-- 즐겨찾기 리스트 디테일 표시 -->
+                      <div class="modal-btn">
+                        <div class="modal-favorits-detail-wrap" v-show="thirdDetailModalOpen" @click="closeFavoriteDetailModals">
+                          <div class="modal-favorits-detail-container" @click="preventClose">
+                              <div id="place-details" v-if="listData">
+                                <ul>
+                                  <li v-for="(place, index) in listData" :key="index">
+                                    <div>
+                                      <p id="name-details">{{ place.place_name }}</p>
+                                      <p id="category">{{ place.category }}</p>
+                                      <p id="address-details">주소: {{ place.address }}</p>
+                                      <p id="isopen">영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                              <div v-else>
+                              <p>장소 정보가 없습니다.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </li>
+                </ul>
+              </div>
+              
             </div>
           </div>
         </div>
       </div>
+
+      <!-- 리스트 추가 모달
+      <div class="list-add-modal" v-show="addListModalOpen" @click="closeAddListModal">
+        <div class="modal-container" @click.stop="preventClose">
+          <h3>리스트 추가하기</h3>
+          <div>
+            <label for="list-name">리스트 이름:</label>
+            <input type="text" id="list-name" v-model="newListName" placeholder="리스트 이름 입력">
+          </div>
+          <div>
+            <label for="list-private">비공개:</label>
+            <input type="checkbox" id="list-private" v-model="isListPrivate">
+          </div>
+          <div class="modal-btn">
+            <button @click="addList">추가</button>
+            <button @click="closeAddListModal">취소</button>
+          </div>
+        </div>
+      </div> -->
 
       <div class="modal-btn">
         <router-link to="/history" id="history-button" @click="openHisModal">
@@ -203,9 +272,11 @@
       newLongitude: null, // 새 마커의 경도 
       newAddress: null, // 새 마커의 주소
       quickData:null,
-    newQuickSlotName: '',
-    isEditModalOpen: false,
-    editingQuickData: null,
+      newQuickSlotName: '',
+      isEditModalOpen: false,
+      editingQuickData: null,
+      newListName: '', // 새로운 리스트 이름
+      isListPrivate: false, // 리스트 공개 여부
     };
   },
   created() {
@@ -235,6 +306,7 @@
       },
       // 즐겨찾기 리스트 디테일
       openFavoriteDetailModal(result) {
+        console.log(result)
         this.fetchlistData(result.id)//id값으로 장소데이터 불러오기
         this.thirdDetailModalOpen = true;
         this.closeModalsExcept('thirdDetailModalOpen');
@@ -578,6 +650,60 @@
         // 여기에서 fetchlistData 함수를 호출하고, favorite.id를 인자로 전달합니다.
         this.fetchlistData(id);
       },
+
+    // 리스트 추가 모달
+    showListModal() {
+      const listAddHtml = `
+        <div>
+          <h3>리스트 추가하기</h3>
+          <div>
+            <label for="list-name">리스트 이름:</label>
+            <input type="text" id="list-name" placeholder="리스트 이름 입력">
+          </div>
+          <div>
+            <label for="list-private">비공개:</label>
+            <input type="checkbox" id="list-private">
+          </div>
+          <button id="add-list">추가</button>
+          <button id="cancel-add-list">취소</button>
+        </div>
+      `;
+
+      const modal = document.createElement('div');
+      modal.innerHTML = listAddHtml;
+      document.body.appendChild(modal);
+
+      document.getElementById('add-list').addEventListener('click', () => {
+        this.newListName = document.getElementById('list-name').value;
+        this.isListPrivate = document.getElementById('list-private').checked;
+        this.addList();
+        document.body.removeChild(modal); // 모달 제거
+      });
+
+      document.getElementById('cancel-add-list').addEventListener('click', () => {
+        document.body.removeChild(modal); // 모달 제거
+      });
+    },
+    // 리스트 추가 요청 
+    async addList() {
+      const userToken = localStorage.getItem('userToken');
+      try {
+        const response = await axios.post('http://localhost:8000/favorites/list/create/', {
+          name: this.newListName,
+          private: this.isListPrivate
+        }, {
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log('List added:', response.data);
+        // 리스트 추가 후 데이터 갱신
+        this.fetchFavoriteData();
+      } catch (error) {
+        console.error('Error adding list:', error);
+      }
+    },
       
     // 각 리스트 삭제 요청
     deleteFavorite(id) {
@@ -600,12 +726,18 @@
       },
   
     // 각 리스트 수정 요청
-    updateFavoriteName(id, newName) {
+    updateFavoriteName(id, newName, newIsPrivate) {
       console.log(`Updating favorite ${id} with new name ${newName}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken);
+      console.log(newName, newIsPrivate);
+      if (newIsPrivate == null) {
+        newIsPrivate = false;
+      }
+
       axios.put(`http://localhost:8000/favorites/list/update/${id}/`, {
-        name: newName // 수정할 리스트 이름을 요청 본문에 포함
+        name: newName, // 수정할 리스트 이름을 요청 본문에 포함
+        private: newIsPrivate
       }, {
         headers: {
           'Authorization': `Bearer ${userToken}`
