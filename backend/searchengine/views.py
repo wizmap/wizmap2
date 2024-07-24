@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import os
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
+from django.db.models import Q
 import chromadb
 from chromadb.config import Settings
 import asyncio
@@ -85,6 +86,10 @@ class TestView(APIView):
         
         if request.user.is_authenticated:
             save_history(user=request.user, search=search)
+            
+        places = Place.objects.filter(
+            Q(name__icontains=search) | Q(menu__icontains=search)
+        )
         
         retriever = vectordb_instance.as_retriever(
             # 검색 유형을 "유사도 점수 임계값"으로 설정합니다.
@@ -97,7 +102,7 @@ class TestView(APIView):
             a.append(doc.metadata["id"])
             print(doc)
 
-        places = Place.objects.filter(id__in=a)
+        places = places | Place.objects.filter(id__in=a)
             
         place_data = []
         for place in places:
@@ -110,3 +115,17 @@ class TestView(APIView):
             })
 
         return Response(place_data)
+    
+    def get(self, request):
+        query = request.query_params.get('query', '')
+        if not query:
+            return Response([])
+
+        # name과 menu 필드의 값을 추출하여 검색어 자동완성 기능 제공
+        name_results = Place.objects.filter(name__icontains=query).values_list('name', flat=True)
+        menu_results = Place.objects.filter(menu__icontains=query).values_list('menu', flat=True)
+
+        # 중복 제거 및 리스트 합치기
+        results = list(set(name_results) | set(menu_results))[:5]  # 최대 10개 결과
+        
+        return Response(results)

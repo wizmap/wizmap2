@@ -7,5 +7,5 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('register/', RegisterView.as_view(), name='register'),
     path('delete/', DeleteUserView.as_view(), name='delete_user'),
-
+    path('change-password/', PasswordChangeView.as_view(), name='change_password'),
 ]

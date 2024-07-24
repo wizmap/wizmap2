@@ -82,10 +82,15 @@
       <div id="main">
       <div id="search-center">
           <router-link to="/"><img id="search-logo"></router-link>
-          <form id="search"  @submit.prevent="onSearch">
-            <input type="text" v-model="searchTerm" id="search-input" placeholder="        장소를 입력하세요" @focus="showHistory" @blur="hideHistory">
-              <button id="search-button"><i class="fas fa-search fa-lg"></i></button>
+          <form id="search" @submit.prevent="onSearch">
+            <input type="text" v-model="searchTerm" id="search-input" placeholder="장소를 입력하세요" @input="fetchSuggestions" @focus="showSuggestions" @blur="hideSuggestions" />
+            <button id="search-button"><i class="fas fa-search fa-lg"></i></button>
           </form>
+          <ul v-if="showAutocomplete && suggestions.length" class="autocomplete-list">
+            <li v-for="(suggestion, index) in suggestions" :key="index" @mousedown.prevent="selectSuggestion(suggestion)">
+              {{ suggestion }}
+            </li>
+          </ul>
       </div>
       </div>
       <div id="search-map"></div>
@@ -124,6 +129,8 @@
       histories: [], // 검색 기록을 저장할 배열
       selectedPlace: null, // 선택된 장소의 상세 정보를 저장할 변수 추가
       placeId: null,
+      suggestions: [],
+      showAutocomplete: false,
     };
   },
   created() {
@@ -344,8 +351,9 @@
       console.error("There was an error fetching the history!", error);
     }
   },
-  async fetchSearchResults() {   //query
-      if (!this.searchTerm) {  //추가
+
+  async fetchSearchResults() {
+      if (!this.searchTerm) {
         console.error("Search term is null or empty");
         return;
       }
@@ -360,7 +368,7 @@
         const response = await fetch('http://localhost:8000/searchengine/', {
           method: 'POST',
           headers,
-          body: JSON.stringify({ search: this.searchTerm }) //변경
+          body: JSON.stringify({ search: this.searchTerm })
         });
         this.searchResults = await response.json();
 
@@ -386,8 +394,7 @@
               marker.addListener('click', () => {
                 this.fetchPlaceDetails(result.place.id);
                 this.openSearchDetailModal(result);
-                // this.firstDetailModalOpen = true; 
-                // 데이터 로딩 후 모달 열기
+
               });
               this.markers.push(marker);
             });
@@ -400,6 +407,34 @@
       } catch (error) {
         console.error("There was an error fetching the search results!", error);
       }
+    },
+    fetchSuggestions() {
+      if (this.searchTerm.length > 1) {
+        axios.get(`http://localhost:8000/searchengine/`, {
+          params: { query: this.searchTerm }
+        })
+        .then(response => {
+          this.suggestions = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      } else {
+        this.suggestions = [];
+      }
+    },
+    showSuggestions() {
+      this.showAutocomplete = true;
+    },
+    hideSuggestions() {
+      setTimeout(() => {
+        this.showAutocomplete = false;
+      }, 200);
+    },
+    selectSuggestion(suggestion) {
+      this.searchTerm = suggestion;
+      this.showAutocomplete = false;
+      this.onSearch();
     },
     async fetchPlaceDetails(id) {
       try {
