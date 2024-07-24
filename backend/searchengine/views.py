@@ -10,9 +10,7 @@ import os
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from django.db.models import Q
-import chromadb
-from chromadb.config import Settings
-import asyncio
+from rest_framework.pagination import PageNumberPagination
 
 load_dotenv()
 
@@ -104,8 +102,12 @@ class TestView(APIView):
 
         places = places | Place.objects.filter(id__in=a)
             
+        # 페이지네이션 적용
+        paginator = PageNumberPagination()
+        result_page = paginator.paginate_queryset(places, request)
+        
         place_data = []
-        for place in places:
+        for place in result_page:
             business_hours = BusinessHour.objects.filter(place=place)
             business_hour_serializer = BusinessHourSerializer(business_hours, many=True)
             place_serializer = PlaceSerializer(place)
@@ -114,7 +116,8 @@ class TestView(APIView):
                 'business_hours': business_hour_serializer.data
             })
 
-        return Response(place_data)
+        # 페이지네이션된 응답 반환
+        return paginator.get_paginated_response(place_data)
     
     def get(self, request):
         query = request.query_params.get('query', '')
