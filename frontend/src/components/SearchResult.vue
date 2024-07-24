@@ -160,7 +160,10 @@
         console.error("Search term is null or empty");
       }
     }
-  }
+  },
+  searchTerm(newVal) {
+      this.fetchSuggestions();
+    }
 },
 computed: {
   pageNumbersToShow() {
@@ -449,8 +452,8 @@ computed: {
     }
   },
     fetchSuggestions() {
-      if (this.searchTerm.length > 1) {
-        axios.get(`http://localhost:8000/searchengine/`, {
+      if (typeof this.searchTerm === 'string' && this.searchTerm.length > 1) {
+        axios.get('http://localhost:8000/searchengine/', {
           params: { query: this.searchTerm }
         })
         .then(response => {
