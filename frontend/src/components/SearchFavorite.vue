@@ -104,12 +104,16 @@
                   <li class="list-group-item" v-for="favorite in favoriteData.list" :key="favorite.id">
                     <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode"> 
                       <p id="name">{{ favorite.name }}</p>
+                      <p id="memo">{{ favorite.memo }}</p>
                     </button>
                     <!-- 수정 모드일 때 입력 필드 표시 -->
                     <div v-else>
+                      <label for="list-name-{{ favorite.id }}">이름:</label>
                       <input :value="favorite.editMode && favorite.newName === undefined ? (favorite.newName = favorite.name) : favorite.newName" @input="favorite.newName = $event.target.value">
                       <label for="list-private-{{ favorite.id }}">비공개:</label>
                       <input type="checkbox" :id="'list-private-' + favorite.id" v-model="favorite.newIsPrivate" :checked="favorite.private">
+                      <label for="list-memo-{{ favorite.id }}">메모:</label>
+                      <input :value="favorite.editMode && favorite.newMemo === undefined ? (favorite.newMemo = favorite.memo) : favorite.newMemo" @input="favorite.newMemo = $event.target.value">
                     </div>
 
                     <!-- 수정 모드 토글 버튼 -->
@@ -117,7 +121,7 @@
                       {{ favorite.editMode ? '취소' : '수정' }}
                     </button>
                     <!-- 수정 완료 버튼 -->
-                    <button v-if="favorite.editMode" @click="() => { console.log('newName:', favorite.newName, 'name:', favorite.name); updateFavoriteName(favorite.id, favorite.newName, favorite.newIsPrivate); }">수정 완료</button>
+                    <button v-if="favorite.editMode" @click="() => { console.log('newName:', favorite.newName, 'name:', favorite.name, 'newMemo:', favorite.newMemo); updateFavoriteName(favorite.id, favorite.newName, favorite.newIsPrivate, favorite.newMemo); }">수정 완료</button>
                     <!-- 삭제 버튼 -->
                     <button @click="deleteFavorite(favorite.id)">삭제</button>
                      <!-- 즐겨찾기 리스트 디테일 표시 -->
@@ -165,6 +169,7 @@
                   <li class="list-group-item" v-for="favorite in favoriteData.public_list" :key="favorite.id">
                     <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode"> 
                       <p id="name">{{ favorite.name }}</p>
+                      <p id="memo">{{ favorite.memo }}</p>
                       <p id="username"> made by. {{ favorite.username }}</p>
                     </button>
                      <!-- 즐겨찾기 리스트 디테일 표시 -->
@@ -277,6 +282,7 @@
       editingQuickData: null,
       newListName: '', // 새로운 리스트 이름
       isListPrivate: false, // 리스트 공개 여부
+      newListMemo: '',  // 새로운 리스트 메모
     };
   },
   created() {
@@ -664,6 +670,10 @@
             <label for="list-private">비공개:</label>
             <input type="checkbox" id="list-private">
           </div>
+          <div>
+            <label for="list-memo">메모: </label>
+            <input type="text" id="list-memo" placeholder="리스트에 대한 설명을 적어주세요.">
+          </div>
           <button id="add-list">추가</button>
           <button id="cancel-add-list">취소</button>
         </div>
@@ -676,6 +686,7 @@
       document.getElementById('add-list').addEventListener('click', () => {
         this.newListName = document.getElementById('list-name').value;
         this.isListPrivate = document.getElementById('list-private').checked;
+        this.newListMemo = document.getElementById('list-memo').value;
         this.addList();
         document.body.removeChild(modal); // 모달 제거
       });
@@ -690,7 +701,8 @@
       try {
         const response = await axios.post('http://localhost:8000/favorites/list/create/', {
           name: this.newListName,
-          private: this.isListPrivate
+          private: this.isListPrivate,
+          memo: this.newListMemo,
         }, {
           headers: {
             'Authorization': `Bearer ${userToken}`,
@@ -726,7 +738,7 @@
       },
   
     // 각 리스트 수정 요청
-    updateFavoriteName(id, newName, newIsPrivate) {
+    updateFavoriteName(id, newName, newIsPrivate, newMemo) {
       console.log(`Updating favorite ${id} with new name ${newName}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken);
@@ -737,7 +749,8 @@
 
       axios.put(`http://localhost:8000/favorites/list/update/${id}/`, {
         name: newName, // 수정할 리스트 이름을 요청 본문에 포함
-        private: newIsPrivate
+        private: newIsPrivate,
+        memo:newMemo,
       }, {
         headers: {
           'Authorization': `Bearer ${userToken}`
