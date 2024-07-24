@@ -89,18 +89,20 @@ class TestView(APIView):
             Q(name__icontains=search) | Q(menu__icontains=search)
         )
         
-        retriever = vectordb_instance.as_retriever(
-            # 검색 유형을 "유사도 점수 임계값"으로 설정합니다.
-            search_type="similarity_score_threshold",
-            search_kwargs={"score_threshold": 0.2,"k":10},
-        )
-        docs = retriever.invoke(search)
-        a = []
-        for doc in docs:
-            a.append(doc.metadata["id"])
-            print(doc)
-
-        places = places | Place.objects.filter(id__in=a)
+        if not places.exists():
+            retriever = vectordb_instance.as_retriever(
+                # 검색 유형을 "유사도 점수 임계값"으로 설정합니다.
+                search_type="similarity_score_threshold",
+                search_kwargs={"score_threshold": 0.2,"k":10},
+            )
+            docs = retriever.invoke(search)
+            a = []
+            for doc in docs:
+                a.append(doc.metadata["id"])
+                print(doc)
+            
+            places = Place.objects.filter(id__in=a)
+        # places = places | Place.objects.filter(id__in=a)
             
         # 페이지네이션 적용
         paginator = PageNumberPagination()
