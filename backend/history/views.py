@@ -6,6 +6,7 @@ from rest_framework.exceptions import NotFound
 from .models import SearchHistory
 from .serializers import SearchHistorySerializer
 from search.models import Place
+from rest_framework.pagination import PageNumberPagination
 
 # 검색기록 확인
 class HistoryListView(APIView):
@@ -14,8 +15,10 @@ class HistoryListView(APIView):
     def get(self, request):
         user = request.user
         histories = SearchHistory.objects.filter(user=user).order_by('-created_at')  # 검색기록확인
-        serializer = SearchHistorySerializer(histories, many=True)
-        return Response({'histories': serializer.data}, status=status.HTTP_200_OK)
+        paginator = PageNumberPagination()
+        result_page = paginator.paginate_queryset(histories, request)
+        serializer = SearchHistorySerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 # 검색기록 삭제    
 class DeleteHistoryView(APIView):
