@@ -5,7 +5,7 @@ from search.models import Place, Address
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List
-        fields = ['id', 'name', 'user']
+        fields = ['id', 'name', 'user', 'private', 'memo']
         
     def create(self, validated_data):
         # 사용자 정보를 자동으로 추가

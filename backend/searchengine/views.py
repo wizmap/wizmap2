@@ -10,9 +10,7 @@ import os
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from django.db.models import Q
-import chromadb
-from chromadb.config import Settings
-import asyncio
+from rest_framework.pagination import PageNumberPagination
 
 load_dotenv()
 
@@ -91,21 +89,27 @@ class TestView(APIView):
             Q(name__icontains=search) | Q(menu__icontains=search)
         )
         
-        retriever = vectordb_instance.as_retriever(
-            # 검색 유형을 "유사도 점수 임계값"으로 설정합니다.
-            search_type="similarity_score_threshold",
-            search_kwargs={"score_threshold": 0.2,"k":10},
-        )
-        docs = retriever.invoke(search)
-        a = []
-        for doc in docs:
-            a.append(doc.metadata["id"])
-            print(doc)
-
-        places = places | Place.objects.filter(id__in=a)
+        if not places.exists():
+            retriever = vectordb_instance.as_retriever(
+                # 검색 유형을 "유사도 점수 임계값"으로 설정합니다.
+                search_type="similarity_score_threshold",
+                search_kwargs={"score_threshold": 0.2,"k":10},
+            )
+            docs = retriever.invoke(search)
+            a = []
+            for doc in docs:
+                a.append(doc.metadata["id"])
+                print(doc)
             
+            places = Place.objects.filter(id__in=a)
+        # places = places | Place.objects.filter(id__in=a)
+            
+        # 페이지네이션 적용
+        paginator = PageNumberPagination()
+        result_page = paginator.paginate_queryset(places, request)
+        
         place_data = []
-        for place in places:
+        for place in result_page:
             business_hours = BusinessHour.objects.filter(place=place)
             business_hour_serializer = BusinessHourSerializer(business_hours, many=True)
             place_serializer = PlaceSerializer(place)
@@ -114,7 +118,8 @@ class TestView(APIView):
                 'business_hours': business_hour_serializer.data
             })
 
-        return Response(place_data)
+        # 페이지네이션된 응답 반환
+        return paginator.get_paginated_response(place_data)
     
     def get(self, request):
         query = request.query_params.get('query', '')

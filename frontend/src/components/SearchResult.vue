@@ -49,6 +49,13 @@
                       </div>
                   </li>
                 </ul>
+                <div class="pagination">
+                  <button @click="prevPage" :disabled="page === 1">Previous</button>
+                  <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
+                    {{ pageNumber }}
+                  </button>
+                  <button @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
+                </div>
               </div>
               </div>
           
@@ -131,6 +138,10 @@
       placeId: null,
       suggestions: [],
       showAutocomplete: false,
+      pagination: {
+      total_pages: 1 // 총 페이지 수 초기화
+    },
+      page: 1,
     };
   },
   created() {
@@ -149,6 +160,28 @@
         console.error("Search term is null or empty");
       }
     }
+  },
+  searchTerm(newVal) {
+      this.fetchSuggestions();
+    }
+},
+computed: {
+  pageNumbersToShow() {
+    let pages = [];
+    const totalPages = this.pagination.total_pages || 1;
+
+    if (totalPages <= 3) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else if (this.page === 1) {
+      pages = [1, 2, 3];
+    } else if (this.page === totalPages) {
+      pages = [totalPages - 2, totalPages - 1, totalPages];
+    } else {
+      pages = [this.page - 1, this.page, this.page + 1];
+    }
+    return pages;
   }
 },
   methods: {
@@ -352,65 +385,75 @@
     }
   },
 
-  async fetchSearchResults() {
-      if (!this.searchTerm) {
-        console.error("Search term is null or empty");
-        return;
+  async fetchSearchResults(page = 1) {
+    if (!this.searchTerm) {
+      console.error("Search term is null or empty");
+      return;
+    }
+    try {
+      const userToken = localStorage.getItem('userToken');
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      if (userToken) {
+        headers['Authorization'] = `Bearer ${userToken}`;
       }
-      try {
-        const userToken = localStorage.getItem('userToken');
-        const headers = {
-          'Content-Type': 'application/json',
-        };
-        if (userToken) {
-          headers['Authorization'] = `Bearer ${userToken}`;
-        }
-        const response = await fetch('http://localhost:8000/searchengine/', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ search: this.searchTerm })
-        });
-        this.searchResults = await response.json();
 
-        // 기존 마커 제거
-        this.markers.forEach(marker => marker.setMap(null));
-        this.markers = [];
+      // URL 수정: 백틱을 사용하여 템플릿 문자열로 변경
+      const response = await fetch(`http://localhost:8000/searchengine/?page=${page}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ search: this.searchTerm })
+      });
 
-        // 검색 결과의 첫 번째 장소의 위도와 경도로 지도 중심 변경
-        if (this.searchResults.length > 0) {
-          const firstResult = this.searchResults[0].place;
-          const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
-          if (this.mapInitialized) {
-            this.map.setCenter(newCenter);
+      const data = await response.json(); // 응답 JSON 파싱
+      this.searchResults = data.results; // 결과를 업데이트
+      this.pagination = data; // 전체 pagination 데이터 업데이트
+      this.pagination.total_pages = Math.ceil(data.count / 10); // 총 페이지 수 계산
+      this.page = page; // 현재 페이지 업데이트
+      console.log(this.pagination)
+      console.log(data)
+      console.log(this.pagination.total_pages)
+      console.log(this.page)
 
-            // 검색 결과의 위치에 마커 추가
-            this.searchResults.forEach(result => {
-              const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
-              const marker = new window.naver.maps.Marker({
-                position,
-                map: this.map,
-                title: result.place.name
-              });
-              marker.addListener('click', () => {
-                this.fetchPlaceDetails(result.place.id);
-                this.openSearchDetailModal(result);
+      // 기존 마커 제거
+      this.markers.forEach(marker => marker.setMap(null));
+      this.markers = [];
 
-              });
-              this.markers.push(marker);
+      // 검색 결과의 첫 번째 장소의 위도와 경도로 지도 중심 변경
+      if (this.searchResults.length > 0) {
+        const firstResult = this.searchResults[0].place;
+        const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
+        if (this.mapInitialized) {
+          this.map.setCenter(newCenter);
+
+          // 검색 결과의 위치에 마커 추가
+          this.searchResults.forEach(result => {
+            const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
+            const marker = new window.naver.maps.Marker({
+              position,
+              map: this.map,
+              title: result.place.name
             });
-          } else {
-            console.error('Map is not initialized');
-          }
+            marker.addListener('click', () => {
+              this.fetchPlaceDetails(result.place.id);
+              this.openSearchDetailModal(result);
+            });
+            this.markers.push(marker);
+          });
+        } else {
+          console.error('Map is not initialized');
         }
-        // 새로운 검색이 수행되면 장소 세부 정보 숨기기
-        this.selectedPlace = null;
-      } catch (error) {
-        console.error("There was an error fetching the search results!", error);
       }
-    },
+      // 새로운 검색이 수행되면 장소 세부 정보 숨기기
+      this.selectedPlace = null;
+    } catch (error) {
+      console.error("There was an error fetching the search results!", error);
+    }
+  },
     fetchSuggestions() {
-      if (this.searchTerm.length > 1) {
-        axios.get(`http://localhost:8000/searchengine/`, {
+      if (typeof this.searchTerm === 'string' && this.searchTerm.length > 1) {
+        axios.get('http://localhost:8000/searchengine/', {
           params: { query: this.searchTerm }
         })
         .then(response => {
@@ -483,6 +526,16 @@
       // 로컬 스토리지에서 토큰 확인
       const token = localStorage.getItem('userToken');
       this.isLoggedIn = !!token; // 토큰 유무에 따라 로그인 상태 설정
+    },
+    prevPage() {
+      if (this.page > 1) {
+        this.fetchSearchResults(this.page - 1);
+      }
+    },
+    nextPage() {
+      if (this.page < this.pagination.total_pages) {
+        this.fetchSearchResults(this.page + 1);
+      }
     },
   },
     mounted() {
