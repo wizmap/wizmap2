@@ -49,7 +49,7 @@
                       </div>
                   </li>
                 </ul>
-                <div class="pagination">
+                <div class="pagination" v-if="searchResults.length > 0">
                   <button @click="prevPage" :disabled="page === 1">Previous</button>
                   <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
                     {{ pageNumber }}
@@ -411,10 +411,6 @@ computed: {
       this.pagination = data; // 전체 pagination 데이터 업데이트
       this.pagination.total_pages = Math.ceil(data.count / 10); // 총 페이지 수 계산
       this.page = page; // 현재 페이지 업데이트
-      console.log(this.pagination)
-      console.log(data)
-      console.log(this.pagination.total_pages)
-      console.log(this.page)
 
       // 기존 마커 제거
       this.markers.forEach(marker => marker.setMap(null));
@@ -548,7 +544,7 @@ computed: {
       script.onload = () => {
         // 네이버 지도 생성
         this.map = new window.naver.maps.Map("search-map", {
-          center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
+          center: new window.naver.maps.LatLng(35.8858646, 128.5828924),
           zoom: 12
         });
         this.mapInitialized = true; // 지도 초기화 상태 업데이트
