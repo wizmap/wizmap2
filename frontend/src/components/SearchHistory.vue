@@ -60,6 +60,21 @@
                       <button id="history-delete-button" @click="deleteHistory(history.id)">삭제</button>
                   </li>
               </ul>
+              <nav nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item">
+                  <button class="page-link" @click="prevPage" :disabled="page === 1">Prev</button>
+                  </li>
+                  <li class="page-item">
+                  <button class="page-link" v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
+                    {{ pageNumber }}
+                  </button>
+                  </li>
+                  <li class="page-item">
+                  <button class="page-link" @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
+                  </li>
+                </ul>
+              </nav>
           </div>
           </div>
           </div>
@@ -103,11 +118,34 @@
       markers: [], // 마커 객체를 저장할 배열 추가
       histories: [], // 검색 기록을 저장할 배열
       selectedPlace: null, // 선택된 장소의 상세 정보를 저장할 변수 추가
+      pagination: {
+      total_pages: 1 // 총 페이지 수 초기화
+    },
+      page: 1,
     };
   },
   created() {
       this.openHisModal();
     },
+  computed: {
+  pageNumbersToShow() {
+    let pages = [];
+    const totalPages = this.pagination.total_pages || 1;
+
+    if (totalPages <= 3) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else if (this.page === 1) {
+      pages = [1, 2, 3];
+    } else if (this.page === totalPages) {
+      pages = [totalPages - 2, totalPages - 1, totalPages];
+    } else {
+      pages = [this.page - 1, this.page, this.page + 1];
+    }
+    return pages;
+  }
+},
   methods: {
     openFavoriteModal() {
       this.favoriteModalOpen = true;
@@ -279,26 +317,29 @@
     search() {
     this.$router.push({ name: 'SearchResult', query: { searchTerm: this.searchTerm } }); //SearchResult로 searchTerm 전달
     },
-    async fetchHistory() {
-    const userToken = localStorage.getItem('userToken');
-    try {
-      const response = await fetch('http://localhost:8000/history/', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${userToken}`,
-          'Content-Type': 'application/json'
+    async fetchHistory(page = 1) {
+      const userToken = localStorage.getItem('userToken');
+      try {
+        const response = await fetch(`http://localhost:8000/history/?page=${page}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          this.histories = data.results; // 검색 기록을 데이터에 저장
+          this.pagination = data;
+          this.pagination.total_pages = Math.ceil(data.count / 10);
+          this.page = page; // 현재 페이지 업데이트
+        } else {
+          throw new Error('Failed to fetch history');
         }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        this.histories = data.histories; // 검색 기록을 데이터에 저장
-      } else {
-        throw new Error('Failed to fetch history');
+      } catch (error) {
+        console.error("There was an error fetching the history!", error);
       }
-    } catch (error) {
-      console.error("There was an error fetching the history!", error);
-    }
-  },
+    },
    async fetchSearchResults(query) {
         try {
           //localStorage.removeItem('userToken'); //사용자 토큰 삭제
@@ -414,8 +455,8 @@
               'Content-Type': 'application/json'
             }
           });
-          if (response.ok) {
-            this.histories = this.histories.filter(history => history.id !== id);
+           if (response.ok) {
+          await this.fetchHistory(this.page);  // 현재 페이지 다시 로드
           } else {
             throw new Error('Failed to delete history');
           }
@@ -429,7 +470,17 @@
       },
       hideHistory() {
         this.historyVisible = false;
+      },
+    prevPage() {
+      if (this.page > 1) {
+        this.fetchHistory(this.page - 1);
       }
+    },
+    nextPage() {
+      if (this.page < this.pagination.total_pages) {
+        this.fetchHistory(this.page + 1);
+      }
+    },
     },
   mounted() {
       // 네이버 지도 API 로드

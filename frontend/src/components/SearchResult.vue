@@ -3,6 +3,8 @@
       integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
       crossorigin="anonymous" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
       <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
       <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
       <div class="modal-favorite-container" @click="preventClose">
@@ -14,43 +16,59 @@
 
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
           <div class="modal-search-container" @click="preventClose">
-              <div class="modal-btn">
+                <div class="button-container">
+                  <button @click="fetchCategoryData('음식점', searchTerm)" class="category-button food-button">음식점</button>
+                  <button @click="fetchCategoryData('카페', searchTerm)" class="category-button cafe-button">카페</button>
+                </div>
                 <div id="search-results">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item" v-for="result in searchResults" :key="result.place.id">
-                    <button @click="openSearchDetailModal(result)">
-                      <p id="name">{{ result.place.name }}</p>
-                    <p id="category">{{ result.place.category }}</p>
-                    <p id="address">{{ result.place.address.address }}</p>
-                    <p id="isopen">영업 상태: <span :class="{ 'open': result.place.isopen, 'closed': !result.place.isopen }">{{ result.place.isopen ? '영업 중' : '휴무' }}</span></p>
-                    </button>
-                      <div class="modal-btn">
-                        <div class="modal-search-detail-wrap" v-show="firstDetailModalOpen" @click="closeSearchDetailModals">
-                          <div class="modal-search-detail-container" @click="preventClose">
-                              <div id="place-details" v-if="selectedPlace">
-                                <p id="name-details">{{ selectedPlace.place.name }}</p>
-                                <p id="category">{{ selectedPlace.place.category }}</p>
-                                <p id="address-details">주소: {{ selectedPlace.place.address.address }}</p>
-                                <p>위도: {{ selectedPlace.place.address.latitude }}</p>
-                                <p>경도: {{ selectedPlace.place.address.longitude }}</p>
-                                <p>메뉴: {{ selectedPlace.place.menu }}</p>
-                                <p>전화번호: {{ selectedPlace.place.phone }}</p>
-                                <p>메모: {{ selectedPlace.place.memo }}</p>
-                                <p id="isopen">영업 상태: <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
-                                <ul>
-                                  <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
-                                </ul>
-                              </div>
-                              <div v-else>
-                              <p>장소 정보가 없습니다.</p>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item" v-for="result in searchResults" :key="result.place.id">
+                      <button @click="openSearchDetailModal(result)">
+                        <p id="name">{{ result.place.name }}</p>
+                      <p id="category">{{ result.place.category }}</p>
+                      <p id="address">{{ result.place.address.address }}</p>
+                      <p id="isopen">영업 상태: <span :class="{ 'open': result.place.isopen, 'closed': !result.place.isopen }">{{ result.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                      </button>
+                        <div class="modal-btn">
+                          <div class="modal-search-detail-wrap" v-show="firstDetailModalOpen" @click="closeSearchDetailModals">
+                            <div class="modal-search-detail-container" @click="preventClose">
+                                <div id="place-details" v-if="selectedPlace">
+                                  <p id="name-details">{{ selectedPlace.place.name }}</p>
+                                  <p id="category">{{ selectedPlace.place.category }}</p>
+                                  <p id="address-details"><i class="bi bi-geo-alt"></i> {{ selectedPlace.place.address.address }}</p>
+                                  <p><i class="bi bi-globe-americas"></i> {{ selectedPlace.place.address.latitude }} / {{ selectedPlace.place.address.longitude }}</p>
+                                  <p><i class="bi bi-cup-straw"></i> {{ selectedPlace.place.menu }}</p>
+                                  <p><i class="bi bi-telephone"></i> {{ selectedPlace.place.phone }}</p>
+                                  <p><i class="bi bi-card-text"></i> {{ selectedPlace.place.memo }}</p>
+                                  <p id="isopen"><i class="bi bi-clock"></i> <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                                  <ul>
+                                    <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
+                                  </ul>
+                                </div>
+                                <div v-else>
+                                  <p>장소 정보가 없습니다.</p>
+                                </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <nav nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item">
+                  <button class="page-link" @click="prevPage" :disabled="page === 1">Prev</button>
+                  </li>
+                  <li class="page-item">
+                  <button class="page-link" v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
+                    {{ pageNumber }}
+                  </button>
+                  </li>
+                  <li class="page-item">
+                  <button class="page-link" @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
                   </li>
                 </ul>
-              </div>
-              </div>
+              </nav>
           
           </div>
           </div>
@@ -63,7 +81,7 @@
           </div>
   
           <div class="modal-btn">
-          <router-link to="/favorites" id="favorits-button" @click="openFavModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
+          <router-link to="/favorites" id="favorits-button" @click.prevent="checkLoginAndNavigate('Favorites')" @click="openFavModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
           </svg></router-link>
           </div>
@@ -86,8 +104,8 @@
             <input type="text" v-model="searchTerm" id="search-input" placeholder="장소를 입력하세요" @input="fetchSuggestions" @focus="showSuggestions" @blur="hideSuggestions" />
             <button id="search-button"><i class="fas fa-search fa-lg"></i></button>
           </form>
-          <ul v-if="showAutocomplete && suggestions.length" class="autocomplete-list">
-            <li v-for="(suggestion, index) in suggestions" :key="index" @mousedown.prevent="selectSuggestion(suggestion)">
+          <ul v-if="showAutocomplete && suggestions.length" class="autocomplete-list list-group">
+            <li v-for="(suggestion, index) in suggestions" :key="index" @mousedown.prevent="selectSuggestion(suggestion)" class="list-group-item">
               {{ suggestion }}
             </li>
           </ul>
@@ -96,11 +114,21 @@
       <div id="search-map"></div>
       <!-- 로그인 필요 알림창 -->
       <div v-if="showAlert" class="alert-overlay">
-      <div class="alert-box">
-        <p>{{ alertMessage }}</p>
-        <button @click="closeAlert">확인</button>
+        <div class="alert_design_form__inner">
+          <div class="alert-box">
+            <div>
+            	<h2>{{ alertTitle }}</h2>
+              <p>{{ alertMessage }}</p>
+            </div>
+            
+            <!-- 닫기 버튼 -->
+            <div class="alert_design_form__inner__btn">
+            	<button @click="closeAlert">확인</button>
+            </div>
+            <!-- // 닫기 버튼 -->
+          </div>
+        </div>
       </div>
-    </div>
   
   </template>
   
@@ -120,6 +148,7 @@
       modalOpen: false,
       placeData: null,
       searchTerm: '',
+      category: '',
       searchResults: [],
       showAlert: false, // 알림창 표시 여부
       alertMessage: '', // 알림창 메시지
@@ -131,6 +160,10 @@
       placeId: null,
       suggestions: [],
       showAutocomplete: false,
+      pagination: {
+      total_pages: 1 // 총 페이지 수 초기화
+    },
+      page: 1,
     };
   },
   created() {
@@ -149,6 +182,25 @@
         console.error("Search term is null or empty");
       }
     }
+  }
+},
+computed: {
+  pageNumbersToShow() {
+    let pages = [];
+    const totalPages = this.pagination.total_pages || 1;
+
+    if (totalPages <= 3) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else if (this.page === 1) {
+      pages = [1, 2, 3];
+    } else if (this.page === totalPages) {
+      pages = [totalPages - 2, totalPages - 1, totalPages];
+    } else {
+      pages = [this.page - 1, this.page, this.page + 1];
+    }
+    return pages;
   }
 },
   methods: {
@@ -322,7 +374,8 @@
     checkLoginAndNavigate(routeName) {
     const isLoggedIn = localStorage.getItem('userToken');
     if (!isLoggedIn) {
-      this.alertMessage = '로그인이 필요합니다.';
+      this.alertTitle = '로그인 요청';
+      this.alertMessage = 'WIZMAP 사이트에 로그인해주세요.';
       this.showAlert = true;
     } else {
       this.$router.push({ name: routeName });
@@ -352,62 +405,72 @@
     }
   },
 
-  async fetchSearchResults() {
-      if (!this.searchTerm) {
-        console.error("Search term is null or empty");
-        return;
+  async fetchSearchResults(page = 1) {
+    if (!this.searchTerm) {
+      console.error("Search term is null or empty");
+      return;
+    }
+    try {
+      const userToken = localStorage.getItem('userToken');
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      if (userToken) {
+        headers['Authorization'] = `Bearer ${userToken}`;
       }
-      try {
-        const userToken = localStorage.getItem('userToken');
-        const headers = {
-          'Content-Type': 'application/json',
-        };
-        if (userToken) {
-          headers['Authorization'] = `Bearer ${userToken}`;
-        }
-        const response = await fetch('http://localhost:8000/searchengine/', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ search: this.searchTerm })
-        });
-        this.searchResults = await response.json();
 
-        // 기존 마커 제거
-        this.markers.forEach(marker => marker.setMap(null));
-        this.markers = [];
+      // URL 수정: 백틱을 사용하여 템플릿 문자열로 변경
+      const response = await fetch(`http://localhost:8000/searchengine/?page=${page}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ search: this.searchTerm })
+      });
 
-        // 검색 결과의 첫 번째 장소의 위도와 경도로 지도 중심 변경
-        if (this.searchResults.length > 0) {
-          const firstResult = this.searchResults[0].place;
-          const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
-          if (this.mapInitialized) {
-            this.map.setCenter(newCenter);
+      const data = await response.json(); // 응답 JSON 파싱
+      this.searchResults = data.results; // 결과를 업데이트
+      this.pagination = data; // 전체 pagination 데이터 업데이트
+      this.pagination.total_pages = Math.ceil(data.count / 10); // 총 페이지 수 계산
+      this.page = page; // 현재 페이지 업데이트
+      console.log(this.pagination)
+      console.log(data)
+      console.log(this.pagination.total_pages)
+      console.log(this.page)
 
-            // 검색 결과의 위치에 마커 추가
-            this.searchResults.forEach(result => {
-              const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
-              const marker = new window.naver.maps.Marker({
-                position,
-                map: this.map,
-                title: result.place.name
-              });
-              marker.addListener('click', () => {
-                this.fetchPlaceDetails(result.place.id);
-                this.openSearchDetailModal(result);
+      // 기존 마커 제거
+      this.markers.forEach(marker => marker.setMap(null));
+      this.markers = [];
 
-              });
-              this.markers.push(marker);
+      // 검색 결과의 첫 번째 장소의 위도와 경도로 지도 중심 변경
+      if (this.searchResults.length > 0) {
+        const firstResult = this.searchResults[0].place;
+        const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
+        if (this.mapInitialized) {
+          this.map.setCenter(newCenter);
+
+          // 검색 결과의 위치에 마커 추가
+          this.searchResults.forEach(result => {
+            const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
+            const marker = new window.naver.maps.Marker({
+              position,
+              map: this.map,
+              title: result.place.name
             });
-          } else {
-            console.error('Map is not initialized');
-          }
+            marker.addListener('click', () => {
+              this.fetchPlaceDetails(result.place.id);
+              this.openSearchDetailModal(result);
+            });
+            this.markers.push(marker);
+          });
+        } else {
+          console.error('Map is not initialized');
         }
-        // 새로운 검색이 수행되면 장소 세부 정보 숨기기
-        this.selectedPlace = null;
-      } catch (error) {
-        console.error("There was an error fetching the search results!", error);
       }
-    },
+      // 새로운 검색이 수행되면 장소 세부 정보 숨기기
+      this.selectedPlace = null;
+    } catch (error) {
+      console.error("There was an error fetching the search results!", error);
+    }
+  },
     fetchSuggestions() {
       if (this.searchTerm.length > 1) {
         axios.get(`http://localhost:8000/searchengine/`, {
@@ -483,6 +546,16 @@
       // 로컬 스토리지에서 토큰 확인
       const token = localStorage.getItem('userToken');
       this.isLoggedIn = !!token; // 토큰 유무에 따라 로그인 상태 설정
+    },
+    prevPage() {
+      if (this.page > 1) {
+        this.fetchSearchResults(this.page - 1);
+      }
+    },
+    nextPage() {
+      if (this.page < this.pagination.total_pages) {
+        this.fetchSearchResults(this.page + 1);
+      }
     },
   },
     mounted() {
