@@ -1,24 +1,25 @@
-#register-button:hover, #login-button:hover, #logout-button:hover, #delete-account-button:hover, #register-submit-button:hover, 
-#register-cancel-button:hover {
-background-color:black;
-transition: 0.7s;
+/* Global CSS */
+fieldset {
+border: none;
+margin: 0;
+}
+
+*,
+*::before,
+*::after {
+box-sizing: border-box;
 }
 
 body {
 margin: 0px; /* 기본 margin 없애기 */
 }
-    
-.input_container {
-display: inline-block; /* 내부 요소 크기 만큼 */
-padding: 30px; /* padding 4군데 모두 30px */
-}
 
 input {
-width: 15em; /* 가로 크기 */
-height: 2em; /* 세로 크기 */
-border: 1px solid gray; /* 기본 테두리 */
-border-radius: 20px; /* 테두리 둥글게 */
-padding: 0px 10px; /* 입력 padding 띄우기(좌,우) */
+width: 15em; 
+height: 2em; 
+border: 1px solid gray; 
+border-radius: 20px;
+padding: 0px 10px; 
 }
 
 input:focus { /* 포커스 시 */
@@ -38,21 +39,54 @@ height: 100%;
 z-index: 3;
 }
 
-.modal-container {
+.right-modal-container {
 position: fixed;
 top: 0;
 right: 0;
 width: 350px;
+height: 100%;
+display: flex;
+align-items: center;
+flex-direction: column;
+background: #fff;
+border-radius: 10px;
+box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.5);
+box-sizing: border-box;
+z-index: 3;
+overflow-y: auto;
+}
+
+.password-confirm-container {
+position: fixed;
+top: 0;
+right: 0;
+width: 350px;
+height: 100%;
 display: flex;
 justify-content: center;
 align-items: center;
 flex-direction: column;
 background: #fff;
 border-radius: 10px;
-padding: 20px;
-gap: 10px;
+box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.5);
 box-sizing: border-box;
 z-index: 3;
+overflow-y: auto;
+}
+
+.right-modal-container::-webkit-scrollbar {
+width: 5px;  /* 스크롤바의 너비 */
+height: 5px;
+}
+
+.right-modal-container::-webkit-scrollbar-thumb {
+height: 30%; /* 스크롤바의 길이 */
+background: #c0bfbf; /* 스크롤바의 색상 */
+border-radius: 10px;
+}
+
+.right-modal-container::-webkit-scrollbar-track {
+background: #e4e3e3; /* 스크롤바의 뒷 배경 색상 */
 }
 
 #modal-button {
@@ -76,11 +110,20 @@ transform: scale(1.3);
 }
 
 .mypage_container {
+position: fixed;
+top: 0;
+right: 0;
+width: 350px;
+height: 100%;
 display: flex;
 justify-content: center;
 align-items: center;
 flex-direction: column;
-gap: 10px;
+background: #fff;
+border-radius: 10px;
+box-sizing: border-box;
+z-index: 3;
+overflow-y: auto;
 }
 
 #profile {
@@ -89,110 +132,14 @@ display: flex;
 width: 150px;
 height: 150px;
 margin: 15px;
-background-image: url('../profile.png');
+background-image: url('../img/profile.png');
 background-repeat: no-repeat;
 background-position: center;
 background-size: contain;
 }
-#register-submit-button {
-padding: 7px 25px;
-margin-right: 10px;
-}
 
-#login-button {
-padding: 7px 40px;
-margin-right: 10px;
-}
-
-#register-button, #register-cancel-button {
-padding: 7px 30px;
-margin-left: 10px;
-}
-
-#logout-button, #delete-account-button {
-text-decoration: none;
-padding: 7px 30px;
-margin-left: 10px;
-}
- 
-#register-button, #login-button, #logout-button, #delete-account-button, #register-submit-button, #register-cancel-button {
-margin-bottom: 15px;
-font-size: large;
-color: #f8f8f8;
-background-color: gray;
-border-radius: 10px; 
-}
-
-.modal-container.input_container {
-text-align: center;
-}
-
-label {
-font-size: 16px;
-line-height: 3rem;
-padding: 0em 1.2em;
-}
-
-[type="radio"], span {
-margin-left: 0.5em;
-vertical-align: middle;
-}
-
-[type="radio"] {
-vertical-align: middle;
-appearance: none;
-border: max(2px, 0.1em) solid gray;
-border-radius: 50%;
-width: 1.25em;
-height: 1.25em;
-transition: border 0.5s ease-in-out;
-}
-
-[type="radio"]:checked {
-border: 0.4em solid black;
-}
-
-[type="radio"]:focus-visible {
-outline-offset: max(2px, 0.1em);
-outline: max(2px, 0.1em) dotted tomato;
-}
-
-[type="radio"]:hover {
-box-shadow: 0 0 0 max(4px, 0.2em) lightgray;
-cursor: pointer;
-}
-
-[type="radio"]:hover + span {
-cursor: pointer;
-}
-
-[type="radio"]:disabled {
-background-color: lightgray;
-box-shadow: none;
-opacity: 0.7;
-cursor: not-allowed;
-}
-
-[type="radio"]:disabled + span {
-opacity: 0.7;
-cursor: not-allowed;
-}
-
-/* Global CSS */
-fieldset {
-border: none;
-margin: 0;
-}
-
-*,
-*::before,
-*::after {
-box-sizing: border-box;
-}
-
-
+/* 지도 및 검색창, 로고 */
 #map {
-/* api map*/
 position: absolute;
 width: 100%;
 height: 100%;
@@ -221,7 +168,7 @@ justify-content: center;
 align-items: center;
 width: 300px;
 height: 300px;
-background-image: url('../wizmap.ico');
+background-image: url('../img/wizmap.ico');
 background-repeat: no-repeat;
 background-position: center;
 background-size: contain;
@@ -256,6 +203,101 @@ transition: .5s ease-in-out;
 #home-search-button:hover {
 -webkit-transform: scale(1.3);
 transform: scale(1.3);
+}
+
+/* 로그인 모달 */
+html, body {
+  font-family: 'Roboto';
+}
+
+.form, .form-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-wrapper {
+  background-color: white;
+  width: 300px;
+  padding: 20px 0;
+  margin: 20px auto;
+  border-radius: 15px;
+  display: inline-block;
+}
+
+.form-wrapper button {
+  cursor: pointer;
+  font-weight: bold;
+  width: 230px;
+  margin: 0 35px 20px;
+  height: 45px;
+  padding: 6px 15px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  font-size: 14px;
+}
+
+button.primary {
+  color: white;
+  background: #0F3758;
+}
+
+button.primary:hover {
+  opacity: .9;
+}
+
+button.secondary {
+  background: white;
+  color: #0F3758;
+}
+
+button.secondary:hover {
+  background: #f5f5f5;
+}
+
+.form-field {
+font-weight: bold;
+width: 230px;
+margin: 0 35px 20px;
+height: 35px;
+padding: 6px 15px;
+border-radius: 5px;
+outline: none;
+border: none;
+background: #f5f5f5;
+color: #748194;
+font-size: 14px;
+}
+
+.form-wrapper .login-modal-title {
+color: #212121;
+font-weight: 300;
+font-size: 30px;
+margin: 40px 0 30px 0;
+text-align: center;
+}
+
+.form-wrapper p {
+color: #424242;
+font-size: 14px;
+text-align: center;
+}
+
+.form-wrapper h4 {
+color: #424242;
+text-align: left; 
+margin: 20px 35px 20px;
+font-weight: bold;
+}
+
+.form-wrapper a {
+cursor: pointer;
+color: #0F3758;
+}
+
+.form-wrapper a:hover {
+color: #009688;
 }
 
 

@@ -8,6 +8,7 @@ from search.models import BusinessHour
 from datetime import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
+from user.models import User
 
 def CheckBusinessHour(place):
     # 현재 요일 체크 (숫자 -> 문자)
@@ -65,6 +66,7 @@ class ListCreateView(APIView):
 
     def post(self, request):
         serializer = ListSerializer(data=request.data, context={'request': request})
+        print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -88,6 +90,7 @@ class ListUpdateView(APIView):
             return Response({'error': 'List not found'}, status=status.HTTP_404_NOT_FOUND)
         
         serializer = ListSerializer(list_obj, data=request.data)
+        print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -213,13 +216,23 @@ class FavoritesView(APIView):
         user = request.user
         quickslots = QuickSlot.objects.filter(user=user)
         mylist = List.objects.filter(user=user)  # 여기서 클래스 이름을 List로 변경
+        public_list = List.objects.filter(private = False)
+        
 
         quickslots_data = QuickSlotSerializer(quickslots, many=True).data
         user_list = ListSerializer(mylist, many=True).data  # 변수 이름을 user_list로 변경
+        public_list_data = ListSerializer(public_list, many=True).data
+
+        # user 정보 추가
+        for public_list_item in public_list_data:
+            user_id = public_list_item['user']
+            user_obj = User.objects.get(id=user_id)
+            public_list_item['username'] = user_obj.username
 
         response_data = {
             "list": user_list,  
-            "quicktype": quickslots_data
+            "quicktype": quickslots_data,
+            'public_list': public_list_data
         }
 
         return Response(response_data)

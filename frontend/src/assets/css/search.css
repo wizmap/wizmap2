@@ -6,6 +6,19 @@ span {
 margin: 0px;
 }
 
+hr {
+background-color: #fff;
+padding: 0;
+margin: 40px;
+}
+
+hr.hr-3 {
+border: 0;
+width: 70px;
+border-top: 0.7px solid #c7c7c7;
+}
+  
+
 /* 페이지네이션 */
 .pagination {
 display: flex;
@@ -242,11 +255,7 @@ flex-direction: column;
 background: #fff;
 border-radius: 10px;
 padding: 20px;
-gap: 10px;
 box-sizing: border-box;
-border-style: solid;
-border-color: black;
-border-width: 1px;
 border-radius: 10px;
 box-shadow: 5px 5px 5px gray;
 z-index: 3;
@@ -422,7 +431,7 @@ display: flex;
 width: 150px;
 height: 150px;
 margin: 15px;
-background-image: url('../profile.png');
+background-image: url('../img/profile.png');
 background-repeat: no-repeat;
 background-position: center;
 background-size: contain;
@@ -468,7 +477,7 @@ z-index: 1;
 #search-logo {
 width: 50px;
 height: 50px;
-background-image: url('../wizmap.ico');
+background-image: url('../img/wizmap.ico');
 background-repeat: no-repeat;
 background-position: center;
 background-size: contain;
@@ -478,8 +487,10 @@ background-size: contain;
 position: relative;
 width: 650px;
 height: 50px;
+padding: 6px 15px;;
 background: #f8f8f8;
-border: 1px solid gray;
+outline: none;
+border: none;
 border-radius: 25px;
 box-shadow: 5px 5px 5px gray;
 }
@@ -507,8 +518,11 @@ width: 610px;
 margin-top: 270px;
 margin-left: 20PX;
 position: absolute;
-background: white;
+background: #f8f8f8;
+outline: none;
+border: none;
 border-radius: 5px;
+box-shadow: 5px 5px 5px gray;
 }
 
 

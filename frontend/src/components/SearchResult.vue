@@ -1,18 +1,18 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-      integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
-      crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
       <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
       <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
       <div class="modal-favorite-container" @click="preventClose">
+
+        <router-link to="/"><img id="search-logo"></router-link>
+
+        <hr class="hr-3">
   
         <div class="modal-btn">
           <button id="modal-search-button" @click="openSearchModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-        </svg></button>
+          </svg>
+          </button>
 
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
           <div class="modal-search-container" @click="preventClose">
@@ -44,6 +44,8 @@
                                   <ul>
                                     <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
                                   </ul>
+                                  <!-- 퀵슬롯 추가 버튼 -->
+                                  <button type="button" class="btn btn-primary btn-sm">퀵슬롯 추가</button> 
                                 </div>
                                 <div v-else>
                                   <p>장소 정보가 없습니다.</p>
@@ -73,6 +75,8 @@
           </div>
           </div>
           </div>
+
+          <hr class="hr-3">
   
           <div class="modal-btn">
           <router-link to="/favorites" id="quikslot-button" @click.prevent="checkLoginAndNavigate('Favorites')" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
@@ -80,11 +84,15 @@
           </svg></router-link>
           </div>
   
+          <hr class="hr-3">
+
           <div class="modal-btn">
           <router-link to="/favorites" id="favorits-button" @click.prevent="checkLoginAndNavigate('Favorites')" @click="openFavModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
           </svg></router-link>
           </div>
+
+          <hr class="hr-3">
   
           <div class="modal-btn">
           <router-link to="/history" id="history-button" @click.prevent="checkLoginAndNavigate('SearchHistory')" @click="openHisModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
@@ -94,6 +102,8 @@
           </svg></router-link>
           </div>
           
+          <hr class="hr-3">
+
       </div>
       </div>
   
@@ -182,7 +192,10 @@
         console.error("Search term is null or empty");
       }
     }
-  }
+  },
+  searchTerm(newVal) {
+      this.fetchSuggestions();
+    }
 },
 computed: {
   pageNumbersToShow() {
@@ -472,8 +485,8 @@ computed: {
     }
   },
     fetchSuggestions() {
-      if (this.searchTerm.length > 1) {
-        axios.get(`http://localhost:8000/searchengine/`, {
+      if (typeof this.searchTerm === 'string' && this.searchTerm.length > 1) {
+        axios.get('http://localhost:8000/searchengine/', {
           params: { query: this.searchTerm }
         })
         .then(response => {
