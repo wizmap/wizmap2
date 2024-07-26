@@ -109,7 +109,7 @@ border-radius: 10px;
 }
 
 /* 좌측 모달 */
-.modal-quikslot-wrap, .modal-favorits-wrap, .modal-history-wrap, .modal-search-wrap {
+.modal-nav-wrap, .modal-favorits-wrap, .modal-history-wrap, .modal-search-wrap {
 position: absolute;
 top: 250px;
 left: 370PX;
@@ -194,7 +194,7 @@ margin-top: 5px;
 margin-left: 260px;
 }
 
-#quikslot-button, #favorits-button, #history-button, #modal-search-button {
+#nav-button, #favorits-button, #history-button, #modal-search-button {
 font-size: large;
 color: #000000;
 background-color: rgb(255, 255, 255);
@@ -205,12 +205,12 @@ transform: scale(1);
 transition: .5s ease-in-out;
 }
 
-#quikslot-button:hover, #favorits-button:hover, #history-button:hover, #modal-search-button:hover {
+#nav-button:hover, #favorits-button:hover, #history-button:hover, #modal-search-button:hover {
 -webkit-transform: scale(1.3);
 transform: scale(1.3);
 }
 
-.modal-quikslot-container, .modal-favorits-container, .modal-history-container, .modal-search-container {
+.modal-nav-container, .modal-favorits-container, .modal-history-container, .modal-search-container {
 position: fixed;
 top: 0;
 left: 70px;
@@ -254,13 +254,13 @@ z-index: 3;
 margin-left: 1.5em;
 }
 
-.modal-quikslot-container::-webkit-scrollbar, .modal-favorits-container::-webkit-scrollbar, .modal-history-container::-webkit-scrollbar, .modal-search-container::-webkit-scrollbar,
+.modal-nav-container::-webkit-scrollbar, .modal-favorits-container::-webkit-scrollbar, .modal-history-container::-webkit-scrollbar, .modal-search-container::-webkit-scrollbar,
 .modal-search-detail-container::-webkit-scrollbar, .modal-favorite-detail-container::-webkit-scrollbar {
 width: 5px;  /* 스크롤바의 너비 */
 height: 5px;
 }
 
-.modal-quikslot-container::-webkit-scrollbar-thumb, .modal-search-container::-webkit-scrollbar-thumb, .modal-search-detail-container::-webkit-scrollbar-thumb, .modal-favorite-detail-container::-webkit-scrollbar-thumb {
+.modal-nav-container::-webkit-scrollbar-thumb, .modal-search-container::-webkit-scrollbar-thumb, .modal-search-detail-container::-webkit-scrollbar-thumb, .modal-favorite-detail-container::-webkit-scrollbar-thumb {
 height: 30%; /* 스크롤바의 길이 */
 background: #727171; /* 스크롤바의 색상 */
 
@@ -272,7 +272,7 @@ background: rgba(171, 171, 171, 0.1);  /*스크롤바 뒷 배경 색상*/
 }
 
 /* 퀵 */
-#quik-buttons {
+#nav-buttons {
 position: fixed;
 top: 40px;
 display: flex;
