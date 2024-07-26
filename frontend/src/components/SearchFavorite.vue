@@ -225,7 +225,7 @@
         </div>
      
 
-      <!-- 리스트 추가 모달
+      <!-- 리스트 추가 모달 -->
       <div class="list-add-modal" v-show="addListModalOpen" @click="closeAddListModal">
         <div class="modal-container" @click.stop="preventClose">
           <h3>리스트 추가하기</h3>
@@ -242,7 +242,7 @@
             <button @click="closeAddListModal">취소</button>
           </div>
         </div>
-      </div> -->
+      </div>
 
       <div class="modal-btn">
         <router-link to="/history" id="history-button" @click="openHisModal">
@@ -307,6 +307,7 @@
       newListMemo: '',  // 새로운 리스트 메모
       isQuickButtonsClicked: false,
       showPublicFavorites:false,
+      addListModalOpen:false,
     };
   },
   created() {
@@ -663,41 +664,10 @@
 
     // 리스트 추가 모달
     showListModal() {
-      const listAddHtml = `
-        <div>
-          <h3>리스트 추가하기</h3>
-          <div>
-            <label for="list-name">리스트 이름:</label>
-            <input type="text" id="list-name" placeholder="리스트 이름 입력">
-          </div>
-          <div>
-            <label for="list-private">비공개:</label>
-            <input type="checkbox" id="list-private">
-          </div>
-          <div>
-            <label for="list-memo">메모: </label>
-            <input type="text" id="list-memo" placeholder="리스트에 대한 설명을 적어주세요.">
-          </div>
-          <button id="add-list">추가</button>
-          <button id="cancel-add-list">취소</button>
-        </div>
-      `;
-
-      const modal = document.createElement('div');
-      modal.innerHTML = listAddHtml;
-      document.body.appendChild(modal);
-
-      document.getElementById('add-list').addEventListener('click', () => {
-        this.newListName = document.getElementById('list-name').value;
-        this.isListPrivate = document.getElementById('list-private').checked;
-        this.newListMemo = document.getElementById('list-memo').value;
-        this.addList();
-        document.body.removeChild(modal); // 모달 제거
-      });
-
-      document.getElementById('cancel-add-list').addEventListener('click', () => {
-        document.body.removeChild(modal); // 모달 제거
-      });
+      this.addListModalOpen = true; // 모달 열기
+    },
+    closeAddListModal() {
+      this.addListModalOpen = false; // 모달 닫기
     },
     // 리스트 추가 요청 
     async addList() {
@@ -716,6 +686,7 @@
         console.log('List added:', response.data);
         // 리스트 추가 후 데이터 갱신
         this.fetchFavoriteData();
+        this.closeAddListModal();
       } catch (error) {
         console.error('Error adding list:', error);
       }
