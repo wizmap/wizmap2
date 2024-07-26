@@ -15,9 +15,13 @@
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
           <div class="modal-search-container" @click="preventClose">
               <div class="modal-btn">
+                <div class="button-container">
+                  <button @click="filterCategory('음식점')" :class="{'active': selectedCategory === '음식점'}" class="category-button food-button">음식점</button>
+                  <button @click="filterCategory('카페')" :class="{'active': selectedCategory === '카페'}" class="category-button cafe-button">카페</button>
+                </div>
                 <div id="search-results">
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item" v-for="result in searchResults" :key="result.place.id">
+                  <li class="list-group-item"  v-for="result in filteredResults" :key="result.place.id">
                     <button @click="openSearchDetailModal(result)">
                       <p id="name">{{ result.place.name }}</p>
                     <p id="category">{{ result.place.category }}</p>
@@ -49,7 +53,7 @@
                       </div>
                   </li>
                 </ul>
-                <div class="pagination">
+                <div class="pagination" v-if="searchResults.length > 0">
                   <button @click="prevPage" :disabled="page === 1">Previous</button>
                   <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
                     {{ pageNumber }}
@@ -64,19 +68,19 @@
           </div>
   
           <div class="modal-btn">
-          <router-link to="/favorites" id="quikslot-button" @click.prevent="checkLoginAndNavigate('Favorites')" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+          <router-link to="/favorites" id="nav-button" @click.prevent="checkLoginAndNavigate('Favorites')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
           <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
           </svg></router-link>
           </div>
   
           <div class="modal-btn">
-          <router-link to="/favorites" id="favorits-button" @click="openFavModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
+          <router-link to="/favorites" id="favorits-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
           </svg></router-link>
           </div>
   
           <div class="modal-btn">
-          <router-link to="/history" id="history-button" @click.prevent="checkLoginAndNavigate('SearchHistory')" @click="openHisModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
+          <router-link to="/history" id="history-button" @click.prevent="checkLoginAndNavigate('SearchHistory')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
           <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
           <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
           <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
@@ -142,6 +146,7 @@
       total_pages: 1 // 총 페이지 수 초기화
     },
       page: 1,
+      selectedCategory: '',
     };
   },
   created() {
@@ -160,7 +165,10 @@
         console.error("Search term is null or empty");
       }
     }
-  }
+  },
+  searchTerm(newVal) {
+      this.fetchSuggestions();
+    }
 },
 computed: {
   pageNumbersToShow() {
@@ -179,9 +187,18 @@ computed: {
       pages = [this.page - 1, this.page, this.page + 1];
     }
     return pages;
+  },
+  filteredResults() {
+    if (this.selectedCategory) {
+      return this.searchResults.filter(result => result.place.category === this.selectedCategory);
+    }
+    return this.searchResults;
   }
 },
   methods: {
+    filterCategory(category) {
+      this.selectedCategory = category;
+    },
     openFavoriteModal() {
       this.favoriteModalOpen = true;
       this.closeModalsExcept('favoriteModalOpen');
@@ -195,23 +212,7 @@ computed: {
       this.firstDetailModalOpen = true;
       this.closeModalsExcept('firstDetailModalOpen');
     },
-    openQuikModal() {
-      this.secondModalOpen = true;
-      this.closeModalsExcept('secondModalOpen');
-    },
-    openFavModal() {
-      this.thirdModalOpen = true;
-      this.closeModalsExcept('thirdModalOpen');
-    },
-    openHisModal() {
-      this.fourthModalOpen = true;
-      this.fetchHistory(); // 검색 기록 불러오기
-      this.closeModalsExcept('fourthModalOpen');
-    },
-    openModal() {
-      this.modalOpen = true;
-      this.closeModalsExcept('modalOpen');
-    },
+    
     closeFavoriteModals() {
       this.favoriteModalOpen = false;
     },
@@ -223,21 +224,6 @@ computed: {
     closeSearchModals() {
       this.favoriteModalOpen = true;
       this.firstModalOpen = false;
-    },
-    closeQuikModals() {
-      this.favoriteModalOpen = true;
-      this.secondModalOpen = false;
-    },
-    closeFavModals() {
-      this.favoriteModalOpen = true;
-      this.thirdModalOpen = false;
-    },
-    closeHisModals() {
-      this.favoriteModalOpen = true;
-      this.fourthModalOpen = false;
-    },
-    closeModal() {
-      this.modalOpen = false;
     },
     preventClose(event) {
       event.stopPropagation();
@@ -408,10 +394,6 @@ computed: {
       this.pagination = data; // 전체 pagination 데이터 업데이트
       this.pagination.total_pages = Math.ceil(data.count / 10); // 총 페이지 수 계산
       this.page = page; // 현재 페이지 업데이트
-      console.log(this.pagination)
-      console.log(data)
-      console.log(this.pagination.total_pages)
-      console.log(this.page)
 
       // 기존 마커 제거
       this.markers.forEach(marker => marker.setMap(null));
@@ -449,8 +431,8 @@ computed: {
     }
   },
     fetchSuggestions() {
-      if (this.searchTerm.length > 1) {
-        axios.get(`http://localhost:8000/searchengine/`, {
+      if (typeof this.searchTerm === 'string' && this.searchTerm.length > 1) {
+        axios.get('http://localhost:8000/searchengine/', {
           params: { query: this.searchTerm }
         })
         .then(response => {
@@ -545,7 +527,7 @@ computed: {
       script.onload = () => {
         // 네이버 지도 생성
         this.map = new window.naver.maps.Map("search-map", {
-          center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
+          center: new window.naver.maps.LatLng(35.8858646, 128.5828924),
           zoom: 12
         });
         this.mapInitialized = true; // 지도 초기화 상태 업데이트

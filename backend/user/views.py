@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer, PasswordChangeSerializer, PhoneChangeSerializer, EmailChangeSerializer
+from .serializers import UserSerializer, PasswordChangeSerializer, PhoneChangeSerializer, EmailChangeSerializer, PasswordConfirmSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -59,4 +59,13 @@ class PhoneChangeView(APIView):
             request.user.phone = serializer.validated_data['phone']
             request.user.save()
             return Response({'message': '폰번호 변경 완료'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+#비밀번호 확인 뷰
+class PasswordConfirmView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        serializer = PasswordConfirmSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            return Response({"message": "비밀번호 확인이 완료되었습니다."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
