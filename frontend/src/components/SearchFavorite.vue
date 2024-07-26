@@ -8,7 +8,7 @@
     <div class="modal-favorite-container" @click="preventClose">
 
       <div class="modal-btn">
-        <router-link to="/searchresult" id="modal-search-button" @click="openSearchModal">
+        <router-link to="/searchresult" id="modal-search-button">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
           </svg>
@@ -16,66 +16,17 @@
       </div>
 
       <div class="modal-btn" >
-        <button id="quikslot-button" @click="openQuikModal">
+        <button id="nav-button">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
             <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
           </svg>
         </button>
-        <div class="modal-quikslot-wrap" v-show="secondModalOpen" @click="closeQuikModals">
-          <div class="modal-quikslot-container" @click="preventClose">
-            <div id="quik-buttons">
 
-              <div v-for="index in [0, 1, 2]" :key="index" class="modal-btn">
-                <button v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.some(item => item.type === index)" @click="handleButtonClick(index)">
-                  <!-- 작은 네모 버튼 -->
-                  <button class="small-square-button" @click="showNameInputModal(favoriteData.quicktype.find(item => item.type === index)?.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
-                      <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
-                    </svg>
-                  </button>
-                  <!-- 하트 모양 SVG -->
-                  
-                    <button v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.some(item => item.type === index)" @click="handleButtonClick(index)">
-                      <!-- 아이콘 변경 -->
-                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi" :class="getIconClass(index)" viewBox="0 0 16 16">
-                        <path :d="getIconPath(favoriteData.quicktype.find(item => item.type === index)?.icon-1)"></path>
-                      </svg>
-                    </button>
-                 
-                   <p v-if="favoriteData && favoriteData.quicktype">
-                    {{ favoriteData.quicktype.find(item => item.type === index)?.name || `Type ${index} 이름 없음` }}
-                  </p>
-                  <!-- 작은 빨간 x 버튼 -->
-                  <span class="close-btn" @click.stop="removeItem(favoriteData.quicktype.find(item => item.type === index)?.id)">×</span>
-                </button>
-                <button v-else id="first-quik" @click="showQuickSlotModal(index)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
-                    <path d="..."></path>
-                  </svg>
-                </button>
-              </div>
-              
-            </div>
-
-            <div v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.length > 0">
-              <div>
-                <div v-if="displayQuickData">
-                  <!-- 기존 퀵 데이터 표시 -->
-                  <p>{{ quickData.quick_name }}</p>
-                  <p>{{ quickData.place_name }}</p>
-                  <p>{{ quickData.address }}</p>
-                  <p>{{ quickData.category }}</p>
-                  <p>{{ quickData.isopen }}</p>
-                </div>
-                <div v-else-if="displayNewLocation">
-                  <!-- 새 위치 데이터 표시 -->
-                  <p>주소: {{ newAddress }}</p>
-                </div>
-                <div v-else>
-                  <p>데이터가 없습니다.</p>
-                </div>
-              </div>
-            </div>
+        <div class="modal-nav-wrap" v-show="secondModalOpen" >
+          <div class="modal-nav-container" @click="preventClose">
+            <p>HI</p>
+            
+           
           </div>
         </div>
       </div>
@@ -89,7 +40,40 @@
         <!--즐겨찾기 리스트 목록 표시-->
         <div class="modal-favorits-wrap" v-show="thirdModalOpen" @click="closeFavModals">
           <div class="modal-favorits-container" @click="preventClose">
-            <div class="modal-btn">
+            <div class ="up-box">
+              <div id="quick-buttons">
+                <div v-for="index in [0, 1, 2]" :key="index" class="quick-modal-btn">
+                  <button v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.some(item => item.type === index)" @click="handleUpBoxObjectClick">
+                    <!-- 작은 네모 버튼 -->
+                    <button class="small-square-button" @click="showNameInputModal(favoriteData.quicktype.find(item => item.type === index)?.id)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
+                      </svg>
+                    </button>
+                    <!-- 하트 모양 SVG -->
+                    <button @click="handleButtonClick(index)">
+                      <!-- 아이콘 변경 -->
+                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi" :class="getIconClass(index)" viewBox="0 0 16 16">
+                        <path :d="getIconPath(favoriteData.quicktype.find(item => item.type === index)?.icon-1)"></path>
+                      </svg>
+                    </button>
+                    <p v-if="favoriteData && favoriteData.quicktype">
+                      {{ favoriteData.quicktype.find(item => item.type === index)?.name || `Type ${index} 이름 없음` }}
+                    </p>
+                    <!-- 작은 빨간 x 버튼 -->
+                    <span class="close-btn" @click.stop="removeItem(favoriteData.quicktype.find(item => item.type === index)?.id)">×</span>
+                  </button>
+                  <button v-else id="first-quick" @click="showQuickSlotModal(index)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
+                      <path d="..."></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div  class="down-box1"  v-if="!isQuickButtonsClicked">
+            
+             <div class="modal-btn">
               <!-- 리스트 추가하기 버튼 -->
               <div class="modal-btn">
                 <button id="add-list-button" @click="showListModal" class="add-list-button">
@@ -161,21 +145,22 @@
                   </li>
                 </ul>
               </div>
-
+            
+            
               <!-- 공개 리스트 표시 -->
-              <div id="public-favorite-results" v-if="favoriteData && favoriteData.public_list">
-                <h3>공개 리스트</h3>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item" v-for="favorite in favoriteData.public_list" :key="favorite.id">
-                    <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode"> 
-                      <p id="name">{{ favorite.name }}</p>
-                      <p id="memo">{{ favorite.memo }}</p>
-                      <p id="username"> made by. {{ favorite.username }}</p>
-                    </button>
-                     <!-- 즐겨찾기 리스트 디테일 표시 -->
-                      <div class="modal-btn">
-                        <div class="modal-favorits-detail-wrap" v-show="thirdDetailModalOpen" @click="closeFavoriteDetailModals">
-                          <div class="modal-favorits-detail-container" @click="preventClose">
+                  <div id="public-favorite-results" v-if="favoriteData && favoriteData.public_list">
+                    <h3>공개 리스트</h3>
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item" v-for="favorite in favoriteData.public_list" :key="favorite.id">
+                        <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode"> 
+                        <p id="name">{{ favorite.name }}</p>
+                        <p id="memo">{{ favorite.memo }}</p>
+                        <p id="username"> made by. {{ favorite.username }}</p>
+                        </button>
+                        <!-- 즐겨찾기 리스트 디테일 표시 -->
+                        <div class="modal-btn">
+                          <div class="modal-favorits-detail-wrap" v-show="thirdDetailModalOpen" @click="closeFavoriteDetailModals">
+                            <div class="modal-favorits-detail-container" @click="preventClose">
                               <div id="place-details" v-if="listData">
                                 <ul>
                                   <li v-for="(place, index) in listData" :key="index">
@@ -190,18 +175,42 @@
                               </div>
                               <div v-else>
                               <p>장소 정보가 없습니다.</p>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                  </li>
-                </ul>
-              </div>
-              
+                      </li>
+                    </ul>
+                  </div>
+            </div>
+            </div>
+
+            <div class="down-box2" v-if="isQuickButtonsClicked">
+  <div v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.length > 0">
+    <div>
+      <div v-if="displayQuickData && quickData">
+        <!-- 기존 퀵 데이터 표시 -->
+        <p>{{ quickData.quick_name }}</p>
+        <p>{{ quickData.place_name }}</p>
+        <p>{{ quickData.address }}</p>
+        <p>{{ quickData.category }}</p>
+        <p>{{ quickData.isopen }}</p>
+      </div>
+      <div v-else-if="displayNewLocation">
+        <!-- 새 위치 데이터 표시 -->
+        <p>주소: {{ newAddress }}</p>
+      </div>
+      <div v-else>
+       
+      </div>
+    </div>
+  </div>
+</div>
+
             </div>
           </div>
         </div>
-      </div>
+     
 
       <!-- 리스트 추가 모달
       <div class="list-add-modal" v-show="addListModalOpen" @click="closeAddListModal">
@@ -283,6 +292,7 @@
       newListName: '', // 새로운 리스트 이름
       isListPrivate: false, // 리스트 공개 여부
       newListMemo: '',  // 새로운 리스트 메모
+      isQuickButtonsClicked: false,
     };
   },
   created() {
@@ -293,22 +303,10 @@
         this.favoriteModalOpen = true;
         this.closeModalsExcept('favoriteModalOpen');
       },
-      openSearchModal() {
-        this.firstModalOpen = true;
-        this.closeModalsExcept('firstModalOpen');
-      },
-      openSearchDetailModal(result) {
-        this.fetchPlaceDetails(result.place.id)//id값으로 장소데이터 불러오기
-        this.firstDetailModalOpen = true;
-        this.closeModalsExcept('firstDetailModalOpen');
-      },
-      openQuikModal() {
-        this.secondModalOpen = true;
-        this.closeModalsExcept('secondModalOpen');
-      },
       openFavModal() {
         this.thirdModalOpen = true;
         this.closeModalsExcept('thirdModalOpen');
+        this.isQuickButtonsClicked = false;
       },
       // 즐겨찾기 리스트 디테일
       openFavoriteDetailModal(result) {
@@ -316,14 +314,6 @@
         this.fetchlistData(result.id)//id값으로 장소데이터 불러오기
         this.thirdDetailModalOpen = true;
         this.closeModalsExcept('thirdDetailModalOpen');
-      },
-      openHisModal() {
-        this.fourthModalOpen = true;
-        this.closeModalsExcept('fourthModalOpen');
-      },
-      openModal() {
-        this.modalOpen = true;
-        this.closeModalsExcept('modalOpen');
       },
       closeFavoriteModals() {
         this.favoriteModalOpen = false;
@@ -334,29 +324,9 @@
         this.thirdModalOpen = true;
         this.thirdDetailModalOpen = false;
       },
-      closeSearchDetailModals() {
-        this.favoriteModalOpen = true;
-        this.firstModalOpen = true;
-        this.firstDetailModalOpen = false;
-      },
-      closeSearchModals() {
-        this.favoriteModalOpen = true;
-        this.firstModalOpen = false;
-      },
-      closeQuikModals() {
-        this.favoriteModalOpen = true;
-        this.secondModalOpen = false;
-      },
       closeFavModals() {
         this.favoriteModalOpen = true;
         this.thirdModalOpen = false;
-      },
-      closeHisModals() {
-        this.favoriteModalOpen = true;
-        this.fourthModalOpen = false;
-      },
-      closeModal() {
-        this.modalOpen = false;
       },
       preventClose(event) {
         event.stopPropagation();
@@ -1194,6 +1164,9 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
         return ''; // 기본값 혹은 에러 처리
     }
   },
+  handleUpBoxObjectClick() {
+      this.isQuickButtonsClicked = true;
+    },
 
 },
   mounted() {
