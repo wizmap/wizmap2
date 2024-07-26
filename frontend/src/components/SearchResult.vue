@@ -492,7 +492,18 @@ computed: {
         });
         if (response.ok) {
           this.selectedPlace = await response.json();
-          this.searchTerm = this.selectedPlace.place.name;
+
+          let marker = this.markers.find(marker => marker.title === this.selectedPlace.place.name);
+          console.log(marker);
+
+          if (!marker) {
+            // 마커가 없으면 새로운 마커 생성
+            this.searchTerm = this.selectedPlace.place.name;
+            this.onSearch();
+          }
+
+          this.setCenterAndZoom(this.markers.find(marker => marker.title === this.selectedPlace.place.name), new window.naver.maps.LatLng(this.selectedPlace.place.address.latitude, this.selectedPlace.place.address.longitude));
+          console.log(this.selectedPlace.place.name);
         } else {
           const errorText = await response.text();
           console.error('Failed to fetch place details:', errorText);
@@ -501,6 +512,21 @@ computed: {
       } catch (error) {
         console.error("There was an error fetching the place details!", error);
       }
+    },
+    setCenterAndZoom(marker, position) {
+
+      const offsetPosition = new window.naver.maps.LatLng(
+        position.lat(),
+        position.lng() - 0.15 // 약간 오른쪽으로 이동 (값은 조정 가능)
+      );
+      this.map.setCenter(offsetPosition);
+      this.markers.forEach(m => {
+        if (m === marker) {
+          m.setAnimation(naver.maps.Animation.BOUNCE);
+        } else {
+          m.setAnimation(null);
+        }
+      });
     },
     onSearch() {
       if (this.mapInitialized) {
