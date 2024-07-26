@@ -66,12 +66,13 @@ class ListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = ListSerializer(data=request.data, context={'request': request})
-        print(request.data)
+        serializer = ListSerializer(data=request.data, context={'request': request}, partial=True)
+        # print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            # print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class ListUpdateView(APIView):
