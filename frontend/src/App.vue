@@ -14,6 +14,7 @@ import Login from './components/Login.vue';
 import SearchResult from './components/SearchResult.vue';
 import SearchHistory from './components/SearchHistory.vue';
 import SearchFavorite from './components/SearchFavorite.vue';
+import Nav from './components/SearchNav.vue';
 
 
 
@@ -27,6 +28,7 @@ export default {
     Login,
     SearchHistory,
     SearchFavorite,
+    Nav,
   },
 
   data: () => ({
