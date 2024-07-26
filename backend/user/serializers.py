@@ -40,16 +40,3 @@ class EmailChangeSerializer(serializers.Serializer):
         if User.objects.filter(email=value).exists():  # user 테이블에서 중복되는 이메일이 있는지 확인
             raise serializers.ValidationError('이미 존재하는 이메일입니다.')
         return value
-    
-# 패스워드 확인하는 시리얼라이저 (마이페이지 들어갈때 사용)
-class PasswordConfirmSerializer(serializers.Serializer):
-    password = serializers.CharField(write_only=True)
-
-    def validate(self, data):
-        user = self.context['request'].user
-        password = data['password']
-
-        if not user.check_password(password):
-            raise serializers.ValidationError("비밀번호가 올바르지 않습니다.")
-        
-        return data
