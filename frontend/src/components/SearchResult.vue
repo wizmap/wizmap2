@@ -13,21 +13,31 @@
         </svg></button>
 
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
-          <div class="modal-search-container" @click="preventClose">
+            <div class="modal-search-container" @click="preventClose">
               <div class="modal-btn">
                 <div class="button-container">
-                  <button @click="filterCategory('음식점')" :class="{'active': selectedCategory === '음식점'}" class="category-button food-button">음식점</button>
-                  <button @click="filterCategory('카페')" :class="{'active': selectedCategory === '카페'}" class="category-button cafe-button">카페</button>
+                  <button
+                    @click="toggleCategory('음식점')"
+                    :class="{'category-button': true, 'active': selectedCategory === '음식점'}"
+                  >
+                    음식점
+                  </button>
+                  <button
+                    @click="toggleCategory('카페')"
+                    :class="{'category-button': true, 'active': selectedCategory === '카페'}"
+                  >
+                    카페
+                  </button>
                 </div>
                 <div id="search-results">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item"  v-for="result in filteredResults" :key="result.place.id">
-                    <button @click="openSearchDetailModal(result)">
-                      <p id="name">{{ result.place.name }}</p>
-                    <p id="category">{{ result.place.category }}</p>
-                    <p id="address">{{ result.place.address.address }}</p>
-                    <p id="isopen">영업 상태: <span :class="{ 'open': result.place.isopen, 'closed': !result.place.isopen }">{{ result.place.isopen ? '영업 중' : '휴무' }}</span></p>
-                    </button>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item" v-for="result in filteredResults" :key="result.place.id">
+                      <button @click="openSearchDetailModal(result)">
+                        <p id="name">{{ result.place.name }}</p>
+                        <p id="category">{{ result.place.category }}</p>
+                        <p id="address">{{ result.place.address.address }}</p>
+                        <p id="isopen">영업 상태: <span :class="{ 'open': result.place.isopen, 'closed': !result.place.isopen }">{{ result.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                      </button>
                       <div class="modal-btn">
                         <div class="modal-search-detail-wrap" v-show="firstDetailModalOpen" @click="closeSearchDetailModals">
                           <div class="modal-search-detail-container" @click="preventClose">
@@ -196,6 +206,15 @@ computed: {
   }
 },
   methods: {
+    toggleCategory(category) {
+    if (this.selectedCategory === category) {
+      // 현재 선택된 카테고리가 클릭된 카테고리와 같으면 전체 결과를 보여줍니다.
+      this.selectedCategory = '';
+    } else {
+      // 그렇지 않으면 선택된 카테고리를 클릭된 카테고리로 설정합니다.
+      this.selectedCategory = category;
+    }
+  },
     filterCategory(category) {
       this.selectedCategory = category;
     },
