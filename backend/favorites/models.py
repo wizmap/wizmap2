@@ -24,5 +24,7 @@ class MyPin(models.Model):
     place = models.ForeignKey(Place, on_delete=models.DO_NOTHING, null=True)
     name = models.CharField(max_length=50) 
     
-
+class ListLike(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    list = models.ForeignKey(List, on_delete=models.CASCADE)
     
