@@ -1,11 +1,11 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-        integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
-        crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
   <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
     <div class="modal-favorite-container" @click="preventClose">
+
+      <router-link to="/"><img id="search-logo"></router-link>
+
+      <hr class="hr-3"> 
 
       <div class="modal-btn">
         <router-link to="/searchresult" id="modal-search-button">
@@ -14,6 +14,8 @@
           </svg>
         </router-link>
       </div>
+
+      <hr class="hr-3"> 
 
       <div class="modal-btn" >
         <button id="nav-button">
@@ -30,6 +32,8 @@
           </div>
         </div>
       </div>
+
+      <hr class="hr-3"> 
 
       <div class="modal-btn">
         <button id="favorits-button" @click="openFavModal">
@@ -277,6 +281,8 @@
           </div>
         </div>
 
+      <hr class="hr-3"> 
+
       <div class="modal-btn">
         <router-link to="/history" id="history-button" @click="openHisModal">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
@@ -291,6 +297,9 @@
           </div>
         </div>
       </div>
+
+      <hr class="hr-3"> 
+
       </div>
   
   </div>

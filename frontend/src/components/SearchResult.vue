@@ -55,6 +55,8 @@
                                 <ul>
                                   <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
                                 </ul>
+                                <!-- 퀵슬롯 추가 버튼 -->
+                                <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
                               </div>
                               <div v-else>
                               <p>장소 정보가 없습니다.</p>
