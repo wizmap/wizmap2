@@ -15,9 +15,13 @@
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
           <div class="modal-search-container" @click="preventClose">
               <div class="modal-btn">
+                <div class="button-container">
+                  <button @click="filterCategory('음식점')" :class="{'active': selectedCategory === '음식점'}" class="category-button food-button">음식점</button>
+                  <button @click="filterCategory('카페')" :class="{'active': selectedCategory === '카페'}" class="category-button cafe-button">카페</button>
+                </div>
                 <div id="search-results">
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item" v-for="result in searchResults" :key="result.place.id">
+                  <li class="list-group-item"  v-for="result in filteredResults" :key="result.place.id">
                     <button @click="openSearchDetailModal(result)">
                       <p id="name">{{ result.place.name }}</p>
                     <p id="category">{{ result.place.category }}</p>
@@ -49,7 +53,7 @@
                       </div>
                   </li>
                 </ul>
-                <div class="pagination">
+                <div class="pagination" v-if="searchResults.length > 0">
                   <button @click="prevPage" :disabled="page === 1">Previous</button>
                   <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
                     {{ pageNumber }}
@@ -142,6 +146,7 @@
       total_pages: 1 // 총 페이지 수 초기화
     },
       page: 1,
+      selectedCategory: '',
     };
   },
   created() {
@@ -182,9 +187,18 @@ computed: {
       pages = [this.page - 1, this.page, this.page + 1];
     }
     return pages;
+  },
+  filteredResults() {
+    if (this.selectedCategory) {
+      return this.searchResults.filter(result => result.place.category === this.selectedCategory);
+    }
+    return this.searchResults;
   }
 },
   methods: {
+    filterCategory(category) {
+      this.selectedCategory = category;
+    },
     openFavoriteModal() {
       this.favoriteModalOpen = true;
       this.closeModalsExcept('favoriteModalOpen');
@@ -380,10 +394,6 @@ computed: {
       this.pagination = data; // 전체 pagination 데이터 업데이트
       this.pagination.total_pages = Math.ceil(data.count / 10); // 총 페이지 수 계산
       this.page = page; // 현재 페이지 업데이트
-      console.log(this.pagination)
-      console.log(data)
-      console.log(this.pagination.total_pages)
-      console.log(this.page)
 
       // 기존 마커 제거
       this.markers.forEach(marker => marker.setMap(null));
@@ -517,7 +527,7 @@ computed: {
       script.onload = () => {
         // 네이버 지도 생성
         this.map = new window.naver.maps.Map("search-map", {
-          center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
+          center: new window.naver.maps.LatLng(35.8858646, 128.5828924),
           zoom: 12
         });
         this.mapInitialized = true; // 지도 초기화 상태 업데이트

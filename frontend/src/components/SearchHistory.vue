@@ -60,7 +60,7 @@
                       <button id="history-delete-button" @click="deleteHistory(history.id)">삭제</button>
                   </li>
               </ul>
-              <div class="pagination">
+              <div class="pagination" v-if="histories.length > 0">
                 <button @click="prevPage" :disabled="page === 1">Previous</button>
                 <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchHistory(pageNumber)" :disabled="pageNumber === page">
                   {{ pageNumber }}
