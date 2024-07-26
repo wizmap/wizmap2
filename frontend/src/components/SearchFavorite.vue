@@ -144,15 +144,28 @@
             
             
               <!-- 공개 리스트 표시 -->
-                  <div id="public-favorite-results" v-if="favoriteData && favoriteData.public_list">
-                    <h3>공개 리스트</h3>
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item" v-for="favorite in favoriteData.public_list" :key="favorite.id">
-                        <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode"> 
-                        <p id="name">{{ favorite.name }}</p>
-                        <p id="memo">{{ favorite.memo }}</p>
-                        <p id="username"> made by. {{ favorite.username }}</p>
-                        </button>
+              <div class="public-list-header">
+                <h3>공개 리스트</h3>
+                <button @click="showPublicFavorites = !showPublicFavorites" class="toggle-button">
+                  <i :class="showPublicFavorites ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
+              <!-- 공개 리스트 표시 -->
+              <div id="public-favorite-results" v-if="showPublicFavorites && favoriteData && favoriteData.public_list">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item" v-for="favorite in favoriteData.public_list" :key="favorite.id">
+                    <button @click="openFavoriteDetailModal(favorite)" v-if="!favorite.editMode"> 
+                      <p id="name">{{ favorite.name }}</p>
+                      <p id="memo">{{ favorite.memo }}</p>
+                      <p id="username"> made by. {{ favorite.username }}</p>
+                      <button @click="likeFavorite(favorite.id); favorite.likes++" v-if="!favorite.liked">
+                        <i class="far fa-thumbs-up"></i> 
+                      </button>
+                      <button @click="unlikeFavorite(favorite.id); favorite.likes--" v-else>
+                        <i class="fas fa-thumbs-up" style="color: blue;"></i>
+                      </button>
+                      <p id="like_count">{{ favorite.likes }}</p>
+                    </button>
                         <!-- 즐겨찾기 리스트 디테일 표시 -->
                         <div class="modal-btn">
                           <div class="modal-favorits-detail-wrap" v-show="thirdDetailModalOpen" @click="closeFavoriteDetailModals">
@@ -289,6 +302,7 @@
       isListPrivate: false, // 리스트 공개 여부
       newListMemo: '',  // 새로운 리스트 메모
       isQuickButtonsClicked: false,
+      showPublicFavorites:false,
     };
   },
   created() {
@@ -543,6 +557,26 @@
       })  // PinPlaceAPIView에서 데이터 가져오기
         .then(response => {
           this.favoriteData = response.data;
+          // 사용자의 ListLike 데이터 요청
+          return axios.get(`http://localhost:8000/favorites/like`, {
+            headers: {
+              'Authorization': `Bearer ${userToken}`
+            }
+          });
+        })
+        .then(likeResponse => {
+          if (likeResponse.data.length === 0) {
+            this.favoriteData.public_list.forEach(favorite => {
+              favorite.liked = false; // 데이터가 없으면 모든 liked 속성을 false로 설정
+            });
+          } else {
+            const likedListIds = likeResponse.data.map(like => like.list); // 사용자의 liked 리스트 ID 배열
+            console.log(likedListIds, likeResponse.data);
+            // public_list의 각 항목에 liked 속성 추가
+            this.favoriteData.public_list.forEach(favorite => {
+              favorite.liked = likedListIds.includes(favorite.id); // ID가 포함되면 true, 아니면 false
+            });
+          }
           console.log('Response data:', response.data);  // 응답 데이터 로그 추가
         })
         .catch(error => {
@@ -1163,6 +1197,63 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
   handleUpBoxObjectClick() {
       this.isQuickButtonsClicked = true;
     },
+  // 리스트 좋아요 메서드
+  likeFavorite(listId) {
+    // liked 상태를 즉시 업데이트
+    const favorite = this.favoriteData.public_list.find(fav => fav.id === listId);
+    if (favorite) {
+      favorite.liked = true; // 좋아요 상태로 변경
+    }
+
+    const userToken = localStorage.getItem('userToken');
+    console.log(listId);
+    axios.post(`http://localhost:8000/favorites/list/like/`, {
+      list: listId
+    }, {
+      headers: {
+        'Authorization': `Bearer ${userToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      console.log('QuickSlot saved:', response.data);
+    })
+    .catch(error => {
+      console.error('Error saving quickslot:', error);
+      // 에러 발생 시 원래 상태로 되돌리기
+      if (favorite) {
+        favorite.liked = false; // 좋아요 취소
+      }
+    });
+  },
+
+    // 리스트 좋아요 취소 메서드
+  unlikeFavorite(listId) {
+    // liked 상태를 즉시 업데이트
+    const favorite = this.favoriteData.public_list.find(fav => fav.id === listId);
+    if (favorite) {
+      favorite.liked = false; // 좋아요 취소 상태로 변경
+    }
+
+    const userToken = localStorage.getItem('userToken');
+    console.log(listId);
+    axios.delete(`http://localhost:8000/favorites/list/unlike/${listId}/`, {
+      headers: {
+        'Authorization': `Bearer ${userToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      console.log('QuickSlot saved:', response.data);
+    })
+    .catch(error => {
+      console.error('Error saving quickslot:', error);
+      // 에러 발생 시 원래 상태로 되돌리기
+      if (favorite) {
+        favorite.liked = true; // 좋아요 상태로 되돌리기
+      }
+    });
+  },
 
 },
   mounted() {

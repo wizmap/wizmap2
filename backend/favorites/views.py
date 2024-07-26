@@ -1,14 +1,15 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import List, MyPin,QuickSlot,Place
+from .models import List, MyPin,QuickSlot,Place, ListLike
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ListSerializer, MyPinSerializer,QuickSlotSerializer, PlaceSerializer, AddressSerializer
+from .serializers import ListSerializer, MyPinSerializer,QuickSlotSerializer, PlaceSerializer, AddressSerializer, ListLikeSerializer
 from search.models import BusinessHour
 from datetime import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
 from user.models import User
+from django.db.models import Count
 
 def CheckBusinessHour(place):
     # 현재 요일 체크 (숫자 -> 문자)
@@ -216,7 +217,7 @@ class FavoritesView(APIView):
         user = request.user
         quickslots = QuickSlot.objects.filter(user=user)
         mylist = List.objects.filter(user=user)  # 여기서 클래스 이름을 List로 변경
-        public_list = List.objects.filter(private = False)
+        public_list = List.objects.filter(private=False).exclude(user=request.user).annotate(like_count=Count('listlike')).order_by('-like_count')   # 내 리스트를 제외한 것 중 공개 리스트만 추출 
         
 
         quickslots_data = QuickSlotSerializer(quickslots, many=True).data
@@ -228,6 +229,9 @@ class FavoritesView(APIView):
             user_id = public_list_item['user']
             user_obj = User.objects.get(id=user_id)
             public_list_item['username'] = user_obj.username
+            likes = ListLike.objects.filter(list = public_list_item['id']).count()
+            # print(public_list_item, likes)
+            public_list_item['likes'] = likes
 
         response_data = {
             "list": user_list,  
@@ -342,3 +346,40 @@ class QuickCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class LikeView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        try:
+            listlike = ListLike.objects.filter(user=request.user)
+            serializer = ListLikeSerializer(listlike, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ListLike.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+class ListLikeView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        print(request.data, request.user)
+        serializer = ListLikeSerializer(data=request.data, context={'request': request})
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ListUnLikeView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def delete(self, request, list_id):
+        try:
+            # print(pk)/
+            list_data = List.objects.get(id=list_id)
+            listlike = ListLike.objects.get(list=list_data, user=request.user)
+            listlike.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ListLike.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
