@@ -10,10 +10,10 @@
         </div>
   
           <div class="modal-btn">
-          <router-link to="/favorites" id="quikslot-button" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+          <router-link to="/favorites" id="nav-button" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
           <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
           </svg></router-link>
-          <div class="modal-quikslot-wrap" v-show="secondModalOpen" @click="closeQuikModals">
+          <div class="modal-nav-wrap" v-show="secondModalOpen" @click="closeNavModals">
           <div class="modal-quikslot-container" @click="preventClose">
           <div id = "quik-buttons">
               <div class="modal-btn"><button id="first-quik"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
@@ -56,21 +56,13 @@
                       <button id="history-delete-button" @click="deleteHistory(history.id)">삭제</button>
                   </li>
               </ul>
-              <nav nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                  <li class="page-item">
-                  <button class="page-link" @click="prevPage" :disabled="page === 1">Prev</button>
-                  </li>
-                  <li class="page-item">
-                  <button class="page-link" v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
-                    {{ pageNumber }}
-                  </button>
-                  </li>
-                  <li class="page-item">
-                  <button class="page-link" @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
-                  </li>
-                </ul>
-              </nav>
+              <div class="pagination" v-if="histories.length > 0">
+                <button @click="prevPage" :disabled="page === 1">Previous</button>
+                <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchHistory(pageNumber)" :disabled="pageNumber === page">
+                  {{ pageNumber }}
+                </button>
+                <button @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
+              </div>
           </div>
           </div>
           </div>
@@ -147,15 +139,8 @@
       this.favoriteModalOpen = true;
       this.closeModalsExcept('favoriteModalOpen');
     },
-    openSearchModal() {
-      this.firstModalOpen = true;
-      this.closeModalsExcept('firstModalOpen');
-    },
-    openSearchDetailModal(result) {
-      this.fetchPlaceDetails(result.place.id)//id값으로 장소데이터 불러오기
-      this.firstDetailModalOpen = true;
-      this.closeModalsExcept('firstDetailModalOpen');
-    },
+
+
     openQuikModal() {
       this.secondModalOpen = true;
       this.closeModalsExcept('secondModalOpen');
