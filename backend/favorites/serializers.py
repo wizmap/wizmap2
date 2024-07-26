@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import List, MyPin,QuickSlot
+from .models import List, MyPin,QuickSlot, ListLike
 from search.models import Place, Address
 
 class ListSerializer(serializers.ModelSerializer):
@@ -37,3 +37,13 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = ['address', 'latitude', 'longitude']
+        
+class ListLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ListLike
+        fields = ['list']
+        
+    def create(self, validated_data):
+        # 사용자 정보를 자동으로 추가
+            validated_data['user'] = self.context['request'].user
+            return super().create(validated_data)
