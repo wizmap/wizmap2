@@ -15,9 +15,13 @@
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
           <div class="modal-search-container" @click="preventClose">
               <div class="modal-btn">
+                <div class="button-container">
+                  <button @click="filterCategory('음식점')" :class="{'active': selectedCategory === '음식점'}" class="category-button food-button">음식점</button>
+                  <button @click="filterCategory('카페')" :class="{'active': selectedCategory === '카페'}" class="category-button cafe-button">카페</button>
+                </div>
                 <div id="search-results">
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item" v-for="result in searchResults" :key="result.place.id">
+                  <li class="list-group-item"  v-for="result in filteredResults" :key="result.place.id">
                     <button @click="openSearchDetailModal(result)">
                       <p id="name">{{ result.place.name }}</p>
                     <p id="category">{{ result.place.category }}</p>
@@ -142,6 +146,7 @@
       total_pages: 1 // 총 페이지 수 초기화
     },
       page: 1,
+      selectedCategory: '',
     };
   },
   created() {
@@ -182,9 +187,18 @@ computed: {
       pages = [this.page - 1, this.page, this.page + 1];
     }
     return pages;
+  },
+  filteredResults() {
+    if (this.selectedCategory) {
+      return this.searchResults.filter(result => result.place.category === this.selectedCategory);
+    }
+    return this.searchResults;
   }
 },
   methods: {
+    filterCategory(category) {
+      this.selectedCategory = category;
+    },
     openFavoriteModal() {
       this.favoriteModalOpen = true;
       this.closeModalsExcept('favoriteModalOpen');
