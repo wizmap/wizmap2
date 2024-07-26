@@ -199,50 +199,83 @@
             </div>
 
             <div class="down-box2" v-if="isQuickButtonsClicked">
-  <div v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.length > 0">
-    <div>
-      <div v-if="displayQuickData && quickData">
-        <!-- 기존 퀵 데이터 표시 -->
-        <p>{{ quickData.quick_name }}</p>
-        <p>{{ quickData.place_name }}</p>
-        <p>{{ quickData.address }}</p>
-        <p>{{ quickData.category }}</p>
-        <p>{{ quickData.isopen }}</p>
-      </div>
-      <div v-else-if="displayNewLocation">
-        <!-- 새 위치 데이터 표시 -->
-        <p>주소: {{ newAddress }}</p>
-      </div>
-      <div v-else>
-       
-      </div>
-    </div>
-  </div>
-</div>
+              <div v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.length > 0">
+                <div>
+                  <div v-if="displayQuickData && quickData">
+                    <!-- 기존 퀵 데이터 표시 -->
+                    <p>{{ quickData.quick_name }}</p>
+                    <p>{{ quickData.place_name }}</p>
+                    <p>{{ quickData.address }}</p>
+                    <p>{{ quickData.category }}</p>
+                    <p>{{ quickData.isopen }}</p>
+                  </div>
+                  <div v-else-if="displayNewLocation">
+                    <!-- 새 위치 데이터 표시 -->
+                    <p>주소: {{ newAddress }}</p>
+                  </div>
+                  <div v-else>
+                  
+                  </div>
+                </div>
+              </div>
+            </div>
 
             </div>
           </div>
         </div>
      
 
-      <!-- 리스트 추가 모달 -->
-      <div class="list-add-modal" v-show="addListModalOpen" @click="closeAddListModal">
-        <div class="modal-container" @click.stop="preventClose">
-          <h3>리스트 추가하기</h3>
-          <div>
-            <label for="list-name">리스트 이름:</label>
-            <input type="text" id="list-name" v-model="newListName" placeholder="리스트 이름 입력">
-          </div>
-          <div>
-            <label for="list-private">비공개:</label>
-            <input type="checkbox" id="list-private" v-model="isListPrivate">
-          </div>
-          <div class="modal-btn">
-            <button @click="addList">추가</button>
-            <button @click="closeAddListModal">취소</button>
+        <!-- 리스트 추가 모달 -->
+        <div class="list-add-modal" v-show="addListModalOpen" @click="closeAddListModal">
+          <div class="modal-container" @click.stop="preventClose">
+            <h3>리스트 추가하기</h3>
+            <div>
+              <label for="list-name">리스트 이름:</label>
+              <input type="text" id="list-name" v-model="newListName" placeholder="리스트 이름 입력">
+            </div>
+            <div>
+              <label for="list-private">비공개:</label>
+              <input type="checkbox" id="list-private" v-model="isListPrivate">
+            </div>
+            <div class="modal-btn">
+              <button @click="addList">추가</button>
+              <button @click="closeAddListModal">취소</button>
+            </div>
           </div>
         </div>
-      </div>
+
+        <!-- 마이핀 추가 모달 -->
+        <div class="mypin-add-modal" v-show="AddMyPinModalOpen" @click="closeAddMyPinModal">
+          <div class="modal-container" v-if="favoriteData" @click.stop="preventClose">
+            <h3>리스트를 선택하세요</h3>
+            <select v-model="selectedListId">
+              <option v-for="list in favoriteData.list" :key="list.id" :value="list.id">{{ list.name }}</option>
+            </select>
+            <div>
+              <label for="mypin-name">마이핀의 이름을 입력하세요:</label>
+              <input type="text" v-model="mypinName" id="mypin-name" />
+            </div>
+            <div class="modal-btn">
+              <button @click="saveMypin(selectedListId)">저장</button>
+              <button @click="closeAddMyPinModal">취소</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 퀵슬롯 추가 모달 -->
+        <div class="quick-add-modal" v-show="isQuickSlotModalOpen" @click="closeQuickSlotModal">
+          <div class="modal-container" @click.stop="preventClose">
+            <h3>퀵슬롯 추가하기</h3>
+            <div>
+              <label for="quickslot-name">퀵슬롯의 이름을 입력하세요:</label>
+              <input type="text" id="quickslot-name" v-model="quickSlotName" placeholder="퀵슬롯 이름 입력">
+            </div>
+            <div class="modal-btn">
+              <button @click="saveQuickSlot(quickSlotName, quickSlotType)">추가</button>
+              <button @click="closeQuickSlotModal">취소</button>
+            </div>
+          </div>
+        </div>
 
       <div class="modal-btn">
         <router-link to="/history" id="history-button" @click="openHisModal">
@@ -306,8 +339,14 @@
       isListPrivate: false, // 리스트 공개 여부
       newListMemo: '',  // 새로운 리스트 메모
       isQuickButtonsClicked: false,
-      showPublicFavorites:false,
-      addListModalOpen:false,
+      showPublicFavorites:false,  // 공개 리스트 표시 토글
+      addListModalOpen:false,   // 새 리스트 추가 모달
+      isQuickSlotModalOpen: false, // 퀵슬롯 추가 모달
+      quickSlotName:'',   //새 퀵슬롯 이름 
+      quickSlotType:null, // 새 퀵슬롯 타입
+      AddMyPinModalOpen: false,  // 마이핀 추가 모달
+      selectedListId: null,   // 마이핀 추가 시 선택된 리스트
+      mypinName: '',    // 마이핀 추가 이름
     };
   },
   created() {
@@ -880,50 +919,35 @@
     },
   
     // 마이핀 리스트 선택 모달을 표시하는 메서드
-    showListSelectionModal(latitude, longitude) {
+    showAddMyPinModal(latitude, longitude) {
       // 리스트 데이터를 가져와서 모달에 표시
+      
       if (this.favoriteData && this.favoriteData.list && this.favoriteData.list.length > 0) {
-        const listOptions = this.favoriteData.list.map(list => `<option value="${list.id}">${list.name}</option>`).join('');
-        const listSelectHtml = `
-          <div>
-            <label for="list-select">리스트를 선택하세요:</label>
-            <select id="list-select">${listOptions}</select>
-          </div>
-          <div>
-            <label for="mypin-name">마이핀의 이름을 입력하세요:</label>
-            <input type="text" id="mypin-name" />
-          </div>
-          <button id="save-mypin">저장</button>
-        `;
-  
-
-        const modal = document.createElement('div');
-        modal.innerHTML = listSelectHtml;
-        document.body.appendChild(modal);
-  
-        document.getElementById('save-mypin').addEventListener('click', () => {
-          const listId = document.getElementById('list-select').value;
-          const name = document.getElementById('mypin-name').value;
-          this.getAddressFromCoords(latitude, longitude, (address) => {
-            this.saveMypin(Number(latitude.toFixed(6)), Number(longitude.toFixed(6)), address, listId, name);
-            document.body.removeChild(modal); // 모달 제거
-          });
-        });
+        this.AddMyPinModalOpen = true; // 모달 열기
+        this.newLatitude = latitude; // 위도 저장
+        this.newLongitude = longitude; // 경도 저장
       } else {
         console.error('No favorite lists found');
       }
+      
+    },
+    // 마이핀 추가 리스트 선택 모달 닫기
+    closeAddMyPinModal() {
+      this.AddMyPinModalOpen = false; // 모달 닫기
+      this.selectedListId = null; // 선택된 리스트 초기화
+      this.mypinName = ''; // 마이핀 이름 초기화
     },
   
     // 마이핀 저장 메서드
-    saveMypin(latitude, longitude, address, listId, name) {
+    saveMypin(listId) {
       const userToken = localStorage.getItem('userToken');
-      console.log(address, latitude, longitude)
+      // console.log(address, latitude, longitude)
       axios.post(`http://localhost:8000/favorites/mypin/create/${listId}/`, {
-        address: address, // 주소 문자열을 전송
-        latitude: latitude,
-        longitude: longitude,
+        address: this.newAddress, // 주소 문자열을 전송
+        latitude: Number(this.newLatitude.toFixed(6)),
+        longitude: Number(this.newLongitude.toFixed(6)),
         list: listId,
-        name: name,
+        name: this.mypinName,
         menu: null, // 필요에 따라 추가
         phone: null, // 필요에 따라 추가
         memo: "마이핀 추가", // 필요에 따라 추가
@@ -943,27 +967,15 @@
         console.error('Error saving mypin:', error);
       });
     },
-    showQuickSlotModal(type) {
-    
-    const quickSlotHtml = `
-      <div>
-        <label for="quickslot-name">퀵슬롯의 이름을 입력하세요:</label>
-        <input type="text" id="quickslot-name" />
-      </div>
-      <button id="save-quickslot">저장</button>
-    `;
-      
-    const modal = document.createElement('div');
-    modal.innerHTML = quickSlotHtml;
-    document.body.appendChild(modal);
 
-    document.getElementById('save-quickslot').addEventListener('click', () => {
-      const name = document.getElementById('quickslot-name').value;
-      this.saveQuickSlot(name,type);
-      document.body.removeChild(modal); // 모달 제거
-    });
+  showQuickSlotModal(type) {
+    this.quickSlotType = type; // 퀵슬롯 타입 저장
+    this.isQuickSlotModalOpen = true; // 모달 열기
   },
-
+  closeQuickSlotModal() {
+      this.isQuickSlotModalOpen = false; // 모달 닫기
+      this.quickSlotName = ''; // 입력 필드 초기화
+    },
 
   // 퀵슬롯 추가 요청 메서드
   saveQuickSlot(name,type) {
@@ -987,6 +999,7 @@
     })
     .then(response => {
       console.log('QuickSlot saved:', response.data);
+      this.closeQuickSlotModal(); // 모달 닫기
     })
     .catch(error => {
       console.error('Error saving quickslot:', error);
@@ -1254,7 +1267,7 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
     //this.checkLoginStatus(); // 컴포넌트가 마운트될 때 로그인 상태 확인
     this.fetchFavoriteData();  // 컴포넌트가 마운트될 때 즐겨찾기 데이터 요청
     window.addQuickSlot = this.showQuickSlotModal.bind(this);  // 퀵슬롯 추가 요청
-    window.addMyPin = this.showListSelectionModal.bind(this);  // 마이핀 추가 요청
+    window.addMyPin = this.showAddMyPinModal.bind(this);  // 마이핀 추가 요청
   }
 };
   </script>
