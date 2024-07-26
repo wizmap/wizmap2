@@ -7,9 +7,13 @@ class ListSerializer(serializers.ModelSerializer):
         model = List
         fields = ['id', 'name', 'user', 'private', 'memo']
         
+    
     def create(self, validated_data):
         # 사용자 정보를 자동으로 추가
         validated_data['user'] = self.context['request'].user
+        # memo가 빈 문자열일 경우 None으로 설정
+        if validated_data.get('memo') == '':
+            validated_data['memo'] = None
         return super().create(validated_data)
 
 

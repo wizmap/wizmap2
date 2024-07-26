@@ -16,7 +16,7 @@ class List(models.Model):
     name = models.CharField(max_length=50)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     private = models.BooleanField(default=True)
-    memo = models.CharField(max_length=255, null=True)
+    memo = models.CharField(max_length=255, null=True, blank=True)
 
 class MyPin(models.Model):
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
