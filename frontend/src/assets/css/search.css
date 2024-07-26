@@ -110,7 +110,7 @@ margin-top: 30px;
 .alert_design_form__inner__btn button {
 display: inline-block;
 padding: 10px 35px;
-background-color: #6465CF;
+background-color: #0F3758;
 line-height: 1;
 font-size: 15px;
 font-weight: 300;
@@ -119,7 +119,7 @@ border-radius: 6px;
 box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.35);
 }
 .alert_design_form__inner__btn button:hover {
-background-color: #7677eb;
+opacity: .9;
 }
 /* 서치 모달 */
 #name {

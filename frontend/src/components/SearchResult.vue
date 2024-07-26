@@ -1,5 +1,4 @@
 <template>
-
       <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
       <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
       <div class="modal-favorite-container" @click="preventClose">
@@ -63,11 +62,16 @@
                           </div>
                         </div>
                       </div>
+                    </li>
+                  </ul>
+                </div>
+                <nav nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center" v-if="searchResults.length > 0">
+                  <li class="page-item">
+                  <button class="page-link" @click="prevPage" :disabled="page === 1">Prev</button>
                   </li>
-                </ul>
-                <div class="pagination" v-if="searchResults.length > 0">
-                  <button @click="prevPage" :disabled="page === 1">Previous</button>
-                  <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
+                  <li class="page-item">
+                  <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" class="page-link" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
                     {{ pageNumber }}
                   </button>
                   </li>
@@ -76,8 +80,8 @@
                   </li>
                 </ul>
               </nav>
-          
-          </div>
+              </div>
+            </div>
           </div>
           </div>
 
@@ -92,7 +96,7 @@
           <hr class="hr-3">
 
           <div class="modal-btn">
-          <router-link to="/favorites" id="favorits-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
+          <router-link to="/favorites" id="favorits-button" @click.prevent="checkLoginAndNavigate('Favorites')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
           </svg></router-link>
           </div>

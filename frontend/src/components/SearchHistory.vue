@@ -2,12 +2,18 @@
       <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
       <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
       <div class="modal-favorite-container" @click="preventClose">
+
+        <router-link to="/"><img id="search-logo"></router-link>
+
+        <hr class="hr-3"> 
   
         <div class="modal-btn">
           <router-link to="/searchresult" id="modal-search-button" @click="openSearchModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
         </svg></router-link>
         </div>
+
+        <hr class="hr-3">
   
           <div class="modal-btn">
           <router-link to="/favorites" id="nav-button" @click="openQuikModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
@@ -29,12 +35,16 @@
           </div>
           </div>
           </div>
+
+          <hr class="hr-3">
   
           <div class="modal-btn">
           <router-link to="/favorites" id="favorits-button" @click="openFavModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
           </svg></router-link>
           </div>
+
+          <hr class="hr-3">
   
           <div class="modal-btn">
           <button id="history-button" @click="openHisModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
@@ -66,6 +76,8 @@
           </div>
           </div>
           </div>
+
+          <hr class="hr-3">
           
       </div>
       </div>
