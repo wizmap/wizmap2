@@ -1,0 +1,304 @@
+/* Global CSS */
+fieldset {
+border: none;
+margin: 0;
+}
+
+*,
+*::before,
+*::after {
+box-sizing: border-box;
+}
+
+body {
+margin: 0px; /* 기본 margin 없애기 */
+}
+
+input {
+width: 15em; 
+height: 2em; 
+border: 1px solid gray; 
+border-radius: 20px;
+padding: 0px 10px; 
+}
+
+input:focus { /* 포커스 시 */
+border: 1px solid black; /* 기본 테두리 변경 */
+outline: 1px solid black; /* out 테두리 변경 */
+border-radius: 10px; /* 테두리 둥글게 */
+}
+
+.modal-wrap {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background: rgba(0, 0, 0, 0.4);
+width: 100%;
+height: 100%;
+z-index: 3;
+}
+
+.right-modal-container {
+position: fixed;
+top: 0;
+right: 0;
+width: 350px;
+height: 100%;
+display: flex;
+align-items: center;
+flex-direction: column;
+background: #fff;
+border-radius: 10px;
+box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.5);
+box-sizing: border-box;
+z-index: 3;
+overflow-y: auto;
+}
+
+.password-confirm-container {
+position: fixed;
+top: 0;
+right: 0;
+width: 350px;
+height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+background: #fff;
+border-radius: 10px;
+box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.5);
+box-sizing: border-box;
+z-index: 3;
+overflow-y: auto;
+}
+
+.right-modal-container::-webkit-scrollbar {
+width: 5px;  /* 스크롤바의 너비 */
+height: 5px;
+}
+
+.right-modal-container::-webkit-scrollbar-thumb {
+height: 30%; /* 스크롤바의 길이 */
+background: #c0bfbf; /* 스크롤바의 색상 */
+border-radius: 10px;
+}
+
+.right-modal-container::-webkit-scrollbar-track {
+background: #e4e3e3; /* 스크롤바의 뒷 배경 색상 */
+}
+
+#modal-button {
+position: absolute;
+top: 20px;
+right: 2%;
+transform: translate(50%, -50%);
+width: 60px;
+height: 30px;
+z-index: 1;
+
+-webkit-transform: scale(1);
+transform: scale(1);
+-webkit-transition: .5s ease-in-out;
+transition: .5s ease-in-out;
+}
+
+#modal-button:hover {
+-webkit-transform: scale(1.3);
+transform: scale(1.3);
+}
+
+.mypage_container {
+position: fixed;
+top: 0;
+right: 0;
+width: 350px;
+height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+background: #fff;
+border-radius: 10px;
+box-sizing: border-box;
+z-index: 3;
+overflow-y: auto;
+}
+
+#profile {
+position: relative;
+display: flex;
+width: 150px;
+height: 150px;
+margin: 15px;
+background-image: url('../img/profile.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;
+}
+
+/* 지도 및 검색창, 로고 */
+#map {
+position: absolute;
+width: 100%;
+height: 100%;
+overflow: hidden;
+opacity: 0.5;
+}
+
+#center {
+box-sizing: border-box;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 100%;
+height: 50%;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+z-index: 1;
+}
+    
+#logo {
+display: flex;
+justify-content: center;
+align-items: center;
+width: 300px;
+height: 300px;
+background-image: url('../img/wizmap.ico');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;
+}
+
+#home-search-input {
+display: flex;
+justify-content: center;
+width: 650px;
+height: 60px;
+background: #f8f8f8;
+border: 1px gray;
+border-radius: 25px;
+box-shadow: 5px 5px 5px gray;
+}
+
+#home-search-button {
+position: relative;
+top: -50%;
+left: 87%;
+transform: translate(100%, 100%);
+width: 60px;
+height: 30px;
+z-index: 2;
+
+-webkit-transform: scale(1);
+transform: scale(1);
+-webkit-transition: .5s ease-in-out;
+transition: .5s ease-in-out;
+}
+
+#home-search-button:hover {
+-webkit-transform: scale(1.3);
+transform: scale(1.3);
+}
+
+/* 로그인 모달 */
+html, body {
+  font-family: 'Roboto';
+}
+
+.form, .form-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-wrapper {
+  background-color: white;
+  width: 300px;
+  padding: 20px 0;
+  margin: 20px auto;
+  border-radius: 15px;
+  display: inline-block;
+}
+
+.form-wrapper button {
+  cursor: pointer;
+  font-weight: bold;
+  width: 230px;
+  margin: 0 35px 20px;
+  height: 45px;
+  padding: 6px 15px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  font-size: 14px;
+}
+
+button.primary {
+  color: white;
+  background: #0F3758;
+}
+
+button.primary:hover {
+  opacity: .9;
+}
+
+button.secondary {
+  background: white;
+  color: #0F3758;
+}
+
+button.secondary:hover {
+  background: #f5f5f5;
+}
+
+.form-field {
+font-weight: bold;
+width: 230px;
+margin: 0 35px 20px;
+height: 35px;
+padding: 6px 15px;
+border-radius: 5px;
+outline: none;
+border: none;
+background: #f5f5f5;
+color: #748194;
+font-size: 14px;
+}
+
+.form-wrapper .login-modal-title {
+color: #212121;
+font-weight: 300;
+font-size: 30px;
+margin: 40px 0 30px 0;
+text-align: center;
+}
+
+.form-wrapper p {
+color: #424242;
+font-size: 14px;
+text-align: center;
+}
+
+.form-wrapper h4 {
+color: #424242;
+text-align: left; 
+margin: 20px 35px 20px;
+font-weight: bold;
+}
+
+.form-wrapper a {
+cursor: pointer;
+color: #0F3758;
+}
+
+.form-wrapper a:hover {
+color: #009688;
+}
+
+
+
