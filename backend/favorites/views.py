@@ -122,51 +122,69 @@ class ListDeleteView(APIView):
 class MyPinCreateView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, list_id):
-         # 주소 데이터를 Address 모델에 저장
-        address_data = {
-            'address': request.data.get('address'),
-            'latitude': request.data.get('latitude'),
-            'longitude': request.data.get('longitude')
-        }
-        address_serializer = AddressSerializer(data=address_data)
-        if address_serializer.is_valid():
-            address = address_serializer.save()
+        # 요청 데이터에서 'new_place' 여부 확인
+        print(request.data)
+        if request.data.get('new_place') == False:  # 'new_place'가 false인 경우
+            # MyPin 데이터를 MyPin 모델에 저장
+            mypin_data = {
+                'list': list_id,
+                'place': request.data.get('place'),  # 요청에서 place ID를 받음
+                'name': request.data.get('name')
+            }
+            serializer = MyPinSerializer(data=mypin_data)
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # new_place 가 true 인 경우 - 장소 데이터 저장 필요
         else:
-            print("address")
-            print(request.data.get('address'), type(request.data.get('latitude')), type(request.data.get('longitude')))
-            print(address_serializer.errors)
-            return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # 주소 데이터를 Address 모델에 저장
+            address_data = {
+                'address': request.data.get('address'),
+                'latitude': request.data.get('latitude'),
+                'longitude': request.data.get('longitude')
+            }
+            address_serializer = AddressSerializer(data=address_data)
+            if address_serializer.is_valid():
+                address = address_serializer.save()
+            else:
+                print("address")
+                print(request.data.get('address'), type(request.data.get('latitude')), type(request.data.get('longitude')))
+                print(address_serializer.errors)
+                return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Place 데이터를 Place 모델에 저장
-        place_data = {
-            'address': address.id,
-            'name': request.data.get('name'),
-            'menu': request.data.get('menu'),
-            'phone': request.data.get('phone'),
-            'memo': request.data.get('memo'),
-            'category': request.data.get('category')
-        }
-        place_serializer = PlaceSerializer(data=place_data)
-        if place_serializer.is_valid():
-            place = place_serializer.save()
-        else:
-            print("place")
-            print(place_serializer.errors)
-            return Response(place_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Place 데이터를 Place 모델에 저장
+            place_data = {
+                'address': address.id,
+                'name': request.data.get('name'),
+                'menu': request.data.get('menu'),
+                'phone': request.data.get('phone'),
+                'memo': request.data.get('memo'),
+                'category': request.data.get('category')
+            }
+            place_serializer = PlaceSerializer(data=place_data)
+            if place_serializer.is_valid():
+                place = place_serializer.save()
+            else:
+                print("place")
+                print(place_serializer.errors)
+                return Response(place_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # MyPin 데이터를 MyPin 모델에 저장
-        mypin_data = {
-            'list': list_id,
-            'place': place.id,
-            'name': request.data.get('name')
-        }
-        serializer = MyPinSerializer(data=mypin_data)
-        
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # MyPin 데이터를 MyPin 모델에 저장
+            mypin_data = {
+                'list': list_id,
+                'place': place.id,
+                'name': request.data.get('name')
+            }
+            serializer = MyPinSerializer(data=mypin_data)
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MyPinUpdateView(APIView):
     permission_classes = [IsAuthenticated]

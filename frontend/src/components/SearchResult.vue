@@ -57,6 +57,25 @@
                                 </ul>
                                 <!-- 퀵슬롯 추가 버튼 -->
                                 <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
+                                <!-- 마이핀 추가 버튼 -->
+                                <button type="button" class="btn btn-primary" @click="openAddMyPinModal(selectedPlace)">마이핀 추가</button>
+                                <!-- 마이핀 추가 모달 -->
+                                <div class="mypin-add-modal" v-show="AddMyPinModalOpen" @click="closeAddMyPinModal">
+                                  <div class="modal-container" v-if="favoriteData" @click.stop="preventClose">
+                                    <label for="mypin-list">리스트를 선택하세요</label>
+                                    <select v-model="selectedListId">
+                                      <option v-for="list in favoriteData.list" :key="list.id" :value="list.id">{{ list.name }}</option>
+                                    </select>
+                                    <div>
+                                      <label for="mypin-name">마이핀의 이름을 입력하세요:</label>
+                                      <input type="text" v-model="mypinName" id="mypin-name" />
+                                    </div>
+                                    <div class="modal-btn">
+                                      <button @click="saveMypin(selectedListId)">저장</button>
+                                      <button @click="closeAddMyPinModal">취소</button>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                               <div v-else>
                               <p>장소 정보가 없습니다.</p>
@@ -186,6 +205,10 @@
     },
       page: 1,
       selectedCategory: '',
+      favoriteData: null,   // 즐겨찾기 데이터
+      AddMyPinModalOpen: false,  // 마이핀 추가 모달
+      selectedListId: null,   // 마이핀 추가 시 선택된 리스트
+      mypinName: '',    // 마이핀 추가 이름
     };
   },
   created() {
@@ -586,6 +609,76 @@ computed: {
       if (this.page < this.pagination.total_pages) {
         this.fetchSearchResults(this.page + 1);
       }
+    },
+    // 마이핀 추가 
+    openAddMyPinModal(place) {
+      this.fetchFavoriteData(); // 즐겨찾기 데이터 요청
+        this.selectedPlace = place; // 선택된 장소 정보를 저장
+        this.AddMyPinModalOpen = true; // 모달 열기
+        console.log("모달 열기:", this.AddMyPinModalOpen); // 상태 확인
+    },
+    // 마이핀 리스트 선택 모달을 표시하는 메서드
+    showAddMyPinModal(latitude, longitude) {
+      // 리스트 데이터를 가져와서 모달에 표시
+      
+      if (this.favoriteData && this.favoriteData.list && this.favoriteData.list.length > 0) {
+        this.AddMyPinModalOpen = true; // 모달 열기
+        this.newLatitude = latitude; // 위도 저장
+        this.newLongitude = longitude; // 경도 저장
+      } else {
+        console.error('No favorite lists found');
+      }
+      
+    },
+    // 마이핀 추가 리스트 선택 모달 닫기
+    closeAddMyPinModal() {
+      this.AddMyPinModalOpen = false; // 모달 닫기
+      this.selectedListId = null; // 선택된 리스트 초기화
+      this.mypinName = ''; // 마이핀 이름 초기화
+    },
+  
+    // 마이핀 저장 메서드
+    saveMypin(listId) {
+      const userToken = localStorage.getItem('userToken');
+      // console.log(address, latitude, longitude)
+      axios.post(`http://localhost:8000/favorites/mypin/create/${listId}/`, {
+        place: this.selectedPlace.place.id,
+        list: listId,
+        name: this.mypinName,
+        new_place:false,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        console.log('Mypin saved:', response.data);
+        // 페이지 리로드
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Error saving mypin:', error);
+      });
+    },
+    // 즐겨찾기 기본 (리스트, 퀵슬롯) 요청
+    fetchFavoriteData(id) {
+      console.log(`Fetching list data for ID: ${id}`);
+      const userToken = localStorage.getItem('userToken');
+      console.log(userToken)
+      axios.get(`http://localhost:8000/favorites`, {
+        headers: {
+            // Bearer 스키마를 사용하여 토큰을 전송
+            'Authorization': `Bearer ${userToken}`
+          }
+      })  // PinPlaceAPIView에서 데이터 가져오기
+        .then(response => {
+          this.favoriteData = response.data;
+          console.log("Response", response.data);
+        })
+        .catch(error => {
+          console.error("There was an error fetching the list data!", error);
+        });
     },
   },
     mounted() {
