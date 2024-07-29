@@ -236,14 +236,10 @@ computed: {
 },
   methods: {
     toggleCategory(category) {
-    if (this.selectedCategory === category) {
-      // 현재 선택된 카테고리가 클릭된 카테고리와 같으면 전체 결과를 보여줍니다.
-      this.selectedCategory = '';
-    } else {
-      // 그렇지 않으면 선택된 카테고리를 클릭된 카테고리로 설정합니다.
-      this.selectedCategory = category;
-    }
-  },
+      this.selectedCategory = this.selectedCategory === category ? '' : category;
+      this.page = 1; // 필터링 시 페이지를 1로 초기화
+      this.fetchSearchResults(this.page); // 필터링 시 검색 결과를 다시 가져오기
+    },
     filterCategory(category) {
       this.selectedCategory = category;
     },
@@ -435,7 +431,7 @@ computed: {
       const response = await fetch(`http://localhost:8000/searchengine/?page=${page}`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ search: this.searchTerm })
+        body: JSON.stringify({ search: this.searchTerm, category: this.selectedCategory })
       });
 
       const data = await response.json(); // 응답 JSON 파싱
