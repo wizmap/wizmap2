@@ -24,9 +24,16 @@
 
         <div class="modal-nav-wrap" v-show="secondModalOpen" @click="closeNavModals">
           <div class="modal-nav-container" @click="preventClose">
-            <p>HI</p>
             
-           
+            <div id="directions-panel" style="width: 100%; height: 200px; overflow: auto;"></div>
+            <div id="current-coords"></div>
+            <div id="current-coords"></div>
+  <div id="start-coords"></div>
+  <div id="end-coords"></div>
+  <button @click="setStartPoint">시작점 지정</button>
+  <button @click="setEndPoint">도착점 지정</button>
+  <button @click="handleDirectionClick(startCoords, endCoords)">길찾기</button>
+  
           </div>
         </div>
       </div>
@@ -98,6 +105,12 @@
       newListName: '', // 새로운 리스트 이름
       isListPrivate: false, // 리스트 공개 여부
       newListMemo: '',  // 새로운 리스트 메모
+      currentCoords: null,
+      startCoords: null,
+      endCoords: null,
+      startMarker: null,
+    endMarker: null,
+    polyline: null,
     };
   },
   created() {
@@ -842,20 +855,6 @@
     // 클릭한 위치에 새로운 마커 추가
     this.addNewMarker(latitude, longitude);
   },
-deleteQuickData(quickId) {
-  axios.delete(`http://localhost:8000/favorites/quick/delete/${quickId}/`, {
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-    }
-  })
-  .then(() => {
-    console.log('Quick data deleted successfully');
-    // 여기에 성공적으로 삭제 후의 로직을 추가하세요.
-  })
-  .catch(error => {
-    console.error('Error deleting quick data:', error);
-  });
-},
 openEditModal(quickData) {
     this.editingQuickData = {...quickData}; // 현재 퀵 데이터를 복사하여 저장
     this.isEditModalOpen = true; // 수정 모달 열기
@@ -1009,33 +1008,113 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
         return ''; // 기본값 혹은 에러 처리
     }
   },
+  async handleDirectionClick(startCoords, endCoords) {
+  // 이전 경로 제거
+  if (this.polyline) {
+    this.polyline.setMap(null);
+  }
+
+  const url = '/api/map-direction/v1/driving';
+  const params = {
+    start: `${startCoords.lng},${startCoords.lat}`,
+    goal: `${endCoords.lng},${endCoords.lat}`,
+    option: 'traoptimal'
+  };
+
+  const headers = {
+    'X-NCP-APIGW-API-KEY-ID': process.env.VUE_APP_MAPURL,
+    'X-NCP-APIGW-API-KEY': process.env.VUE_APP_MAPKEY
+  };
+
+  try {
+    const response = await axios.get(url, { params, headers });
+
+    if (response.data.route.traoptimal) {
+      const route = response.data.route.traoptimal[0].path;
+      const path = route.map(coord => new naver.maps.LatLng(coord[1], coord[0]));
+
+      // 경로 생성
+      this.polyline = new naver.maps.Polyline({
+        map: this.map,
+        path: path,
+        strokeColor: '#5347AA',
+        strokeWeight: 5
+      });
+
+      this.map.setCenter(path[0]);
+    } else {
+      console.error('Traoptimal data is undefined');
+    }
+  } catch (error) {
+    console.error('Directions request failed due to ', error);
+  }
+},
+setStartPoint() {
+    // 이전 시작점 마커 제거
+    if (this.startMarker) {
+      this.startMarker.setMap(null);
+    }
+
+    this.startCoords = this.currentCoords;
+    document.getElementById('start-coords').innerText = `시작점: 위도 ${this.startCoords.lat}, 경도 ${this.startCoords.lng}`;
+
+    // 빨간색 마커 생성
+    this.startMarker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(this.startCoords.lat, this.startCoords.lng),
+      map: this.map,
+      icon: {
+        content: '<svg width="20" height="20" viewBox="0 0 20 20" fill="red"><path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 10 20 10 20C10 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 15C8.34 15 7 13.66 7 12C7 10.34 8.34 9 10 9C11.66 9 13 10.34 13 12C13 13.66 11.66 15 10 15Z"></path></svg>',
+        anchor: new naver.maps.Point(10, 10),
+      },
+      
+    });
+  },
+  setEndPoint() {
+    // 이전 도착점 마커 제거
+    if (this.endMarker) {
+      this.endMarker.setMap(null);
+    }
+
+    this.endCoords = this.currentCoords;
+    document.getElementById('end-coords').innerText = `도착점: 위도 ${this.endCoords.lat}, 경도 ${this.endCoords.lng}`;
+
+    // 파란색 마커 생성
+    this.endMarker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(this.endCoords.lat, this.endCoords.lng),
+      map: this.map,
+      icon: {
+        content: '<svg width="20" height="20" viewBox="0 0 20 20" fill="blue"><path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 10 20 10 20C10 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 15C8.34 15 7 13.66 7 12C7 10.34 8.34 9 10 9C11.66 9 13 10.34 13 12C13 13.66 11.66 15 10 15Z"></path></svg>',
+        anchor: new naver.maps.Point(10, 10),
+      },
+    });
+  },
+  handleMapClick(e) {
+    const latlng = e.coord;
+    this.currentCoords = { lat: latlng._lat, lng: latlng._lng };
+    document.getElementById('current-coords').innerText = `위도: ${latlng._lat}, 경도: ${latlng._lng}`;
+  },
 
 },
-  mounted() {
-    // 네이버 지도 API 로드
-    const script = document.createElement("script");
-    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL+ "&ncpClientSecret=" + process.env.VUE_APP_MAPKEY+ "&submodules=geocoder";  // geocoder 서브모듈 추가
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
+mounted() {
+  const script = document.createElement("script");
+  script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + process.env.VUE_APP_MAPURL+ "&ncpClientSecret=" + process.env.VUE_APP_MAPKEY+ "&submodules=geocoder,directions"; // directions 서브모듈 추가
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
 
-    script.onload = () => {
-      // 네이버 지도 생성
-      this.map = new window.naver.maps.Map("search-map", {
-        center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
-        zoom: 10
-      });
-      // 모든 마커를 포함할 수 있는 LatLngBounds 객체 생성
-      this.bounds = new naver.maps.LatLngBounds();
-      // 지도 클릭 이벤트 추가 : 우클릭
-      naver. maps.Event.addListener(this.map, 'rightclick', this.handleMapClick.bind(this));
-    };
+  script.onload = () => {
+    this.map = new window.naver.maps.Map("search-map", {
+      center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
+      zoom: 10
+    });
+    this.bounds = new naver.maps.LatLngBounds();
+    naver.maps.Event.addListener(this.map, 'rightclick', this.handleMapClick.bind(this));
+  };
 
-    //this.checkLoginStatus(); // 컴포넌트가 마운트될 때 로그인 상태 확인
-    this.fetchFavoriteData();  // 컴포넌트가 마운트될 때 즐겨찾기 데이터 요청
-    window.addQuickSlot = this.showQuickSlotModal.bind(this);  // 퀵슬롯 추가 요청
-    window.addMyPin = this.showListSelectionModal.bind(this);  // 마이핀 추가 요청
-  }
+  this.fetchFavoriteData();
+  window.addQuickSlot = this.showQuickSlotModal.bind(this);
+  window.addMyPin = this.showListSelectionModal.bind(this);
+}
 };
   </script>
   
