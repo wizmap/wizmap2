@@ -1264,10 +1264,16 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
 
     script.onload = () => {
       // 네이버 지도 생성
-      this.map = new window.naver.maps.Map("search-map", {
-        center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
-        zoom: 10
-      });
+      let center = new window.naver.maps.LatLng(35.8858646, 128.5828924); // 기본 중심 좌표
+        const storedCenter = localStorage.getItem('mapCenter');
+        if (storedCenter) {
+          const { lat, lng } = JSON.parse(storedCenter);
+          center = new window.naver.maps.LatLng(lat, lng);
+        }
+        this.map = new window.naver.maps.Map("search-map", {
+          center: center,
+          zoom: 12
+        });
       // 모든 마커를 포함할 수 있는 LatLngBounds 객체 생성
       this.bounds = new naver.maps.LatLngBounds();
       // 지도 클릭 이벤트 추가 : 우클릭

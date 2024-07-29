@@ -494,9 +494,14 @@
       document.head.appendChild(script);
   
       script.onload = () => {
-        // 네이버 지도 생성
+        let center = new window.naver.maps.LatLng(35.8858646, 128.5828924); // 기본 중심 좌표
+        const storedCenter = localStorage.getItem('mapCenter');
+        if (storedCenter) {
+          const { lat, lng } = JSON.parse(storedCenter);
+          center = new window.naver.maps.LatLng(lat, lng);
+        }
         this.map = new window.naver.maps.Map("search-map", {
-          center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
+          center: center,
           zoom: 12
         });
         this.mapInitialized = true; // 지도 초기화 상태 업데이트
