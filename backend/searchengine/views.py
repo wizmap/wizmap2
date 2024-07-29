@@ -81,6 +81,7 @@ vectordb_instance = Chroma(
 class TestView(APIView):
     def post(self, request):
         search = request.data.get('search')
+        category = request.data.get('category', '')  # 카테고리 값 추가
         
         if request.user.is_authenticated:
             save_history(user=request.user, search=search)
@@ -102,6 +103,9 @@ class TestView(APIView):
                 print(doc)
             
             places = Place.objects.filter(id__in=a)
+            
+        if category:
+            places = places.filter(category=category)  # 카테고리로 필터링
         # places = places | Place.objects.filter(id__in=a)
             
         # 페이지네이션 적용
