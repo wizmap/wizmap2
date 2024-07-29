@@ -1,11 +1,11 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-        integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
-        crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
   <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
     <div class="modal-favorite-container" @click="preventClose">
+
+      <router-link to="/"><img id="search-logo"></router-link>
+
+      <hr class="hr-3"> 
 
       <div class="modal-btn">
         <router-link to="/searchresult" id="modal-search-button">
@@ -14,6 +14,8 @@
           </svg>
         </router-link>
       </div>
+
+      <hr class="hr-3"> 
 
       <div class="modal-btn">
           <router-link to="/Nav" id="nav-button" ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
@@ -26,6 +28,8 @@
           </div>
           </div>
           </div>
+
+      <hr class="hr-3"> 
 
       <div class="modal-btn">
         <button id="favorits-button" @click="openFavModal">
@@ -273,6 +277,8 @@
           </div>
         </div>
 
+      <hr class="hr-3"> 
+
       <div class="modal-btn">
         <router-link to="/history" id="history-button" @click="openHisModal">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
@@ -287,6 +293,9 @@
           </div>
         </div>
       </div>
+
+      <hr class="hr-3"> 
+
       </div>
   
   </div>
@@ -294,7 +303,7 @@
       <div id="search-center">
         <router-link to="/"><img id="search-logo"></router-link>
           <form id="search" @submit.prevent="navigateToSearchResult({ search: searchTerm })">
-            <input type="text" id="search-input" placeholder="       장소를 입력하세요">
+            <input type="text" v-model="searchTerm" id="search-input" placeholder="       장소를 입력하세요">
               <router-link to="/searchresult" id="search-button" @click="search"><i class="fas fa-search fa-lg"></i></router-link>
           </form>
       </div>
@@ -947,7 +956,8 @@
         menu: null, // 필요에 따라 추가
         phone: null, // 필요에 따라 추가
         memo: "마이핀 추가", // 필요에 따라 추가
-        category: '기타' // 필요에 따라 추가
+        category: '기타', // 필요에 따라 추가
+        new_place: true,
       }, {
         headers: {
           'Authorization': `Bearer ${userToken}`,

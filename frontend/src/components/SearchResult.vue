@@ -1,16 +1,17 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-      integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
-      crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
       <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
       <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
       <div class="modal-favorite-container" @click="preventClose">
+
+        <router-link to="/"><img id="search-logo"></router-link>
+
+        <hr class="hr-3">
   
         <div class="modal-btn">
           <button id="modal-search-button" @click="openSearchModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-        </svg></button>
+          </svg>
+          </button>
 
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
             <div class="modal-search-container" @click="preventClose">
@@ -54,6 +55,27 @@
                                 <ul>
                                   <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
                                 </ul>
+                                <!-- 퀵슬롯 추가 버튼 -->
+                                <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
+                                <!-- 마이핀 추가 버튼 -->
+                                <button type="button" class="btn btn-primary" @click="openAddMyPinModal(selectedPlace)">마이핀 추가</button>
+                                <!-- 마이핀 추가 모달 -->
+                                <div class="mypin-add-modal" v-show="AddMyPinModalOpen" @click="closeAddMyPinModal">
+                                  <div class="modal-container" v-if="favoriteData" @click.stop="preventClose">
+                                    <label for="mypin-list">리스트를 선택하세요</label>
+                                    <select v-model="selectedListId">
+                                      <option v-for="list in favoriteData.list" :key="list.id" :value="list.id">{{ list.name }}</option>
+                                    </select>
+                                    <div>
+                                      <label for="mypin-name">마이핀의 이름을 입력하세요:</label>
+                                      <input type="text" v-model="mypinName" id="mypin-name" />
+                                    </div>
+                                    <div class="modal-btn">
+                                      <button @click="saveMypin(selectedListId)">저장</button>
+                                      <button @click="closeAddMyPinModal">취소</button>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                               <div v-else>
                               <p>장소 정보가 없습니다.</p>
@@ -61,21 +83,30 @@
                           </div>
                         </div>
                       </div>
+                    </li>
+                  </ul>
+                </div>
+                <nav nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center" v-if="searchResults.length > 0">
+                  <li class="page-item">
+                  <button class="page-link" @click="prevPage" :disabled="page === 1">Prev</button>
                   </li>
-                </ul>
-                <div class="pagination" v-if="searchResults.length > 0">
-                  <button @click="prevPage" :disabled="page === 1">Previous</button>
-                  <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
+                  <li class="page-item">
+                  <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" class="page-link" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
                     {{ pageNumber }}
                   </button>
-                  <button @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
-                </div>
+                  </li>
+                  <li class="page-item">
+                  <button class="page-link" @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
+                  </li>
+                </ul>
+              </nav>
               </div>
-              </div>
-          
+            </div>
           </div>
           </div>
-          </div>
+
+          <hr class="hr-3">
   
           <div class="modal-btn">
           <router-link to="/Nav" id="nav-button" @click.prevent="checkLoginAndNavigate('Nav')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
@@ -83,11 +114,15 @@
           </svg></router-link>
           </div>
   
+          <hr class="hr-3">
+
           <div class="modal-btn">
-          <router-link to="/favorites" id="favorits-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
+          <router-link to="/favorites" id="favorits-button" @click.prevent="checkLoginAndNavigate('Favorites')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
           </svg></router-link>
           </div>
+
+          <hr class="hr-3">
   
           <div class="modal-btn">
           <router-link to="/history" id="history-button" @click.prevent="checkLoginAndNavigate('SearchHistory')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
@@ -97,6 +132,8 @@
           </svg></router-link>
           </div>
           
+          <hr class="hr-3">
+
       </div>
       </div>
   
@@ -107,8 +144,8 @@
             <input type="text" v-model="searchTerm" id="search-input" placeholder="장소를 입력하세요" @input="fetchSuggestions" @focus="showSuggestions" @blur="hideSuggestions" />
             <button id="search-button"><i class="fas fa-search fa-lg"></i></button>
           </form>
-          <ul v-if="showAutocomplete && suggestions.length" class="autocomplete-list">
-            <li v-for="(suggestion, index) in suggestions" :key="index" @mousedown.prevent="selectSuggestion(suggestion)">
+          <ul v-if="showAutocomplete && suggestions.length" class="autocomplete-list list-group">
+            <li v-for="(suggestion, index) in suggestions" :key="index" @mousedown.prevent="selectSuggestion(suggestion)" class="list-group-item">
               {{ suggestion }}
             </li>
           </ul>
@@ -117,11 +154,21 @@
       <div id="search-map"></div>
       <!-- 로그인 필요 알림창 -->
       <div v-if="showAlert" class="alert-overlay">
-      <div class="alert-box">
-        <p>{{ alertMessage }}</p>
-        <button @click="closeAlert">확인</button>
+        <div class="alert_design_form__inner">
+          <div class="alert-box">
+            <div>
+            	<h2>{{ alertTitle }}</h2>
+              <p>{{ alertMessage }}</p>
+            </div>
+            
+            <!-- 닫기 버튼 -->
+            <div class="alert_design_form__inner__btn">
+            	<button @click="closeAlert">확인</button>
+            </div>
+            <!-- // 닫기 버튼 -->
+          </div>
+        </div>
       </div>
-    </div>
   
   </template>
   
@@ -141,6 +188,7 @@
       modalOpen: false,
       placeData: null,
       searchTerm: '',
+      category: '',
       searchResults: [],
       showAlert: false, // 알림창 표시 여부
       alertMessage: '', // 알림창 메시지
@@ -157,6 +205,11 @@
     },
       page: 1,
       selectedCategory: '',
+      favoriteData: null,   // 즐겨찾기 데이터
+      AddMyPinModalOpen: false,  // 마이핀 추가 모달
+      selectedListId: null,   // 마이핀 추가 시 선택된 리스트
+      mypinName: '',    // 마이핀 추가 이름
+      storedCenter: null, // 저장된 지도 중심 위치
     };
   },
   created() {
@@ -207,14 +260,10 @@ computed: {
 },
   methods: {
     toggleCategory(category) {
-    if (this.selectedCategory === category) {
-      // 현재 선택된 카테고리가 클릭된 카테고리와 같으면 전체 결과를 보여줍니다.
-      this.selectedCategory = '';
-    } else {
-      // 그렇지 않으면 선택된 카테고리를 클릭된 카테고리로 설정합니다.
-      this.selectedCategory = category;
-    }
-  },
+      this.selectedCategory = this.selectedCategory === category ? '' : category;
+      this.page = 1; // 필터링 시 페이지를 1로 초기화
+      this.fetchSearchResults(this.page); // 필터링 시 검색 결과를 다시 가져오기
+    },
     filterCategory(category) {
       this.selectedCategory = category;
     },
@@ -357,7 +406,8 @@ computed: {
     checkLoginAndNavigate(routeName) {
     const isLoggedIn = localStorage.getItem('userToken');
     if (!isLoggedIn) {
-      this.alertMessage = '로그인이 필요합니다.';
+      this.alertTitle = '로그인 요청';
+      this.alertMessage = 'WIZMAP 사이트에 로그인해주세요.';
       this.showAlert = true;
     } else {
       this.$router.push({ name: routeName });
@@ -405,7 +455,7 @@ computed: {
       const response = await fetch(`http://localhost:8000/searchengine/?page=${page}`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ search: this.searchTerm })
+        body: JSON.stringify({ search: this.searchTerm, category: this.selectedCategory })
       });
 
       const data = await response.json(); // 응답 JSON 파싱
@@ -424,7 +474,7 @@ computed: {
         const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
         if (this.mapInitialized) {
           this.map.setCenter(newCenter);
-
+          localStorage.setItem('mapCenter', JSON.stringify({ lat: newCenter.lat(), lng: newCenter.lng() })); // 중심 위치 저장
           // 검색 결과의 위치에 마커 추가
           this.searchResults.forEach(result => {
             const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
@@ -494,7 +544,6 @@ computed: {
           this.selectedPlace = await response.json();
 
           let marker = this.markers.find(marker => marker.title === this.selectedPlace.place.name);
-          console.log(marker);
 
           if (!marker) {
             // 마커가 없으면 새로운 마커 생성
@@ -503,7 +552,6 @@ computed: {
           }
 
           this.setCenterAndZoom(this.markers.find(marker => marker.title === this.selectedPlace.place.name), new window.naver.maps.LatLng(this.selectedPlace.place.address.latitude, this.selectedPlace.place.address.longitude));
-          console.log(this.selectedPlace.place.name);
         } else {
           const errorText = await response.text();
           console.error('Failed to fetch place details:', errorText);
@@ -520,6 +568,8 @@ computed: {
         position.lng() - 0.15 // 약간 오른쪽으로 이동 (값은 조정 가능)
       );
       this.map.setCenter(offsetPosition);
+      localStorage.setItem('mapCenter', JSON.stringify({ lat: offsetPosition.lat(), lng: offsetPosition.lng() })); // 중심 위치 저장
+
       this.markers.forEach(m => {
         if (m === marker) {
           m.setAnimation(naver.maps.Animation.BOUNCE);
@@ -561,6 +611,76 @@ computed: {
         this.fetchSearchResults(this.page + 1);
       }
     },
+    // 마이핀 추가 
+    openAddMyPinModal(place) {
+      this.fetchFavoriteData(); // 즐겨찾기 데이터 요청
+        this.selectedPlace = place; // 선택된 장소 정보를 저장
+        this.AddMyPinModalOpen = true; // 모달 열기
+        console.log("모달 열기:", this.AddMyPinModalOpen); // 상태 확인
+    },
+    // 마이핀 리스트 선택 모달을 표시하는 메서드
+    showAddMyPinModal(latitude, longitude) {
+      // 리스트 데이터를 가져와서 모달에 표시
+      
+      if (this.favoriteData && this.favoriteData.list && this.favoriteData.list.length > 0) {
+        this.AddMyPinModalOpen = true; // 모달 열기
+        this.newLatitude = latitude; // 위도 저장
+        this.newLongitude = longitude; // 경도 저장
+      } else {
+        console.error('No favorite lists found');
+      }
+      
+    },
+    // 마이핀 추가 리스트 선택 모달 닫기
+    closeAddMyPinModal() {
+      this.AddMyPinModalOpen = false; // 모달 닫기
+      this.selectedListId = null; // 선택된 리스트 초기화
+      this.mypinName = ''; // 마이핀 이름 초기화
+    },
+  
+    // 마이핀 저장 메서드
+    saveMypin(listId) {
+      const userToken = localStorage.getItem('userToken');
+      // console.log(address, latitude, longitude)
+      axios.post(`http://localhost:8000/favorites/mypin/create/${listId}/`, {
+        place: this.selectedPlace.place.id,
+        list: listId,
+        name: this.mypinName,
+        new_place:false,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        console.log('Mypin saved:', response.data);
+        // 페이지 리로드
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Error saving mypin:', error);
+      });
+    },
+    // 즐겨찾기 기본 (리스트, 퀵슬롯) 요청
+    fetchFavoriteData(id) {
+      console.log(`Fetching list data for ID: ${id}`);
+      const userToken = localStorage.getItem('userToken');
+      console.log(userToken)
+      axios.get(`http://localhost:8000/favorites`, {
+        headers: {
+            // Bearer 스키마를 사용하여 토큰을 전송
+            'Authorization': `Bearer ${userToken}`
+          }
+      })  // PinPlaceAPIView에서 데이터 가져오기
+        .then(response => {
+          this.favoriteData = response.data;
+          console.log("Response", response.data);
+        })
+        .catch(error => {
+          console.error("There was an error fetching the list data!", error);
+        });
+    },
   },
     mounted() {
       // 네이버 지도 API 로드
@@ -570,9 +690,14 @@ computed: {
       script.defer = true;
       document.head.appendChild(script);
       script.onload = () => {
-        // 네이버 지도 생성
+        let center = new window.naver.maps.LatLng(35.8858646, 128.5828924); // 기본 중심 좌표
+        const storedCenter = localStorage.getItem('mapCenter');
+        if (storedCenter) {
+          const { lat, lng } = JSON.parse(storedCenter);
+          center = new window.naver.maps.LatLng(lat, lng);
+        }
         this.map = new window.naver.maps.Map("search-map", {
-          center: new window.naver.maps.LatLng(35.8858646, 128.5828924),
+          center: center,
           zoom: 12
         });
         this.mapInitialized = true; // 지도 초기화 상태 업데이트

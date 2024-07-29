@@ -1,165 +1,141 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-    integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
-    crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <button id="modal-button" @click="modalOpen"><i class="fas fa-user fa-2x"></i></button>
 
   <div class="modal-wrap" v-show="modalCheck" @click="modalOpen">
-    <div class="modal-container" @click.stop="">
-      <img id="profile">
+    <div class="right-modal-container" @click.stop="">
       <div v-if="!isLoggedIn" class="modal-wrap" v-show="modalCheck" @click="modalOpen">
-        <div class="modal-container" @click.stop="">
+        <div class="right-modal-container" @click.stop="">
           <!-- 로그인 폼 -->
-          <img id="profile">
-          <div class="input_container">
-            <div>
-              <input type="text" v-model="loginId" id="login-id-input" placeholder="ID" />
+          <div class="signin-wrapper">
+            <div class="form-wrapper">
+              <p class="login-modal-title">Login WIZMAP</p>
+                <input type="text" v-model="loginId" class="form-field" placeholder="ID" />
+                <input type="password" v-model="loginPassword" class="form-field" placeholder="PASSWORD" />
+                <button class="button primary" @click="login">login</button>
+                <button class="button secondary" @click="showRegisterForm">register</button>
+                <p>
+                  Forgot your 
+                  <a id="mobile"><b>id</b></a> 
+                  or  
+                  <a id="desk"><b>password?</b></a>
+                </p>
             </div>
-            <br />
-            <div>
-              <input type="password" v-model="loginPassword" id="login-password-input" placeholder="PASSWORD" />
-            </div>
-          </div>
-          <div class="home-modal-btn">
-            <button id="login-button" @click="login">login</button>
-            <button id="register-button" @click="showRegisterForm">register</button>
           </div>
         </div>
       </div>
       <!-- 로그인된 경우 마이페이지 내용 표시 -->
       <div v-else class="mypage_container">
-        <p>{{loginId}}님</p>
+        <div class="form-wrapper">
+        <p class="login-modal-title">{{loginId}}님</p>
         <!-- 로그아웃 버튼 추가 -->
-        <button id="logout-button" @click="logout">로그아웃</button>
-        <button id="delete-account-button" @click="confirmDeleteAccount">회원탈퇴</button>
-        <button id="mypage-button" @click="showMyPageModal">마이페이지</button> <!-- 여기를 수정 -->
+        <button class="button primary" @click="showMyPageModal">마이페이지</button> <!-- 여기를 수정 -->
+        <button class="button secondary" @click="logout">로그아웃</button>
+        <p>
+          Are you sure 
+          <a id="withdrawal" @click="confirmDeleteAccount"><b>Withdrawal</b></a> 
+          ?  
+        </p>
+        </div>
       </div>
     </div>
   </div>
 
+
    <!-- 비밀번호 확인 모달 -->
-   <div class="modal-wrap" v-show="passwordConfirmModalVisible" @click="closePasswordConfirmModal">
-      <div class="modal-container" @click.stop="">
-        <h2>비밀번호 확인</h2>
-        <input type="password" v-model="passwordToConfirm" placeholder="비밀번호 입력" />
-        <div class="modal-btn">
-          <button @click="confirmPassword">확인</button>
-          <button @click="closePasswordConfirmModal">취소</button>
+  <div class="modal-wrap" v-show="passwordConfirmModalVisible" @click="closePasswordConfirmModal">
+    <div class="password-confirm-container" @click.stop="">
+      <div class="signup-wrapper">
+        <div class="form-wrapper">
+            <p class="login-modal-title">Confirm Password</p>
+            <input type="password" v-model="passwordToConfirm" class="form-field" placeholder="비밀번호 입력" />
+            <div class="modal-btn">
+              <button class="button primary" @click="confirmPassword">확인</button>
+              <button class="button secondary" @click="closePasswordConfirmModal">취소</button>
+            </div>
         </div>
       </div>
     </div>
+  </div>
 
   <!-- Registration Form Modal -->
   <div class="modal-wrap" v-show="registerFormVisible" @click="closeRegisterForm">
-    <div class="modal-container" @click.stop="">
-      <h2>Register</h2>
-      <div class="input_container">
-        <div>
-          <input type="text" v-model="registerId" id="register-id-input" placeholder="ID" />
+    <div class="right-modal-container" @click.stop="">
+      <div class="signup-wrapper">
+        <div class="form-wrapper">
+          <p class="login-modal-title">Welcome to WIZMAP</p>
+              <input type="text" v-model="registerId" class="form-field" placeholder="ID" />
+              <input type="password" v-model="registerPassword" class="form-field" placeholder="PASSWORD" />
+              <input type="email" v-model="registerEmail" class="form-field" placeholder="Email" />
+              <input type="text" v-model="registerPhone" class="form-field" placeholder="Phone" />
+              <select class="form-select form-field" aria-label="Default select example">
+                <option selected>Gender</option>
+                <option><input v-model="registerGender">남성</input></option>
+                <option><input v-model="registerGender">여성</input></option>
+              </select>
+              <input type="date" v-model="registerBirth" class="form-field" placeholder="Birthdate" />
+            <button class="button primary" @click="register">Register</button>
+            <button class="button secondary" @click="closeRegisterForm">Cancel</button>
+          </div>
         </div>
-        <br />
-        <div>
-          <input type="password" v-model="registerPassword" id="register-password-input" placeholder="PASSWORD" />
-        </div>
-        <br />
-        <div>
-          <input type="email" v-model="registerEmail" id="register-email-input" placeholder="Email" />
-        </div>
-        <br />
-        <div>
-          <input type="text" v-model="registerPhone" id="register-phone-input" placeholder="Phone" />
-        </div>
-        <br />
-        <div>
-          <label class="gender-option">
-            <input type="radio" v-model="registerGender" value="true" />
-            남성
-          </label>
-          <label class="gender-option">
-            <input type="radio" v-model="registerGender" value="false" />
-            여성
-          </label>
-        </div>
-        <br />
-        <div>
-          <input type="date" v-model="registerBirth" id="register-birth-input" placeholder="Birthdate" />
-        </div>
-      </div>
-      <div class="modal-btn">
-        <button id="register-submit-button" @click="register">Register</button>
-        <button id="register-cancel-button" @click="closeRegisterForm">Cancel</button>
-      </div>
     </div>
   </div>
 
   <!-- MyPage Modal -->
   <div class="modal-wrap" v-show="myPageModalVisible" @click="closeMyPageModal">
-    <div class="modal-container" @click.stop="">
-      <h2>My Page</h2>
-      <div class="input_container">
-          <!-- 비밀번호 변경 폼 -->
-          <div>
-            <input type="password" v-model="currentPassword" placeholder="현재 비밀번호" />
-          </div>
-          <br />
-          <div>
-            <input type="password" v-model="newPassword" placeholder="새 비밀번호" />
-          </div>
-          <br />
-          <div>
-            <input type="password" v-model="confirmNewPassword" placeholder="새 비밀번호 확인" />
-          </div>
-        </div>
-        <div class="modal-btn">
-          <button @click="changePassword">비밀번호 변경</button>
-        </div>
-       
+    <div class="right-modal-container" @click.stop="">
+      <div class="signup-wrapper">
+        <div class="form-wrapper">
+          <p class="login-modal-title">My Page</p>
+          <br></br>
+            <!-- 비밀번호 변경 폼 -->
+            <h4>비밀변호 변경</h4>
+              <input type="password" v-model="currentPassword" class="form-field" placeholder="현재 비밀번호" />
+              <input type="password" v-model="newPassword" class="form-field" placeholder="새 비밀번호" />
+              <input type="password" v-model="confirmNewPassword" class="form-field" placeholder="새 비밀번호 확인" />
+              <button class="button primary" @click="changePassword">비밀번호 변경</button>
 
-        <!-- 이메일 변경 폼 -->
-        <div class="input_container">
-          <div>
-            <input type="email" v-model="newEmail" placeholder="새 이메일" />
+          <!-- 이메일 변경 폼 -->
+            <h4>이메일 변경</h4>
+              <input type="email" v-model="newEmail" class="form-field" placeholder="새 이메일" />
+              <button class="button primary" @click="changeEmail">이메일 변경</button>
+        
+          <!-- 휴대폰 번호 변경 폼 -->
+            <h4>휴대폰 번호 변경</h4>
+              <input type="text" v-model="newPhone" class="form-field" placeholder="새 휴대폰 번호" />
+              <button class="button primary" @click="changePhone">휴대폰 번호 변경</button>
+              <p>
+                <br></br>
+                변경이 완료되었다면 닫기를 눌러주세요.
+                <br></br>
+              </p>
+            <button class="button secondary" @click="closeMyPageModal">닫기</button>
           </div>
-          <div class="modal-btn">
-            <button @click="changeEmail">이메일 변경</button>
-          </div>
-        </div>
-
-         <!-- 휴대폰 번호 변경 폼 -->
-        <div class="input_container">
-          <div>
-            <input type="text" v-model="newPhone" placeholder="새 휴대폰 번호" />
-          </div>
-          <div class="modal-btn">
-            <button @click="changePhone">휴대폰 번호 변경</button>
-          </div>
-        </div>
-
-        <div class="modal-btn">
-          <button @click="closeMyPageModal">닫기</button>
-        </div>
-      </div>
-    </div>
-
-  <!-- 로그인 실패 모달 -->
-  <div class="modal-wrap" v-if="loginFailed" @click="closeLoginFailedModal">
-    <div class="modal-container" @click.stop="">
-      <h2>로그인 실패</h2>
-      <p>아이디 또는 비밀번호가 일치하지 않습니다.</p>
-      <div class="modal-btn">
-        <button @click="closeLoginFailedModal">확인</button>
       </div>
     </div>
   </div>
+
+  <!-- 로그인 실패 모달 -->
+  <div class="modal-wrap" v-if="loginFailed" @click="closeLoginFailedModal">
+    <div class="right-modal-container" @click.stop="">
+      <div class="form-wrapper">
+        <p class="login-modal-title">Login Failed</p>
+        <br></br>
+        <p>아이디 또는 비밀번호가 일치하지 않습니다.</p>
+        <br></br>
+        <button class="button primary" @click="closeLoginFailedModal">확인</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 회원탈퇴 확인 모달 -->
   <div class="modal-wrap" v-if="confirmDeleteVisible" @click="closeConfirmDeleteModal">
-    <div class="modal-container" @click.stop="">
-      <h2>회원탈퇴 확인</h2>
-      <p>정말로 회원 탈퇴하시겠습니까?</p>
-      <div class="modal-btn">
-        <button @click="deleteAccount">확인</button>
-        <button @click="closeConfirmDeleteModal">취소</button>
+    <div class="right-modal-container" @click.stop="">
+      <div class="form-wrapper">
+        <p class="login-modal-title">Confirm Withdrawal</p>
+        <p>정말로 회원 탈퇴하시겠습니까?</p>
+        <br></br>
+          <button class="button secondary" @click="deleteAccount">확인</button>
+          <button class="button primary" @click="closeConfirmDeleteModal">취소</button>
       </div>
     </div>
   </div>
