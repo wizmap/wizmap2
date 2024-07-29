@@ -54,25 +54,35 @@
           </svg></button>
           <div class="modal-history-wrap" v-show="fourthModalOpen" @click="closeHisModals">
           <div class="modal-history-container" @click="preventClose">
-              <ul class="list-group list-group-flush">
+              <ul class="list-group list-group-flush scrollable">
                   <li class="list-group-item" v-for="history in histories" :key="history.id">
-                      <span id="history-name-details" @click="navigateToSearchResult(history)">
+                      <span id="name" @click="navigateToSearchResult(history)">
                         {{ history.search }}
                       </span>
                       <br>
-                      <span id="address-details">
+                      <span id="address">
                           {{ history.place ? `${history.place.address.address}` : '' }}
                       </span>
-                      <button id="history-delete-button" @click="deleteHistory(history.id)">삭제</button>
+                      <span>
+                        <button id="history-delete-button" @click="deleteHistory(history.id)">삭제</button>
+                      </span>
                   </li>
               </ul>
-              <div class="pagination" v-if="histories.length > 0">
-                <button @click="prevPage" :disabled="page === 1">Previous</button>
-                <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchHistory(pageNumber)" :disabled="pageNumber === page">
-                  {{ pageNumber }}
-                </button>
-                <button @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
-              </div>
+              <nav nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center" v-if="histories.length > 0">
+                  <li class="page-item">
+                  <button class="page-link" @click="prevPage" :disabled="page === 1">Prev</button>
+                  </li>
+                  <li class="page-item">
+                  <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" class="page-link" @click="fetchHistory(pageNumber)" :disabled="pageNumber === page">
+                    {{ pageNumber }}
+                  </button>
+                  </li>
+                  <li class="page-item">
+                  <button class="page-link" @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
+                  </li>
+                </ul>
+              </nav>
           </div>
           </div>
           </div>
