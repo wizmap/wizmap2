@@ -16,7 +16,7 @@
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
             <div class="modal-search-container" @click="preventClose">
               <div class="modal-btn">
-                <div class="button-container">
+                <div class="button-container fixed">
                   <button
                     @click="toggleCategory('음식점')"
                     :class="{'category-button': true, 'active': selectedCategory === '음식점'}"
@@ -31,7 +31,7 @@
                   </button>
                 </div>
                 <div id="search-results">
-                  <ul class="list-group list-group-flush">
+                  <ul class="list-group list-group-flush scrollable">
                     <li class="list-group-item" v-for="result in filteredResults" :key="result.place.id">
                       <button @click="openSearchDetailModal(result)">
                         <p id="name">{{ result.place.name }}</p>
@@ -56,9 +56,11 @@
                                   <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
                                 </ul>
                                 <!-- 퀵슬롯 추가 버튼 -->
+                                <br></br>
                                 <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
                               </div>
                               <div v-else>
+                              <br></br>
                               <p>장소 정보가 없습니다.</p>
                             </div>
                           </div>
