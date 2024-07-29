@@ -960,7 +960,8 @@
         menu: null, // 필요에 따라 추가
         phone: null, // 필요에 따라 추가
         memo: "마이핀 추가", // 필요에 따라 추가
-        category: '기타' // 필요에 따라 추가
+        category: '기타', // 필요에 따라 추가
+        new_place: true,
       }, {
         headers: {
           'Authorization': `Bearer ${userToken}`,

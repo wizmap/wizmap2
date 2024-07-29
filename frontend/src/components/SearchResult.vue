@@ -58,6 +58,27 @@
                                 <!-- 퀵슬롯 추가 버튼 -->
                                 <br></br>
                                 <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
+                                <!-- 마이핀 추가 버튼 -->
+                                <br></br>
+                                <button type="button" class="btn btn-primary" @click="openAddMyPinModal(selectedPlace)">마이핀 추가</button>
+                                <!-- 마이핀 추가 모달 -->
+                                <div class="mypin-add-modal" v-show="AddMyPinModalOpen" @click="closeAddMyPinModal">
+                                  <div class="mypin-add-container form-wrapper" v-if="favoriteData" @click.stop="preventClose">
+                                    <h3>마이핀 추가</h3>
+                                    <label for="mypin-list">리스트를 선택하세요</label>
+                                    <select v-model="selectedListId">
+                                      <option v-for="list in favoriteData.list" :key="list.id" :value="list.id">{{ list.name }}</option>
+                                    </select>
+                                    <div>
+                                      <label for="mypin-name">마이핀의 이름을 입력하세요</label>
+                                      <input type="text" v-model="mypinName" id="mypin-name" class="fav-form-field"/>
+                                    </div>
+                                    <div class="modal-btn">
+                                      <button class="button primary" @click="saveMypin(selectedListId)">저장</button>
+                                      <button class="button secondary" @click="closeAddMyPinModal">취소</button>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                               <div v-else>
                               <br></br>
@@ -188,6 +209,11 @@
     },
       page: 1,
       selectedCategory: '',
+      favoriteData: null,   // 즐겨찾기 데이터
+      AddMyPinModalOpen: false,  // 마이핀 추가 모달
+      selectedListId: null,   // 마이핀 추가 시 선택된 리스트
+      mypinName: '',    // 마이핀 추가 이름
+      storedCenter: null, // 저장된 지도 중심 위치
     };
   },
   created() {
@@ -238,14 +264,10 @@ computed: {
 },
   methods: {
     toggleCategory(category) {
-    if (this.selectedCategory === category) {
-      // 현재 선택된 카테고리가 클릭된 카테고리와 같으면 전체 결과를 보여줍니다.
-      this.selectedCategory = '';
-    } else {
-      // 그렇지 않으면 선택된 카테고리를 클릭된 카테고리로 설정합니다.
-      this.selectedCategory = category;
-    }
-  },
+      this.selectedCategory = this.selectedCategory === category ? '' : category;
+      this.page = 1; // 필터링 시 페이지를 1로 초기화
+      this.fetchSearchResults(this.page); // 필터링 시 검색 결과를 다시 가져오기
+    },
     filterCategory(category) {
       this.selectedCategory = category;
     },
@@ -437,7 +459,7 @@ computed: {
       const response = await fetch(`http://localhost:8000/searchengine/?page=${page}`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ search: this.searchTerm })
+        body: JSON.stringify({ search: this.searchTerm, category: this.selectedCategory })
       });
 
       const data = await response.json(); // 응답 JSON 파싱
@@ -456,7 +478,7 @@ computed: {
         const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
         if (this.mapInitialized) {
           this.map.setCenter(newCenter);
-
+          localStorage.setItem('mapCenter', JSON.stringify({ lat: newCenter.lat(), lng: newCenter.lng() })); // 중심 위치 저장
           // 검색 결과의 위치에 마커 추가
           this.searchResults.forEach(result => {
             const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
@@ -526,7 +548,6 @@ computed: {
           this.selectedPlace = await response.json();
 
           let marker = this.markers.find(marker => marker.title === this.selectedPlace.place.name);
-          console.log(marker);
 
           if (!marker) {
             // 마커가 없으면 새로운 마커 생성
@@ -535,7 +556,6 @@ computed: {
           }
 
           this.setCenterAndZoom(this.markers.find(marker => marker.title === this.selectedPlace.place.name), new window.naver.maps.LatLng(this.selectedPlace.place.address.latitude, this.selectedPlace.place.address.longitude));
-          console.log(this.selectedPlace.place.name);
         } else {
           const errorText = await response.text();
           console.error('Failed to fetch place details:', errorText);
@@ -552,6 +572,8 @@ computed: {
         position.lng() - 0.15 // 약간 오른쪽으로 이동 (값은 조정 가능)
       );
       this.map.setCenter(offsetPosition);
+      localStorage.setItem('mapCenter', JSON.stringify({ lat: offsetPosition.lat(), lng: offsetPosition.lng() })); // 중심 위치 저장
+
       this.markers.forEach(m => {
         if (m === marker) {
           m.setAnimation(naver.maps.Animation.BOUNCE);
@@ -593,6 +615,76 @@ computed: {
         this.fetchSearchResults(this.page + 1);
       }
     },
+    // 마이핀 추가 
+    openAddMyPinModal(place) {
+      this.fetchFavoriteData(); // 즐겨찾기 데이터 요청
+        this.selectedPlace = place; // 선택된 장소 정보를 저장
+        this.AddMyPinModalOpen = true; // 모달 열기
+        console.log("모달 열기:", this.AddMyPinModalOpen); // 상태 확인
+    },
+    // 마이핀 리스트 선택 모달을 표시하는 메서드
+    showAddMyPinModal(latitude, longitude) {
+      // 리스트 데이터를 가져와서 모달에 표시
+      
+      if (this.favoriteData && this.favoriteData.list && this.favoriteData.list.length > 0) {
+        this.AddMyPinModalOpen = true; // 모달 열기
+        this.newLatitude = latitude; // 위도 저장
+        this.newLongitude = longitude; // 경도 저장
+      } else {
+        console.error('No favorite lists found');
+      }
+      
+    },
+    // 마이핀 추가 리스트 선택 모달 닫기
+    closeAddMyPinModal() {
+      this.AddMyPinModalOpen = false; // 모달 닫기
+      this.selectedListId = null; // 선택된 리스트 초기화
+      this.mypinName = ''; // 마이핀 이름 초기화
+    },
+  
+    // 마이핀 저장 메서드
+    saveMypin(listId) {
+      const userToken = localStorage.getItem('userToken');
+      // console.log(address, latitude, longitude)
+      axios.post(`http://localhost:8000/favorites/mypin/create/${listId}/`, {
+        place: this.selectedPlace.place.id,
+        list: listId,
+        name: this.mypinName,
+        new_place:false,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        console.log('Mypin saved:', response.data);
+        // 페이지 리로드
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Error saving mypin:', error);
+      });
+    },
+    // 즐겨찾기 기본 (리스트, 퀵슬롯) 요청
+    fetchFavoriteData(id) {
+      console.log(`Fetching list data for ID: ${id}`);
+      const userToken = localStorage.getItem('userToken');
+      console.log(userToken)
+      axios.get(`http://localhost:8000/favorites`, {
+        headers: {
+            // Bearer 스키마를 사용하여 토큰을 전송
+            'Authorization': `Bearer ${userToken}`
+          }
+      })  // PinPlaceAPIView에서 데이터 가져오기
+        .then(response => {
+          this.favoriteData = response.data;
+          console.log("Response", response.data);
+        })
+        .catch(error => {
+          console.error("There was an error fetching the list data!", error);
+        });
+    },
   },
     mounted() {
       // 네이버 지도 API 로드
@@ -602,9 +694,14 @@ computed: {
       script.defer = true;
       document.head.appendChild(script);
       script.onload = () => {
-        // 네이버 지도 생성
+        let center = new window.naver.maps.LatLng(35.8858646, 128.5828924); // 기본 중심 좌표
+        const storedCenter = localStorage.getItem('mapCenter');
+        if (storedCenter) {
+          const { lat, lng } = JSON.parse(storedCenter);
+          center = new window.naver.maps.LatLng(lat, lng);
+        }
         this.map = new window.naver.maps.Map("search-map", {
-          center: new window.naver.maps.LatLng(35.8858646, 128.5828924),
+          center: center,
           zoom: 12
         });
         this.mapInitialized = true; // 지도 초기화 상태 업데이트
