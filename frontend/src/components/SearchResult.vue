@@ -16,7 +16,7 @@
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
             <div class="modal-search-container" @click="preventClose">
               <div class="modal-btn">
-                <div class="button-container">
+                <div class="button-container fixed">
                   <button
                     @click="toggleCategory('음식점')"
                     :class="{'category-button': true, 'active': selectedCategory === '음식점'}"
@@ -31,7 +31,7 @@
                   </button>
                 </div>
                 <div id="search-results">
-                  <ul class="list-group list-group-flush">
+                  <ul class="list-group list-group-flush scrollable">
                     <li class="list-group-item" v-for="result in filteredResults" :key="result.place.id">
                       <button @click="openSearchDetailModal(result)">
                         <p id="name">{{ result.place.name }}</p>
@@ -56,28 +56,32 @@
                                   <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
                                 </ul>
                                 <!-- 퀵슬롯 추가 버튼 -->
+                                <br></br>
                                 <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
                                 <!-- 마이핀 추가 버튼 -->
+                                <br></br>
                                 <button type="button" class="btn btn-primary" @click="openAddMyPinModal(selectedPlace)">마이핀 추가</button>
                                 <!-- 마이핀 추가 모달 -->
                                 <div class="mypin-add-modal" v-show="AddMyPinModalOpen" @click="closeAddMyPinModal">
-                                  <div class="modal-container" v-if="favoriteData" @click.stop="preventClose">
+                                  <div class="mypin-add-container form-wrapper" v-if="favoriteData" @click.stop="preventClose">
+                                    <h3>마이핀 추가</h3>
                                     <label for="mypin-list">리스트를 선택하세요</label>
                                     <select v-model="selectedListId">
                                       <option v-for="list in favoriteData.list" :key="list.id" :value="list.id">{{ list.name }}</option>
                                     </select>
                                     <div>
-                                      <label for="mypin-name">마이핀의 이름을 입력하세요:</label>
-                                      <input type="text" v-model="mypinName" id="mypin-name" />
+                                      <label for="mypin-name">마이핀의 이름을 입력하세요</label>
+                                      <input type="text" v-model="mypinName" id="mypin-name" class="fav-form-field"/>
                                     </div>
                                     <div class="modal-btn">
-                                      <button @click="saveMypin(selectedListId)">저장</button>
-                                      <button @click="closeAddMyPinModal">취소</button>
+                                      <button class="button primary" @click="saveMypin(selectedListId)">저장</button>
+                                      <button class="button secondary" @click="closeAddMyPinModal">취소</button>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                               <div v-else>
+                              <br></br>
                               <p>장소 정보가 없습니다.</p>
                             </div>
                           </div>

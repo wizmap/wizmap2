@@ -227,52 +227,52 @@
 
         <!-- 리스트 추가 모달 -->
         <div class="list-add-modal" v-show="addListModalOpen" @click="closeAddListModal">
-          <div class="modal-container" @click.stop="preventClose">
+          <div class="list-add-container form-wrapper" @click.stop="preventClose">
             <h3>리스트 추가하기</h3>
             <div>
               <label for="list-name">리스트 이름:</label>
-              <input type="text" id="list-name" v-model="newListName" placeholder="리스트 이름 입력">
+              <input type="text" id="list-name" class="fav-form-field" v-model="newListName" placeholder="리스트 이름 입력">
             </div>
             <div>
-              <label for="list-private">비공개:</label>
+              <label class="form-check form-switch" for="list-private">비공개:</label>
               <input type="checkbox" id="list-private" v-model="isListPrivate">
             </div>
             <div class="modal-btn">
-              <button @click="addList">추가</button>
-              <button @click="closeAddListModal">취소</button>
+              <button class="button primary" @click="addList">추가</button>
+              <button class="button secondary" @click="closeAddListModal">취소</button>
             </div>
           </div>
         </div>
 
         <!-- 마이핀 추가 모달 -->
         <div class="mypin-add-modal" v-show="AddMyPinModalOpen" @click="closeAddMyPinModal">
-          <div class="modal-container" v-if="favoriteData" @click.stop="preventClose">
+          <div class="mypin-add-container form-wrapper" v-if="favoriteData" @click.stop="preventClose">
             <h3>리스트를 선택하세요</h3>
             <select v-model="selectedListId">
               <option v-for="list in favoriteData.list" :key="list.id" :value="list.id">{{ list.name }}</option>
             </select>
             <div>
               <label for="mypin-name">마이핀의 이름을 입력하세요:</label>
-              <input type="text" v-model="mypinName" id="mypin-name" />
+              <input type="text" v-model="mypinName" id="mypin-name" class="fav-form-field"/>
             </div>
             <div class="modal-btn">
-              <button @click="saveMypin(selectedListId)">저장</button>
-              <button @click="closeAddMyPinModal">취소</button>
+              <button class="button primary" @click="saveMypin(selectedListId)">저장</button>
+              <button class="button secondary" @click="closeAddMyPinModal">취소</button>
             </div>
           </div>
         </div>
 
         <!-- 퀵슬롯 추가 모달 -->
         <div class="quick-add-modal" v-show="isQuickSlotModalOpen" @click="closeQuickSlotModal">
-          <div class="modal-container" @click.stop="preventClose">
+          <div class="quick-add-container form-wrapper" @click.stop="preventClose">
             <h3>퀵슬롯 추가하기</h3>
             <div>
               <label for="quickslot-name">퀵슬롯의 이름을 입력하세요:</label>
-              <input type="text" id="quickslot-name" v-model="quickSlotName" placeholder="퀵슬롯 이름 입력">
+              <input type="text" id="quickslot-name" class="fav-form-field" v-model="quickSlotName" placeholder="퀵슬롯 이름 입력">
             </div>
             <div class="modal-btn">
-              <button @click="saveQuickSlot(quickSlotName, quickSlotType)">추가</button>
-              <button @click="closeQuickSlotModal">취소</button>
+              <button class="button primary" @click="saveQuickSlot(quickSlotName, quickSlotType)">추가</button>
+              <button class="button secondary" @click="closeQuickSlotModal">취소</button>
             </div>
           </div>
         </div>
@@ -1246,10 +1246,16 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
 
     script.onload = () => {
       // 네이버 지도 생성
-      this.map = new window.naver.maps.Map("search-map", {
-        center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
-        zoom: 10
-      });
+      let center = new window.naver.maps.LatLng(35.8858646, 128.5828924); // 기본 중심 좌표
+        const storedCenter = localStorage.getItem('mapCenter');
+        if (storedCenter) {
+          const { lat, lng } = JSON.parse(storedCenter);
+          center = new window.naver.maps.LatLng(lat, lng);
+        }
+        this.map = new window.naver.maps.Map("search-map", {
+          center: center,
+          zoom: 12
+        });
       // 모든 마커를 포함할 수 있는 LatLngBounds 객체 생성
       this.bounds = new naver.maps.LatLngBounds();
       // 지도 클릭 이벤트 추가 : 우클릭
