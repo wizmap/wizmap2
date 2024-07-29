@@ -1011,20 +1011,6 @@
     // 클릭한 위치에 새로운 마커 추가
     this.addNewMarker(latitude, longitude);
   },
-deleteQuickData(quickId) {
-  axios.delete(`http://localhost:8000/favorites/quick/delete/${quickId}/`, {
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-    }
-  })
-  .then(() => {
-    console.log('Quick data deleted successfully');
-    // 여기에 성공적으로 삭제 후의 로직을 추가하세요.
-  })
-  .catch(error => {
-    console.error('Error deleting quick data:', error);
-  });
-},
 openEditModal(quickData) {
     this.editingQuickData = {...quickData}; // 현재 퀵 데이터를 복사하여 저장
     this.isEditModalOpen = true; // 수정 모달 열기
