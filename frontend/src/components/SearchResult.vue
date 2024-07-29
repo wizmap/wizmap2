@@ -209,6 +209,7 @@
       AddMyPinModalOpen: false,  // 마이핀 추가 모달
       selectedListId: null,   // 마이핀 추가 시 선택된 리스트
       mypinName: '',    // 마이핀 추가 이름
+      storedCenter: null, // 저장된 지도 중심 위치
     };
   },
   created() {
@@ -473,7 +474,7 @@ computed: {
         const newCenter = new window.naver.maps.LatLng(firstResult.address.latitude, firstResult.address.longitude);
         if (this.mapInitialized) {
           this.map.setCenter(newCenter);
-
+          localStorage.setItem('mapCenter', JSON.stringify({ lat: newCenter.lat(), lng: newCenter.lng() })); // 중심 위치 저장
           // 검색 결과의 위치에 마커 추가
           this.searchResults.forEach(result => {
             const position = new window.naver.maps.LatLng(result.place.address.latitude, result.place.address.longitude);
@@ -543,7 +544,6 @@ computed: {
           this.selectedPlace = await response.json();
 
           let marker = this.markers.find(marker => marker.title === this.selectedPlace.place.name);
-          console.log(marker);
 
           if (!marker) {
             // 마커가 없으면 새로운 마커 생성
@@ -552,7 +552,6 @@ computed: {
           }
 
           this.setCenterAndZoom(this.markers.find(marker => marker.title === this.selectedPlace.place.name), new window.naver.maps.LatLng(this.selectedPlace.place.address.latitude, this.selectedPlace.place.address.longitude));
-          console.log(this.selectedPlace.place.name);
         } else {
           const errorText = await response.text();
           console.error('Failed to fetch place details:', errorText);
@@ -569,6 +568,8 @@ computed: {
         position.lng() - 0.15 // 약간 오른쪽으로 이동 (값은 조정 가능)
       );
       this.map.setCenter(offsetPosition);
+      localStorage.setItem('mapCenter', JSON.stringify({ lat: offsetPosition.lat(), lng: offsetPosition.lng() })); // 중심 위치 저장
+
       this.markers.forEach(m => {
         if (m === marker) {
           m.setAnimation(naver.maps.Animation.BOUNCE);
@@ -689,9 +690,14 @@ computed: {
       script.defer = true;
       document.head.appendChild(script);
       script.onload = () => {
-        // 네이버 지도 생성
+        let center = new window.naver.maps.LatLng(35.8858646, 128.5828924); // 기본 중심 좌표
+        const storedCenter = localStorage.getItem('mapCenter');
+        if (storedCenter) {
+          const { lat, lng } = JSON.parse(storedCenter);
+          center = new window.naver.maps.LatLng(lat, lng);
+        }
         this.map = new window.naver.maps.Map("search-map", {
-          center: new window.naver.maps.LatLng(35.8858646, 128.5828924),
+          center: center,
           zoom: 12
         });
         this.mapInitialized = true; // 지도 초기화 상태 업데이트
