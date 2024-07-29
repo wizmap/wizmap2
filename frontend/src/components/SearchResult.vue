@@ -1,16 +1,17 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-      integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
-      crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
       <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
       <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
       <div class="modal-favorite-container" @click="preventClose">
+
+        <router-link to="/"><img id="search-logo"></router-link>
+
+        <hr class="hr-3">
   
         <div class="modal-btn">
           <button id="modal-search-button" @click="openSearchModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-        </svg></button>
+          </svg>
+          </button>
 
           <div class="modal-search-wrap" v-show="firstModalOpen" @click="closeSearchModals">
             <div class="modal-search-container" @click="preventClose">
@@ -54,6 +55,8 @@
                                 <ul>
                                   <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
                                 </ul>
+                                <!-- 퀵슬롯 추가 버튼 -->
+                                <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
                               </div>
                               <div v-else>
                               <p>장소 정보가 없습니다.</p>
@@ -61,21 +64,30 @@
                           </div>
                         </div>
                       </div>
+                    </li>
+                  </ul>
+                </div>
+                <nav nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center" v-if="searchResults.length > 0">
+                  <li class="page-item">
+                  <button class="page-link" @click="prevPage" :disabled="page === 1">Prev</button>
                   </li>
-                </ul>
-                <div class="pagination" v-if="searchResults.length > 0">
-                  <button @click="prevPage" :disabled="page === 1">Previous</button>
-                  <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
+                  <li class="page-item">
+                  <button v-for="pageNumber in pageNumbersToShow" :key="pageNumber" class="page-link" @click="fetchSearchResults(pageNumber)" :disabled="pageNumber === page">
                     {{ pageNumber }}
                   </button>
-                  <button @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
-                </div>
+                  </li>
+                  <li class="page-item">
+                  <button class="page-link" @click="nextPage" :disabled="page === pagination.total_pages">Next</button>
+                  </li>
+                </ul>
+              </nav>
               </div>
-              </div>
-          
+            </div>
           </div>
           </div>
-          </div>
+
+          <hr class="hr-3">
   
           <div class="modal-btn">
           <router-link to="/favorites" id="nav-button" @click.prevent="checkLoginAndNavigate('Favorites')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
@@ -83,11 +95,15 @@
           </svg></router-link>
           </div>
   
+          <hr class="hr-3">
+
           <div class="modal-btn">
-          <router-link to="/favorites" id="favorits-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
+          <router-link to="/favorites" id="favorits-button" @click.prevent="checkLoginAndNavigate('Favorites')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
           </svg></router-link>
           </div>
+
+          <hr class="hr-3">
   
           <div class="modal-btn">
           <router-link to="/history" id="history-button" @click.prevent="checkLoginAndNavigate('SearchHistory')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
@@ -97,6 +113,8 @@
           </svg></router-link>
           </div>
           
+          <hr class="hr-3">
+
       </div>
       </div>
   
@@ -107,8 +125,8 @@
             <input type="text" v-model="searchTerm" id="search-input" placeholder="장소를 입력하세요" @input="fetchSuggestions" @focus="showSuggestions" @blur="hideSuggestions" />
             <button id="search-button"><i class="fas fa-search fa-lg"></i></button>
           </form>
-          <ul v-if="showAutocomplete && suggestions.length" class="autocomplete-list">
-            <li v-for="(suggestion, index) in suggestions" :key="index" @mousedown.prevent="selectSuggestion(suggestion)">
+          <ul v-if="showAutocomplete && suggestions.length" class="autocomplete-list list-group">
+            <li v-for="(suggestion, index) in suggestions" :key="index" @mousedown.prevent="selectSuggestion(suggestion)" class="list-group-item">
               {{ suggestion }}
             </li>
           </ul>
@@ -117,11 +135,21 @@
       <div id="search-map"></div>
       <!-- 로그인 필요 알림창 -->
       <div v-if="showAlert" class="alert-overlay">
-      <div class="alert-box">
-        <p>{{ alertMessage }}</p>
-        <button @click="closeAlert">확인</button>
+        <div class="alert_design_form__inner">
+          <div class="alert-box">
+            <div>
+            	<h2>{{ alertTitle }}</h2>
+              <p>{{ alertMessage }}</p>
+            </div>
+            
+            <!-- 닫기 버튼 -->
+            <div class="alert_design_form__inner__btn">
+            	<button @click="closeAlert">확인</button>
+            </div>
+            <!-- // 닫기 버튼 -->
+          </div>
+        </div>
       </div>
-    </div>
   
   </template>
   
@@ -141,6 +169,7 @@
       modalOpen: false,
       placeData: null,
       searchTerm: '',
+      category: '',
       searchResults: [],
       showAlert: false, // 알림창 표시 여부
       alertMessage: '', // 알림창 메시지
@@ -357,7 +386,8 @@ computed: {
     checkLoginAndNavigate(routeName) {
     const isLoggedIn = localStorage.getItem('userToken');
     if (!isLoggedIn) {
-      this.alertMessage = '로그인이 필요합니다.';
+      this.alertTitle = '로그인 요청';
+      this.alertMessage = 'WIZMAP 사이트에 로그인해주세요.';
       this.showAlert = true;
     } else {
       this.$router.push({ name: routeName });
