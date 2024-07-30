@@ -926,16 +926,21 @@
     // 마이핀 리스트 선택 모달을 표시하는 메서드
     showAddMyPinModal(latitude, longitude) {
       // 리스트 데이터를 가져와서 모달에 표시
-      
       if (this.favoriteData && this.favoriteData.list && this.favoriteData.list.length > 0) {
         this.AddMyPinModalOpen = true; // 모달 열기
         this.newLatitude = latitude; // 위도 저장
         this.newLongitude = longitude; // 경도 저장
       } else {
-        console.error('No favorite lists found');
+        this.showNoListModal(); // 리스트가 없을 경우 안내 모달 표시
       }
-      
     },
+
+    // 리스트가 없을 경우 안내 모달을 표시하고 리스트 추가 모달을 여는 메서드
+    showNoListModal() {
+      alert("리스트가 없습니다. 먼저 리스트를 추가해 주세요."); // 안내 메시지
+      this.showListModal(); // 리스트 추가 모달 열기
+    },
+      
     // 마이핀 추가 리스트 선택 모달 닫기
     closeAddMyPinModal() {
       this.AddMyPinModalOpen = false; // 모달 닫기
