@@ -247,8 +247,8 @@
         <!-- 마이핀 추가 모달 -->
         <div class="mypin-add-modal" v-show="AddMyPinModalOpen" @click="closeAddMyPinModal">
           <div class="mypin-add-container form-wrapper" v-if="favoriteData" @click.stop="preventClose">
-            <h3>리스트를 선택하세요</h3>
-            <select v-model="selectedListId">
+            <label>리스트를 선택하세요</label>
+            <select v-model="selectedListId" class="fav-form-field">
               <option v-for="list in favoriteData.list" :key="list.id" :value="list.id">{{ list.name }}</option>
             </select>
             <div>
