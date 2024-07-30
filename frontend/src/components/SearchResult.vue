@@ -45,15 +45,29 @@
                               <div id="place-details" v-if="selectedPlace">
                                 <p id="name-details">{{ selectedPlace.place.name }}</p>
                                 <p id="category">{{ selectedPlace.place.category }}</p>
-                                <p id="address-details">주소: {{ selectedPlace.place.address.address }}</p>
-                                <p>위도: {{ selectedPlace.place.address.latitude }}</p>
-                                <p>경도: {{ selectedPlace.place.address.longitude }}</p>
-                                <p>메뉴: {{ selectedPlace.place.menu }}</p>
-                                <p>전화번호: {{ selectedPlace.place.phone }}</p>
-                                <p>메모: {{ selectedPlace.place.memo }}</p>
-                                <p id="isopen">영업 상태: <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
-                                <ul>
-                                  <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
+                                <p id="address-details"><i class="bi bi-geo-alt"></i> {{ selectedPlace.place.address.address }}</p>
+                                <p><i class="bi bi-globe-americas"></i> {{ selectedPlace.place.address.latitude }} / {{ selectedPlace.place.address.longitude }}</p>
+                                <p><i class="bi bi-cookie"></i> {{ selectedPlace.place.menu }}</p>
+                                <p><i class="bi bi-telephone"></i> {{ selectedPlace.place.phone }}</p>
+                                <p><i class="bi bi-info-circle"></i> {{ selectedPlace.place.memo }}</p>
+                                <p id="isopen"><i class="bi bi-clock"></i> <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                                <ul class="faq-container">
+                                  <li class="faq active">
+                                    <div class="faq__question">
+                                      <h3 class="faq__title">
+                                        영업시간
+                                      </h3>
+                                    </div>
+                                    <div class="faq__answer">
+                                      <p class="faq__text">
+                                        <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
+                                      </p>
+                                    </div>
+                                    <button class="faq__btn">
+                                      <span class="faq__icon open">+</span>
+                                      <span class="faq__icon close">-</span>
+                                    </button>
+                                  </li>
                                 </ul>
                                 <!-- 퀵슬롯 추가 버튼 -->
                                 <br></br>
@@ -113,7 +127,7 @@
           <hr class="hr-3">
   
           <div class="modal-btn">
-          <router-link to="/favorites" id="nav-button" @click.prevent="checkLoginAndNavigate('Favorites')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+          <router-link to="/Nav" id="nav-button" @click.prevent="checkLoginAndNavigate('Nav')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
           <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
           </svg></router-link>
           </div>
@@ -178,6 +192,26 @@
   
   
   <script>
+  const btns = document.querySelectorAll(".faq__btn");
+
+  btns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const faqItem = btn.parentNode;
+    const isActive = faqItem.classList.contains("active");
+
+    removeActiveClasses();
+
+    if (!isActive) {
+      faqItem.classList.add("active");
+    }
+  });
+});
+
+function removeActiveClasses() {
+  btns.forEach((btn) => {
+    btn.parentNode.classList.remove("active");
+  });
+}
   import axios from 'axios';
   
   export default {

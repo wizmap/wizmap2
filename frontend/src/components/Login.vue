@@ -26,6 +26,10 @@
       <!-- 로그인된 경우 마이페이지 내용 표시 -->
       <div v-else class="mypage_container">
         <div class="form-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+          </svg>
         <p class="login-modal-title">{{loginId}}님</p>
         <!-- 로그아웃 버튼 추가 -->
         <button class="button primary" @click="showMyPageModal">마이페이지</button> <!-- 여기를 수정 -->
