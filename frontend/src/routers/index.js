@@ -3,6 +3,7 @@ import Home from "../components/Home.vue";
 import SearchResult from "../components/SearchResult.vue";
 import SearchFavorite from "../components/SearchFavorite.vue";
 import SearchHistory from "../components/SearchHistory.vue";
+import SearchNav from "../components/SearchNav.vue";
 
 const router = createRouter({
     history : createWebHistory(),
@@ -23,6 +24,12 @@ const router = createRouter({
             path: "/history",
             name: "SearchHistory",
             component: SearchHistory,
+            meta: { requiresAuth: true } 
+        },
+        {
+            path: "/Nav",
+            name: "Nav",
+            component: SearchNav,
             meta: { requiresAuth: true } 
         },
     ]
