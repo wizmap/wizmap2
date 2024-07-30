@@ -204,23 +204,24 @@ export default {
       this.myPageModalVisible = false;
     },
     login() {
-      const loginData = {
-        username: this.loginId,
-        password: this.loginPassword,
-      };
-      axios.post('http://localhost:8000/user/api/token/', loginData)
-        .then(response => {
-          console.log(response.data.access);
-          localStorage.setItem('userToken', response.data.access); // 토큰 저장
-          this.isLoggedIn = true; // 로그인 상태 업데이트
-          this.modalCheck = false; // 로그인 성공 후 모달 닫기
-          this.loginFailed = false; // 로그인 성공 시 실패 상태를 false로 변경
-        })
-        .catch(error => {
-          console.error("Login error:", error);
-          this.loginFailed = true; // 로그인 실패 시 실패 상태를 true로 변경
-        });
-    },
+  const loginData = {
+    username: this.loginId,
+    password: this.loginPassword,
+  };
+  axios.post('http://localhost:8000/user/api/token/', loginData)
+    .then(response => {
+      console.log(response.data.access);
+      localStorage.setItem('userToken', response.data.access); // 토큰 저장
+      localStorage.setItem('loginId', this.loginId); // loginId 저장
+      this.isLoggedIn = true; // 로그인 상태 업데이트
+      this.modalCheck = false; // 로그인 성공 후 모달 닫기
+      this.loginFailed = false; // 로그인 성공 시 실패 상태를 false로 변경
+    })
+    .catch(error => {
+      console.error("Login error:", error);
+      this.loginFailed = true; // 로그인 실패 시 실패 상태를 true로 변경
+    });
+},
     register() {
       const registerData = {
         username: this.registerId,
@@ -347,10 +348,16 @@ export default {
     },
     closeConfirmDeleteModal() {
       this.confirmDeleteVisible = false; // 확인 모달 닫기
-    }
+    },
+    setLoginId() {
+    // 로컬 스토리지에서 loginId 확인
+    const loginId = localStorage.getItem('loginId');
+    this.loginId = loginId || ''; // loginId 유무에 따라 loginId 설정
+  },
   },
   mounted() {
-    this.checkLoginStatus(); // 컴포넌트가 마운트될 때 로그인 상태 확인
+    this.checkLoginStatus();
+    this.setLoginId();
   }
 };
 </script>
