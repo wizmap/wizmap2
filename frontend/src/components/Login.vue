@@ -26,6 +26,10 @@
       <!-- 로그인된 경우 마이페이지 내용 표시 -->
       <div v-else class="mypage_container">
         <div class="form-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+          </svg>
         <p class="login-modal-title">{{loginId}}님</p>
         <!-- 로그아웃 버튼 추가 -->
         <button class="button primary" @click="showMyPageModal">마이페이지</button> <!-- 여기를 수정 -->
@@ -200,23 +204,24 @@ export default {
       this.myPageModalVisible = false;
     },
     login() {
-      const loginData = {
-        username: this.loginId,
-        password: this.loginPassword,
-      };
-      axios.post('http://localhost:8000/user/api/token/', loginData)
-        .then(response => {
-          console.log(response.data.access);
-          localStorage.setItem('userToken', response.data.access); // 토큰 저장
-          this.isLoggedIn = true; // 로그인 상태 업데이트
-          this.modalCheck = false; // 로그인 성공 후 모달 닫기
-          this.loginFailed = false; // 로그인 성공 시 실패 상태를 false로 변경
-        })
-        .catch(error => {
-          console.error("Login error:", error);
-          this.loginFailed = true; // 로그인 실패 시 실패 상태를 true로 변경
-        });
-    },
+  const loginData = {
+    username: this.loginId,
+    password: this.loginPassword,
+  };
+  axios.post('http://15.165.119.226/user/api/token/', loginData)
+    .then(response => {
+      console.log(response.data.access);
+      localStorage.setItem('userToken', response.data.access); // 토큰 저장
+      localStorage.setItem('loginId', this.loginId); // loginId 저장
+      this.isLoggedIn = true; // 로그인 상태 업데이트
+      this.modalCheck = false; // 로그인 성공 후 모달 닫기
+      this.loginFailed = false; // 로그인 성공 시 실패 상태를 false로 변경
+    })
+    .catch(error => {
+      console.error("Login error:", error);
+      this.loginFailed = true; // 로그인 실패 시 실패 상태를 true로 변경
+    });
+},
     register() {
       const registerData = {
         username: this.registerId,
@@ -226,7 +231,7 @@ export default {
         gender: this.registerGender,
         birth: this.registerBirth,
       };
-      axios.post('http://localhost:8000/user/register/', registerData)
+      axios.post('http://15.165.119.226/user/register/', registerData)
         .then(response => {
           console.log("Registration successful:", response.data);
           this.registerFormVisible = false; // Registration form 닫기
@@ -265,7 +270,7 @@ export default {
         new_password: this.newPassword
       };
       
-      axios.post('http://localhost:8000/user/change-password/', passwordData, {
+      axios.post('http://15.165.119.226/user/change-password/', passwordData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('userToken')}`
         }
@@ -286,7 +291,7 @@ export default {
         email: this.newEmail
       };
       
-      axios.post('http://localhost:8000/user/change-email/', emailData, {
+      axios.post('http://15.165.119.226/user/change-email/', emailData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('userToken')}`
         }
@@ -305,7 +310,7 @@ export default {
         phone: this.newPhone
       };
       
-      axios.post('http://localhost:8000/user/change-phone/', phoneData, {
+      axios.post('http://15.165.119.226/user/change-phone/', phoneData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('userToken')}`
         }
@@ -321,7 +326,7 @@ export default {
     },
     confirmPassword() {
       // 비밀번호 확인 API 엔드포인트
-      axios.post('http://localhost:8000/user/check-password/', {
+      axios.post('http://15.165.119.226/user/check-password/', {
         password: this.passwordToConfirm
       }, {
         headers: {
@@ -343,10 +348,16 @@ export default {
     },
     closeConfirmDeleteModal() {
       this.confirmDeleteVisible = false; // 확인 모달 닫기
-    }
+    },
+    setLoginId() {
+    // 로컬 스토리지에서 loginId 확인
+    const loginId = localStorage.getItem('loginId');
+    this.loginId = loginId || ''; // loginId 유무에 따라 loginId 설정
+  },
   },
   mounted() {
-    this.checkLoginStatus(); // 컴포넌트가 마운트될 때 로그인 상태 확인
+    this.checkLoginStatus();
+    this.setLoginId();
   }
 };
 </script>
