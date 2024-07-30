@@ -180,8 +180,8 @@
                                     <div>
                                       <p id="name-details">{{ place.place_name }}</p>
                                       <p id="category">{{ place.category }}</p>
-                                      <p id="address-details">주소: {{ place.address }}</p>
-                                      <p id="isopen">영업 상태: <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
+                                      <p id="address-details"><i class="bi bi-geo-alt"></i> {{ place.address }}</p>
+                                      <p id="isopen"><i class="bi bi-clock"></i> <span :class="{ 'open': place.isopen, 'closed': !place.isopen }">{{ place.isopen ? '영업 중' : '휴무' }}</span></p>
                                     </div>
                                   </li>
                                 </ul>
