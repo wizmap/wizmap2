@@ -208,7 +208,7 @@ export default {
     username: this.loginId,
     password: this.loginPassword,
   };
-  axios.post('http://localhost:8000/user/api/token/', loginData)
+  axios.post('http://15.165.119.226/user/api/token/', loginData)
     .then(response => {
       console.log(response.data.access);
       localStorage.setItem('userToken', response.data.access); // 토큰 저장
@@ -231,7 +231,7 @@ export default {
         gender: this.registerGender,
         birth: this.registerBirth,
       };
-      axios.post('http://localhost:8000/user/register/', registerData)
+      axios.post('http://15.165.119.226/user/register/', registerData)
         .then(response => {
           console.log("Registration successful:", response.data);
           this.registerFormVisible = false; // Registration form 닫기
@@ -270,7 +270,7 @@ export default {
         new_password: this.newPassword
       };
       
-      axios.post('http://localhost:8000/user/change-password/', passwordData, {
+      axios.post('http://15.165.119.226/user/change-password/', passwordData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('userToken')}`
         }
@@ -291,7 +291,7 @@ export default {
         email: this.newEmail
       };
       
-      axios.post('http://localhost:8000/user/change-email/', emailData, {
+      axios.post('http://15.165.119.226/user/change-email/', emailData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('userToken')}`
         }
@@ -310,7 +310,7 @@ export default {
         phone: this.newPhone
       };
       
-      axios.post('http://localhost:8000/user/change-phone/', phoneData, {
+      axios.post('http://15.165.119.226/user/change-phone/', phoneData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('userToken')}`
         }
@@ -326,7 +326,7 @@ export default {
     },
     confirmPassword() {
       // 비밀번호 확인 API 엔드포인트
-      axios.post('http://localhost:8000/user/check-password/', {
+      axios.post('http://15.165.119.226/user/check-password/', {
         password: this.passwordToConfirm
       }, {
         headers: {
