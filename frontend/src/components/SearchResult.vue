@@ -51,36 +51,25 @@
                                 <p><i class="bi bi-telephone"></i> {{ selectedPlace.place.phone }}</p>
                                 <p><i class="bi bi-info-circle"></i> {{ selectedPlace.place.memo }}</p>
                                 <p id="isopen"><i class="bi bi-clock"></i> <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
-                                <ul class="faq-container">
-                                  <li class="faq active">
-                                    <div class="faq__question">
-                                      <h3 class="faq__title">
-                                        영업시간
-                                      </h3>
-                                    </div>
-                                    <div class="faq__answer">
-                                      <p class="faq__text">
-                                        <li v-for="hour in selectedPlace.business_hours" :key="hour.id">{{ hour.day }}: {{ hour.open }} - {{ hour.close }}</li>
-                                      </p>
-                                    </div>
-                                    <button class="faq__btn">
-                                      <span class="faq__icon open">+</span>
-                                      <span class="faq__icon close">-</span>
-                                    </button>
-                                  </li>
-                                </ul>
+                                <div class="open-hour">
+                                      <ol>
+                                        <li v-for="hour in selectedPlace.business_hours" :key="hour.id"><span>{{ hour.day }}</span><p>{{ hour.open }} - {{ hour.close }}</p></li>
+                                      </ol>
+                                </div>
                                 <!-- 퀵슬롯 추가 버튼 -->
-                                <br></br>
-                                <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
                                 <!-- 마이핀 추가 버튼 -->
                                 <br></br>
+                                <div style="display: flex; gap: 10px;">
+                                <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
                                 <button type="button" class="btn btn-primary" @click="openAddMyPinModal(selectedPlace)">마이핀 추가</button>
+                                </div>
+                                <br></br>
                                 <!-- 마이핀 추가 모달 -->
                                 <div class="mypin-add-modal" v-show="AddMyPinModalOpen" @click="closeAddMyPinModal">
                                   <div class="mypin-add-container form-wrapper" v-if="favoriteData" @click.stop="preventClose">
                                     <h3>마이핀 추가</h3>
                                     <label for="mypin-list">리스트를 선택하세요</label>
-                                    <select v-model="selectedListId">
+                                    <select v-model="selectedListId" class="fav-form-field">
                                       <option v-for="list in favoriteData.list" :key="list.id" :value="list.id">{{ list.name }}</option>
                                     </select>
                                     <div>
@@ -192,26 +181,6 @@
   
   
   <script>
-  const btns = document.querySelectorAll(".faq__btn");
-
-  btns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const faqItem = btn.parentNode;
-    const isActive = faqItem.classList.contains("active");
-
-    removeActiveClasses();
-
-    if (!isActive) {
-      faqItem.classList.add("active");
-    }
-  });
-});
-
-function removeActiveClasses() {
-  btns.forEach((btn) => {
-    btn.parentNode.classList.remove("active");
-  });
-}
   import axios from 'axios';
   
   export default {
