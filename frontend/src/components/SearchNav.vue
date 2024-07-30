@@ -1,11 +1,11 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-        integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
-        crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <button id="modal-favorite-button" @click="openFavoriteModal"><i class="fas fa-list fa-2x"></i></button>
   <div class="modal-favorite-wrap" v-show="favoriteModalOpen" @click="closeFavoriteModals">
     <div class="modal-favorite-container" @click="preventClose">
+
+      <router-link to="/"><img id="search-logo"></router-link>
+
+      <hr class="hr-3">
 
       <div class="modal-btn">
         <router-link to="/searchresult" id="modal-search-button" @click="openSearchModal">
@@ -14,6 +14,8 @@
           </svg>
         </router-link>
       </div>
+
+      <hr class="hr-3">
 
       <div class="modal-btn" >
         <button id="nav-button" @click="openNavModal">
@@ -38,11 +40,15 @@
         </div>
       </div>
 
+      <hr class="hr-3">
+
       <div class="modal-btn">
           <router-link to="/favorites" id="favorits-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
           </svg></router-link>
       </div>
+
+      <hr class="hr-3">
           
       <div class="modal-btn">
         <router-link to="/history" id="history-button" @click="openHisModal">
@@ -58,6 +64,9 @@
           </div>
         </div>
       </div>
+
+      <hr class="hr-3">
+
       </div>
   
   </div>
