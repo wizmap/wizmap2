@@ -60,7 +60,6 @@
                                 <!-- 마이핀 추가 버튼 -->
                                 <br></br>
                                 <div style="display: flex; gap: 10px;">
-                                <button type="button" class="btn btn-primary">퀵슬롯 추가</button>
                                 <button type="button" class="btn btn-primary" @click="openAddMyPinModal(selectedPlace)">마이핀 추가</button>
                                 </div>
                                 <br></br>

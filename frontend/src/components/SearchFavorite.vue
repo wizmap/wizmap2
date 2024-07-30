@@ -859,7 +859,6 @@
           `   카테고리: 알 수 없음<br />`,
           `   영업 상태: 영업 중<br />`,
           `   리스트 이름: 기본 리스트</p>`,
-          `   <button onclick="window.addQuickSlot(${latitude}, ${longitude}, '${address}')">퀵슬롯 추가</button>`,
           `   <button onclick="window.addMyPin(${latitude}, ${longitude}, '${address}')">마이핀 추가</button>`,
           '</div>'
         ].join('');
