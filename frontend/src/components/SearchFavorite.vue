@@ -78,11 +78,11 @@
               <div class="modal-btn">
                 <button id="add-list-button" @click="showListModal" class="add-list-button">
                   <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-dotted" viewBox="0 0 16 16">
-                    <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-                  </svg>
-                     새 리스트
+                        <path d="M2.5 0q-.25 0-.487.048l.194.98A1.5 1.5 0 0 1 2.5 1h.458V0zm2.292 0h-.917v1h.917zm1.833 0h-.917v1h.917zm1.833 0h-.916v1h.916zm1.834 0h-.917v1h.917zm1.833 0h-.917v1h.917zM13.5 0h-.458v1h.458q.151 0 .293.029l.194-.981A2.5 2.5 0 0 0 13.5 0m2.079 1.11a2.5 2.5 0 0 0-.69-.689l-.556.831q.248.167.415.415l.83-.556zM1.11.421a2.5 2.5 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415zM16 2.5q0-.25-.048-.487l-.98.194q.027.141.028.293v.458h1zM.048 2.013A2.5 2.5 0 0 0 0 2.5v.458h1V2.5q0-.151.029-.293zM0 3.875v.917h1v-.917zm16 .917v-.917h-1v.917zM0 5.708v.917h1v-.917zm16 .917v-.917h-1v.917zM0 7.542v.916h1v-.916zm15 .916h1v-.916h-1zM0 9.375v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .916v.917h1v-.917zm16 .917v-.917h-1v.917zm-16 .917v.458q0 .25.048.487l.98-.194A1.5 1.5 0 0 1 1 13.5v-.458zm16 .458v-.458h-1v.458q0 .151-.029.293l.981.194Q16 13.75 16 13.5M.421 14.89c.183.272.417.506.69.689l.556-.831a1.5 1.5 0 0 1-.415-.415zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373Q2.25 16 2.5 16h.458v-1H2.5q-.151 0-.293-.029zM13.5 16q.25 0 .487-.048l-.194-.98A1.5 1.5 0 0 1 13.5 15h-.458v1zm-9.625 0h.917v-1h-.917zm1.833 0h.917v-1h-.917zm1.834-1v1h.916v-1zm1.833 1h.917v-1h-.917zm1.833 0h.917v-1h-.917zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+                    </svg>
+                    새 리스트
                 </button>
-              </div>
+            </div>
               <div id="favorite-results" v-if="favoriteData && favoriteData.list">
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item" v-for="favorite in favoriteData.list" :key="favorite.id">
@@ -247,8 +247,8 @@
         <!-- 마이핀 추가 모달 -->
         <div class="mypin-add-modal" v-show="AddMyPinModalOpen" @click="closeAddMyPinModal">
           <div class="mypin-add-container form-wrapper" v-if="favoriteData" @click.stop="preventClose">
-            <h3>리스트를 선택하세요</h3>
-            <select v-model="selectedListId">
+            <label>리스트를 선택하세요</label>
+            <select v-model="selectedListId" class="fav-form-field">
               <option v-for="list in favoriteData.list" :key="list.id" :value="list.id">{{ list.name }}</option>
             </select>
             <div>
@@ -575,7 +575,7 @@
           username: this.loginId,
           password: this.loginPassword,
         };
-        axios.post('http://localhost:8000/user/api/token/', loginData)
+        axios.post('http://15.165.119.226/user/api/token/', loginData)
           .then(response => {
           console.log(response.data.access);
           localStorage.setItem('userToken', response.data.access); // 토큰 저장
@@ -598,7 +598,7 @@
       console.log(`Fetching list data for ID: ${id}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken)
-      axios.get(`http://localhost:8000/favorites`, {
+      axios.get(`http://15.165.119.226/favorites`, {
         headers: {
             // Bearer 스키마를 사용하여 토큰을 전송
             'Authorization': `Bearer ${userToken}`
@@ -607,7 +607,7 @@
         .then(response => {
           this.favoriteData = response.data;
           // 사용자의 ListLike 데이터 요청
-          return axios.get(`http://localhost:8000/favorites/like`, {
+          return axios.get(`http://15.165.119.226/favorites/like`, {
             headers: {
               'Authorization': `Bearer ${userToken}`
             }
@@ -680,7 +680,7 @@
       console.log(`Fetching place data for ID: ${id}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken);
-      axios.get(`http://localhost:8000/favorites/list/${id}/`, {
+      axios.get(`http://15.165.119.226/favorites/list/${id}/`, {
         headers: {
           'Authorization': `Bearer ${userToken}`
         }
@@ -717,7 +717,7 @@
     async addList() {
       const userToken = localStorage.getItem('userToken');
       try {
-        const response = await axios.post('http://localhost:8000/favorites/list/create/', {
+        const response = await axios.post('http://15.165.119.226/favorites/list/create/', {
           name: this.newListName,
           private: this.isListPrivate,
           memo: this.newListMemo,
@@ -741,7 +741,7 @@
       console.log(`Deleting list data for ID: ${id}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken);
-      axios.delete(`http://localhost:8000/favorites/list/delete/${id}/`, {
+      axios.delete(`http://15.165.119.226/favorites/list/delete/${id}/`, {
         headers: {
           'Authorization': `Bearer ${userToken}`
         }
@@ -766,7 +766,7 @@
         newIsPrivate = false;
       }
 
-      axios.put(`http://localhost:8000/favorites/list/update/${id}/`, {
+      axios.put(`http://15.165.119.226/favorites/list/update/${id}/`, {
         name: newName, // 수정할 리스트 이름을 요청 본문에 포함
         private: newIsPrivate,
         memo:newMemo,
@@ -789,7 +789,7 @@
     updateMypinName(id, newMypinName) {
       console.log(`Updating mypin_name for place ${id} with new name ${newMypinName}`);
       const userToken = localStorage.getItem('userToken');
-      axios.put(`http://localhost:8000/favorites/mypin/update/${id}/`, {
+      axios.put(`http://15.165.119.226/favorites/mypin/update/${id}/`, {
         name: newMypinName
       }, {
         headers: {
@@ -811,7 +811,7 @@
       // 서버에 삭제 요청 보내기
       console.log(`Deleting place ${id}`);
       const userToken = localStorage.getItem('userToken');
-      axios.delete(`http://localhost:8000/favorites/mypin/delete/${id}/`, {
+      axios.delete(`http://15.165.119.226/favorites/mypin/delete/${id}/`, {
         headers: {
           'Authorization': `Bearer ${userToken}`
         }
@@ -952,7 +952,7 @@
     saveMypin(listId) {
       const userToken = localStorage.getItem('userToken');
       // console.log(address, latitude, longitude)
-      axios.post(`http://localhost:8000/favorites/mypin/create/${listId}/`, {
+      axios.post(`http://15.165.119.226/favorites/mypin/create/${listId}/`, {
         address: this.newAddress, // 주소 문자열을 전송
         latitude: Number(this.newLatitude.toFixed(6)),
         longitude: Number(this.newLongitude.toFixed(6)),
@@ -992,7 +992,7 @@
   saveQuickSlot(name,type) {
     const userToken = localStorage.getItem('userToken');
     console.log(this.newLatitude,this.newLongitude,this.newAddress)
-    axios.post(`http://localhost:8000/favorites/quick/create/`, {
+    axios.post(`http://15.165.119.226/favorites/quick/create/`, {
       address: this.newAddress, // 주소 문자열을 전송
       latitude: Number(this.newLatitude.toFixed(6)),
       longitude: Number(this.newLongitude.toFixed(6)),
@@ -1031,7 +1031,7 @@ openEditModal(quickData) {
     this.isEditModalOpen = true; // 수정 모달 열기
   },
   removeItem(id) {
-    axios.delete(`http://localhost:8000/favorites/quick/delete/${id}/`, {
+    axios.delete(`http://15.165.119.226/favorites/quick/delete/${id}/`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('userToken')}`
       }
@@ -1101,7 +1101,7 @@ openEditModal(quickData) {
   const newName = document.getElementById('quickslot-name').value;
   const newIcon = document.getElementById('quickslot-icon').value; // 아이콘 값 가져오기
   const userToken = localStorage.getItem('userToken');
-  axios.put(`http://localhost:8000/favorites/quick/update/${id}/`, {
+  axios.put(`http://15.165.119.226/favorites/quick/update/${id}/`, {
     name: newName,
     icon: newIcon // 아이콘 데이터도 전송
   }, {
@@ -1144,7 +1144,7 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
   },
   fetchQuickViewData(id) {
     const userToken = localStorage.getItem('userToken');
-    axios.get(`http://localhost:8000/favorites/quick/${id}/`, {
+    axios.get(`http://15.165.119.226/favorites/quick/${id}/`, {
   headers: {
     'Authorization': `Bearer ${userToken}`
   }
@@ -1192,7 +1192,7 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
 
     const userToken = localStorage.getItem('userToken');
     console.log(listId);
-    axios.post(`http://localhost:8000/favorites/list/like/`, {
+    axios.post(`http://15.165.119.226/favorites/list/like/`, {
       list: listId
     }, {
       headers: {
@@ -1222,7 +1222,7 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
 
     const userToken = localStorage.getItem('userToken');
     console.log(listId);
-    axios.delete(`http://localhost:8000/favorites/list/unlike/${listId}/`, {
+    axios.delete(`http://15.165.119.226/favorites/list/unlike/${listId}/`, {
       headers: {
         'Authorization': `Bearer ${userToken}`,
         'Content-Type': 'application/json'
