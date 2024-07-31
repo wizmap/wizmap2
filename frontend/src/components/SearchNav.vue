@@ -383,7 +383,7 @@
           username: this.loginId,
           password: this.loginPassword,
         };
-        axios.post('http://15.165.119.226/user/api/token/', loginData)
+        axios.post('http://localhost:8000/user/api/token/', loginData)
           .then(response => {
           console.log(response.data.access);
           localStorage.setItem('userToken', response.data.access); // 토큰 저장
@@ -406,7 +406,7 @@
       console.log(`Fetching list data for ID: ${id}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken)
-      axios.get(`http://15.165.119.226/favorites`, {
+      axios.get(`http://localhost:8000/favorites`, {
         headers: {
             // Bearer 스키마를 사용하여 토큰을 전송
             'Authorization': `Bearer ${userToken}`
@@ -468,7 +468,7 @@
       console.log(`Fetching place data for ID: ${id}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken);
-      axios.get(`http://15.165.119.226/favorites/list/${id}/`, {
+      axios.get(`http://localhost:8000/favorites/list/${id}/`, {
         headers: {
           'Authorization': `Bearer ${userToken}`
         }
@@ -536,7 +536,7 @@
     async addList() {
       const userToken = localStorage.getItem('userToken');
       try {
-        const response = await axios.post('http://15.165.119.226/favorites/list/create/', {
+        const response = await axios.post('http://localhost:8000/favorites/list/create/', {
           name: this.newListName,
           private: this.isListPrivate,
           memo: this.newListMemo,
@@ -559,7 +559,7 @@
       console.log(`Deleting list data for ID: ${id}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken);
-      axios.delete(`http://15.165.119.226/favorites/list/delete/${id}/`, {
+      axios.delete(`http://localhost:8000/favorites/list/delete/${id}/`, {
         headers: {
           'Authorization': `Bearer ${userToken}`
         }
@@ -584,7 +584,7 @@
         newIsPrivate = false;
       }
 
-      axios.put(`http://15.165.119.226/favorites/list/update/${id}/`, {
+      axios.put(`http://localhost:8000/favorites/list/update/${id}/`, {
         name: newName, // 수정할 리스트 이름을 요청 본문에 포함
         private: newIsPrivate,
         memo:newMemo,
@@ -607,7 +607,7 @@
     updateMypinName(id, newMypinName) {
       console.log(`Updating mypin_name for place ${id} with new name ${newMypinName}`);
       const userToken = localStorage.getItem('userToken');
-      axios.put(`http://15.165.119.226/favorites/mypin/update/${id}/`, {
+      axios.put(`http://localhost:8000/favorites/mypin/update/${id}/`, {
         name: newMypinName
       }, {
         headers: {
@@ -629,7 +629,7 @@
       // 서버에 삭제 요청 보내기
       console.log(`Deleting place ${id}`);
       const userToken = localStorage.getItem('userToken');
-      axios.delete(`http://15.165.119.226/favorites/mypin/delete/${id}/`, {
+      axios.delete(`http://localhost:8000/favorites/mypin/delete/${id}/`, {
         headers: {
           'Authorization': `Bearer ${userToken}`
         }
@@ -780,7 +780,7 @@
     saveMypin(latitude, longitude, address, listId, name) {
       const userToken = localStorage.getItem('userToken');
       console.log(address, latitude, longitude)
-      axios.post(`http://15.165.119.226/favorites/mypin/create/${listId}/`, {
+      axios.post(`http://localhost:8000/favorites/mypin/create/${listId}/`, {
         address: address, // 주소 문자열을 전송
         latitude: latitude,
         longitude: longitude,
@@ -831,7 +831,7 @@
   saveQuickSlot(name,type) {
     const userToken = localStorage.getItem('userToken');
     console.log(this.newLatitude,this.newLongitude,this.newAddress)
-    axios.post(`http://15.165.119.226/favorites/quick/create/`, {
+    axios.post(`http://localhost:8000/favorites/quick/create/`, {
       address: this.newAddress, // 주소 문자열을 전송
       latitude: Number(this.newLatitude.toFixed(6)),
       longitude: Number(this.newLongitude.toFixed(6)),
@@ -869,7 +869,7 @@ openEditModal(quickData) {
     this.isEditModalOpen = true; // 수정 모달 열기
   },
   removeItem(id) {
-    axios.delete(`http://15.165.119.226/favorites/quick/delete/${id}/`, {
+    axios.delete(`http://localhost:8000/favorites/quick/delete/${id}/`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('userToken')}`
       }
@@ -939,7 +939,7 @@ openEditModal(quickData) {
   const newName = document.getElementById('quickslot-name').value;
   const newIcon = document.getElementById('quickslot-icon').value; // 아이콘 값 가져오기
   const userToken = localStorage.getItem('userToken');
-  axios.put(`http://15.165.119.226/favorites/quick/update/${id}/`, {
+  axios.put(`http://localhost:8000/favorites/quick/update/${id}/`, {
     name: newName,
     icon: newIcon // 아이콘 데이터도 전송
   }, {
@@ -982,7 +982,7 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
   },
   fetchQuickViewData(id) {
     const userToken = localStorage.getItem('userToken');
-    axios.get(`http://15.165.119.226/favorites/quick/${id}/`, {
+    axios.get(`http://localhost:8000/favorites/quick/${id}/`, {
   headers: {
     'Authorization': `Bearer ${userToken}`
   }
