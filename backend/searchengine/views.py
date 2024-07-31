@@ -138,3 +138,30 @@ class TestView(APIView):
         results = list(set(name_results) | set(menu_results))[:5]  # 최대 10개 결과
         
         return Response(results)
+    
+# 프록시 서버 우회
+import requests
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+
+NAVER_CLIENT_ID = os.getenv('NAVER_CLIENT_ID')
+NAVER_CLIENT_SECRET = os.getenv('NAVER_CLIENT_SECRET')
+
+@require_http_methods(["GET"])
+def naver_direction_proxy(request):
+    url = 'https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving'
+    
+    params = {
+        'start': request.GET.get('start'),
+        'goal': request.GET.get('goal'),
+        'option': request.GET.get('option')
+    }
+    
+    headers = {
+        'X-NCP-APIGW-API-KEY-ID': NAVER_CLIENT_ID,
+        'X-NCP-APIGW-API-KEY': NAVER_CLIENT_SECRET
+    }
+    
+    response = requests.get(url, params=params, headers=headers)
+    
+    return JsonResponse(response.json())

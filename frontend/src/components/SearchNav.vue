@@ -1023,20 +1023,15 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
     this.polyline.setMap(null);
   }
 
-  const url = '/api/map-direction/v1/driving';
+  const url = 'http://localhost:8000/searchengine/api/map-direction/';
   const params = {
     start: `${startCoords.lng},${startCoords.lat}`,
     goal: `${endCoords.lng},${endCoords.lat}`,
     option: 'traoptimal'
   };
 
-  const headers = {
-    'X-NCP-APIGW-API-KEY-ID': process.env.VUE_APP_MAPURL,
-    'X-NCP-APIGW-API-KEY': process.env.VUE_APP_MAPKEY
-  };
-
   try {
-    const response = await axios.get(url, { params, headers });
+    const response = await axios.get(url, { params });
 
     if (response.data.route.traoptimal) {
       const route = response.data.route.traoptimal[0].path;
@@ -1112,9 +1107,15 @@ mounted() {
   document.head.appendChild(script);
 
   script.onload = () => {
+    let center = new window.naver.maps.LatLng(35.8858646, 128.5828924); // 기본 중심 좌표
+    const storedCenter = localStorage.getItem('mapCenter');
+    if (storedCenter) {
+      const { lat, lng } = JSON.parse(storedCenter);
+      center = new window.naver.maps.LatLng(lat, lng);
+    }
     this.map = new window.naver.maps.Map("search-map", {
-      center: new window.naver.maps.LatLng(37.5670135, 126.9783740),
-      zoom: 10
+      center: center,
+      zoom: 12
     });
     this.bounds = new naver.maps.LatLngBounds();
     naver.maps.Event.addListener(this.map, 'rightclick', this.handleMapClick.bind(this));
