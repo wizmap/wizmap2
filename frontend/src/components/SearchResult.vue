@@ -569,12 +569,15 @@ computed: {
     },
     setCenterAndZoom(marker, position) {
 
-      const offsetPosition = new window.naver.maps.LatLng(
-        position.lat(),
-        position.lng() - 0.15 // 약간 오른쪽으로 이동 (값은 조정 가능)
-      );
-      this.map.setCenter(offsetPosition);
-      localStorage.setItem('mapCenter', JSON.stringify({ lat: offsetPosition.lat(), lng: offsetPosition.lng() })); // 중심 위치 저장
+      const mapCenter = position;
+      const mapSize = this.map.getSize();
+      const offsetX = mapSize.width / 4;
+      const projection = this.map.getProjection();
+      const offsetPosition = projection.fromCoordToOffset(mapCenter);
+      offsetPosition.x -= offsetX;
+      const newCenter = projection.fromOffsetToCoord(offsetPosition);
+      this.map.setCenter(newCenter);
+      localStorage.setItem('mapCenter', JSON.stringify({ lat: newCenter.lat(), lng: newCenter.lng() }));
 
       this.markers.forEach(m => {
         if (m === marker) {
