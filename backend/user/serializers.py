@@ -53,3 +53,15 @@ class PasswordConfirmSerializer(serializers.Serializer):
             raise serializers.ValidationError("비밀번호가 올바르지 않습니다.")
         
         return data
+    
+#아이디찾기 시리얼라이저
+class FindIdSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    phone = serializers.CharField()
+    
+    def validate(self, data):
+        email = data['email']
+        phone = data['phone']
+        if not User.objects.filter(email=email, phone=phone).exists():
+            raise serializers.ValidationError('일치하는 정보가 없습니다.')
+        return data

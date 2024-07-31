@@ -37,7 +37,7 @@
                         <p id="name">{{ result.place.name }}</p>
                         <p id="category">{{ result.place.category }}</p>
                         <p id="address">{{ result.place.address.address }}</p>
-                        <p id="isopen">영업 상태: <span :class="{ 'open': result.place.isopen, 'closed': !result.place.isopen }">{{ result.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                        <p id="isopen">영업 상태: <span :class="{ 'open': result.place.is_open, 'closed': !result.place.is_open }">{{ result.place.is_open ? '영업 중' : '휴무' }}</span></p>
                       </button>
                       <div class="modal-btn">
                         <div class="modal-search-detail-wrap" v-show="firstDetailModalOpen" @click="closeSearchDetailModals">
@@ -50,7 +50,7 @@
                                 <p><i class="bi bi-cookie"></i> {{ selectedPlace.place.menu }}</p>
                                 <p><i class="bi bi-telephone"></i> {{ selectedPlace.place.phone }}</p>
                                 <p><i class="bi bi-info-circle"></i> {{ selectedPlace.place.memo }}</p>
-                                <p id="isopen"><i class="bi bi-clock"></i> <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                                <p id="isopen"><i class="bi bi-clock"></i> <span :class="{ 'open': selectedPlace.place.is_open, 'closed': !selectedPlace.place.is_open }">{{ selectedPlace.place.is_open ? '영업 중' : '휴무' }}</span></p>
                                 <div class="open-hour">
                                       <ol>
                                         <li v-for="hour in selectedPlace.business_hours" :key="hour.id"><span>{{ hour.day }}</span><p>{{ hour.open }} - {{ hour.close }}</p></li>
@@ -426,7 +426,7 @@ computed: {
     async fetchHistory() {
     const userToken = localStorage.getItem('userToken');
     try {
-      const response = await fetch('http://15.165.119.226/history/', {
+      const response = await fetch('http://15.165.119.226:8000/history/', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${userToken}`,
@@ -459,7 +459,7 @@ computed: {
       }
 
       // URL 수정: 백틱을 사용하여 템플릿 문자열로 변경
-      const response = await fetch(`http://15.165.119.226/searchengine/?page=${page}`, {
+      const response = await fetch(`http://15.165.119.226:8000/searchengine/?page=${page}`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ search: this.searchTerm, category: this.selectedCategory })
@@ -508,7 +508,7 @@ computed: {
   },
     fetchSuggestions() {
       if (typeof this.searchTerm === 'string' && this.searchTerm.length > 1) {
-        axios.get('http://15.165.119.226/searchengine/', {
+        axios.get('http://15.165.119.226:8000/searchengine/', {
           params: { query: this.searchTerm }
         })
         .then(response => {
@@ -543,7 +543,7 @@ computed: {
         if (userToken) {
           headers['Authorization'] = `Bearer ${userToken}`;
         }
-        const response = await fetch(`http://15.165.119.226/search/pin/${id}/`, {
+        const response = await fetch(`http://15.165.119.226:8000/search/pin/${id}/`, {
           method: 'GET',
           headers,
         });
@@ -570,12 +570,15 @@ computed: {
     },
     setCenterAndZoom(marker, position) {
 
-      const offsetPosition = new window.naver.maps.LatLng(
-        position.lat(),
-        position.lng() - 0.15 // 약간 오른쪽으로 이동 (값은 조정 가능)
-      );
-      this.map.setCenter(offsetPosition);
-      localStorage.setItem('mapCenter', JSON.stringify({ lat: offsetPosition.lat(), lng: offsetPosition.lng() })); // 중심 위치 저장
+      const mapCenter = position;
+      const mapSize = this.map.getSize();
+      const offsetX = mapSize.width / 4;
+      const projection = this.map.getProjection();
+      const offsetPosition = projection.fromCoordToOffset(mapCenter);
+      offsetPosition.x -= offsetX;
+      const newCenter = projection.fromOffsetToCoord(offsetPosition);
+      this.map.setCenter(newCenter);
+      localStorage.setItem('mapCenter', JSON.stringify({ lat: newCenter.lat(), lng: newCenter.lng() }));
 
       this.markers.forEach(m => {
         if (m === marker) {
@@ -649,7 +652,7 @@ computed: {
     saveMypin(listId) {
       const userToken = localStorage.getItem('userToken');
       // console.log(address, latitude, longitude)
-      axios.post(`http://15.165.119.226/favorites/mypin/create/${listId}/`, {
+      axios.post(`http://15.165.119.226:8000/favorites/mypin/create/${listId}/`, {
         place: this.selectedPlace.place.id,
         list: listId,
         name: this.mypinName,
@@ -674,7 +677,7 @@ computed: {
       console.log(`Fetching list data for ID: ${id}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken)
-      axios.get(`http://15.165.119.226/favorites`, {
+      axios.get(`http://15.165.119.226:8000/favorites`, {
         headers: {
             // Bearer 스키마를 사용하여 토큰을 전송
             'Authorization': `Bearer ${userToken}`

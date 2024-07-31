@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-vkcbfm7x8lp(&rb!3yrx21z-1hw-dl+xr)opab8rmt^(ruk%=b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -81,7 +81,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",  # Vue.js 개발 서버 주소
+    "http://15.165.119.226",  # Vue.js 개발 서버 주소
 ]
 
 ROOT_URLCONF = 'wizmap.urls'
