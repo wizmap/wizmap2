@@ -280,7 +280,7 @@
     async fetchHistory(page = 1) {
       const userToken = localStorage.getItem('userToken');
       try {
-        const response = await fetch(`http://localhost:8000/history/?page=${page}`, {
+        const response = await fetch(`http://15.165.119.226:8000/history/?page=${page}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${userToken}`,
@@ -310,7 +310,7 @@
           if (userToken) {
             headers['Authorization'] = `Bearer ${userToken}`; // 헤더에 토큰 추가
           }
-          const response = await fetch('http://localhost:8000/search/', {
+          const response = await fetch('http://15.165.119.226:8000/search/', {
             method: 'POST',
             headers,
             body: JSON.stringify({ search_term: query })
@@ -363,7 +363,7 @@
         if (userToken) {
           headers['Authorization'] = `Bearer ${userToken}`; // 헤더에 토큰 추가
         }
-        const response = await fetch(`http://localhost:8000/search/pin/${id}/`, {
+        const response = await fetch(`http://15.165.119.226:8000/search/pin/${id}/`, {
           method: 'GET',
           headers,
         });
@@ -408,7 +408,7 @@
       async deleteHistory(id) {
         const userToken = localStorage.getItem('userToken');
         try {
-          const response = await fetch(`http://localhost:8000/history/delete/${id}`, {
+          const response = await fetch(`http://15.165.119.226:8000/history/delete/${id}`, {
             method: 'DELETE',
             headers: {
               'Authorization': `Bearer ${userToken}`,
