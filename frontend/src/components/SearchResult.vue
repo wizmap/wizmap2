@@ -37,7 +37,7 @@
                         <p id="name">{{ result.place.name }}</p>
                         <p id="category">{{ result.place.category }}</p>
                         <p id="address">{{ result.place.address.address }}</p>
-                        <p id="isopen">영업 상태: <span :class="{ 'open': result.place.isopen, 'closed': !result.place.isopen }">{{ result.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                        <p id="isopen">영업 상태: <span :class="{ 'open': result.place.is_open, 'closed': !result.place.is_open }">{{ result.place.is_open ? '영업 중' : '휴무' }}</span></p>
                       </button>
                       <div class="modal-btn">
                         <div class="modal-search-detail-wrap" v-show="firstDetailModalOpen" @click="closeSearchDetailModals">
@@ -50,7 +50,7 @@
                                 <p><i class="bi bi-cookie"></i> {{ selectedPlace.place.menu }}</p>
                                 <p><i class="bi bi-telephone"></i> {{ selectedPlace.place.phone }}</p>
                                 <p><i class="bi bi-info-circle"></i> {{ selectedPlace.place.memo }}</p>
-                                <p id="isopen"><i class="bi bi-clock"></i> <span :class="{ 'open': selectedPlace.place.isopen, 'closed': !selectedPlace.place.isopen }">{{ selectedPlace.place.isopen ? '영업 중' : '휴무' }}</span></p>
+                                <p id="isopen"><i class="bi bi-clock"></i> <span :class="{ 'open': selectedPlace.place.is_open, 'closed': !selectedPlace.place.is_open }">{{ selectedPlace.place.is_open ? '영업 중' : '휴무' }}</span></p>
                                 <div class="open-hour">
                                       <ol>
                                         <li v-for="hour in selectedPlace.business_hours" :key="hour.id"><span>{{ hour.day }}</span><p>{{ hour.open }} - {{ hour.close }}</p></li>
