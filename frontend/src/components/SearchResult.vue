@@ -426,7 +426,7 @@ computed: {
     async fetchHistory() {
     const userToken = localStorage.getItem('userToken');
     try {
-      const response = await fetch('http://localhost:8000/history/', {
+      const response = await fetch('http://15.165.119.226:8000/history/', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${userToken}`,
@@ -459,7 +459,7 @@ computed: {
       }
 
       // URL 수정: 백틱을 사용하여 템플릿 문자열로 변경
-      const response = await fetch(`http://localhost:8000/searchengine/?page=${page}`, {
+      const response = await fetch(`http://15.165.119.226:8000/searchengine/?page=${page}`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ search: this.searchTerm, category: this.selectedCategory })
@@ -508,7 +508,7 @@ computed: {
   },
     fetchSuggestions() {
       if (typeof this.searchTerm === 'string' && this.searchTerm.length > 1) {
-        axios.get('http://localhost:8000/searchengine/', {
+        axios.get('http://15.165.119.226:8000/searchengine/', {
           params: { query: this.searchTerm }
         })
         .then(response => {
@@ -543,7 +543,7 @@ computed: {
         if (userToken) {
           headers['Authorization'] = `Bearer ${userToken}`;
         }
-        const response = await fetch(`http://localhost:8000/search/pin/${id}/`, {
+        const response = await fetch(`http://15.165.119.226:8000/search/pin/${id}/`, {
           method: 'GET',
           headers,
         });
@@ -652,7 +652,7 @@ computed: {
     saveMypin(listId) {
       const userToken = localStorage.getItem('userToken');
       // console.log(address, latitude, longitude)
-      axios.post(`http://localhost:8000/favorites/mypin/create/${listId}/`, {
+      axios.post(`http://15.165.119.226:8000/favorites/mypin/create/${listId}/`, {
         place: this.selectedPlace.place.id,
         list: listId,
         name: this.mypinName,
@@ -677,7 +677,7 @@ computed: {
       console.log(`Fetching list data for ID: ${id}`);
       const userToken = localStorage.getItem('userToken');
       console.log(userToken)
-      axios.get(`http://localhost:8000/favorites`, {
+      axios.get(`http://15.165.119.226:8000/favorites`, {
         headers: {
             // Bearer 스키마를 사용하여 토큰을 전송
             'Authorization': `Bearer ${userToken}`
