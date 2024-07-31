@@ -45,16 +45,13 @@
                 <div v-for="index in [0, 1, 2]" :key="index" class="quick-modal-btn">
                   <button v-if="favoriteData && favoriteData.quicktype && favoriteData.quicktype.some(item => item.type === index)" @click="handleUpBoxObjectClick">
                     <!-- 작은 네모 버튼 -->
-                    <button class="small-square-button" @click="showNameInputModal(favoriteData.quicktype.find(item => item.type === index)?.id)">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
-                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
-                      </svg>
-                    </button>
+                    
                     <!-- 하트 모양 SVG -->
                     <button @click="handleButtonClick(index)">
                       <!-- 아이콘 변경 -->
                       <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi" :class="getIconClass(index)" viewBox="0 0 16 16">
-                        <path :d="getIconPath(favoriteData.quicktype.find(item => item.type === index)?.icon-1)"></path>
+                        <path :d="getIconPath(favoriteData.quicktype.find(item => item.type === index)?.icon)"></path>
+                        
                       </svg>
                     </button>
                     <p v-if="favoriteData && favoriteData.quicktype">
@@ -352,6 +349,7 @@
       AddMyPinModalOpen: false,  // 마이핀 추가 모달
       selectedListId: null,   // 마이핀 추가 시 선택된 리스트
       mypinName: '',    // 마이핀 추가 이름
+      
     };
   },
   created() {
@@ -859,6 +857,7 @@
           `   카테고리: 알 수 없음<br />`,
           `   영업 상태: 영업 중<br />`,
           `   리스트 이름: 기본 리스트</p>`,
+
           `   <button onclick="window.addMyPin(${latitude}, ${longitude}, '${address}')">마이핀 추가</button>`,
           '</div>'
         ].join('');
@@ -1000,6 +999,7 @@
       phone: null, // 필요에 따라 추가
       memo: "퀵슬롯 추가", // 필요에 따라 추가
       category: '기타', // 필요에 따라 추가
+      icon:2,
       type:type
     }, {
       headers: {
@@ -1053,7 +1053,7 @@ openEditModal(quickData) {
   const quickSlotHtml = `
   <div>
     <label for="quickslot-name">퀵슬롯의 이름을 입력하세요:</label>
-    <input type="text" id="quickslot-name" />
+    <input type="text" id="quickslot-name"  />
     <div>
       <button class="icon-button" data-icon="1">
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
@@ -1089,19 +1089,36 @@ openEditModal(quickData) {
     });
   });
 
+  this.$nextTick(() => {
   document.getElementById('save-name').addEventListener('click', () => {
-    const newName = document.getElementById('quickslot-name').value;
-    const newIcon = document.getElementById('quickslot-icon').value;
-    this.updateQuickSlotName(id, newName, newIcon);
-    document.body.removeChild(modal); // 모달 제거
+    const nameInput = document.getElementById('quickslot-name');
+    const iconInput = document.getElementById('quickslot-icon');
+
+    if (nameInput && iconInput) {
+      console.log("입력필드"+document.getElementById('quickslot-name')); // 입력 필드 요소 출력
+      const newName = nameInput.value;
+      const newIcon = iconInput.value;
+
+      console.log('newName:', newName); // 콘솔에 newName 값 출력
+
+      if (!newName.trim()) {
+        alert('이름을 입력해주세요.');
+        return;
+      }
+
+      this.updateQuickSlotName(id, newName, newIcon);
+      document.body.removeChild(modal); // 모달 제거
+    } else {
+      console.error('Cannot find input element');
+    }
   });
+});
 },
-  updateQuickSlotName(id) {
-  const newName = document.getElementById('quickslot-name').value;
-  const newIcon = document.getElementById('quickslot-icon').value; // 아이콘 값 가져오기
+  updateQuickSlotName(id,newName,newIcon) {
+    const NewName = document.getElementById('quickslot-name').value;
   const userToken = localStorage.getItem('userToken');
   axios.put(`http://localhost:8000/favorites/quick/update/${id}/`, {
-    name: newName,
+    name: NewName,
     icon: newIcon // 아이콘 데이터도 전송
   }, {
     headers: {
@@ -1165,8 +1182,8 @@ updateLocalQuickSlotNameAndIcon(id, newName, newIcon) {
       default: return ''; // 기본값 혹은 에러 처리
     }
   },
-  getIconPath(index) {
-    const icon = this.favoriteData.quicktype.find(item => item.type === index)?.icon;
+  getIconPath(icon) {
+  
     switch (icon) {
       case 1:
         return 'M8 3.293l-6 6V15h12v-5.707l-6-6zm0-1.414l6.707 6.707-.707.707H13v4h-2v-3H5v3H3v-4H1.414l-.707-.707L8 1.879z'; // 집 모양 SVG path
