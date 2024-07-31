@@ -7,6 +7,7 @@ from .serializers import UserSerializer, PasswordChangeSerializer, PhoneChangeSe
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import User
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -69,3 +70,15 @@ class PasswordConfirmView(APIView):
         if serializer.is_valid():
             return Response({"message": "비밀번호 확인이 완료되었습니다."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+#아이디 찾기 뷰
+class FindIdView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        email = request.data.get('email')
+        phone = request.data.get('phone')
+        if email and phone:
+            user = User.objects.filter(email=email, phone=phone).first()
+            if user:
+                return Response({'username': user.username}, status=status.HTTP_200_OK)
+        return Response({'message': '일치하는 정보가 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)

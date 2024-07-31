@@ -11,4 +11,5 @@ urlpatterns = [
     path('change-phone/', PhoneChangeView.as_view(), name='change_phone'),
     path('change-email/', EmailChangeView.as_view(), name='change_email'),
     path('check-password/', PasswordConfirmView.as_view(), name='check_password'),
+    path('find-id/', FindIdView.as_view(), name='find_id'),
 ]
